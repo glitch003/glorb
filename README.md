@@ -19,10 +19,13 @@ Burning Man 2026 theme: **giant glowing broom**. See [broom/DESIGN.md](broom/DES
 ## Folder map
 
 - [dimensions.md](dimensions.md) — car + compartment sizes
-- [electrical/](electrical/) — batteries, chargers, power budget
+- [history.md](history.md) — origin story, 2023 build, design philosophy
+- [electrical/](electrical/) — batteries, chargers, inverter, power budget
 - [lights/](lights/) — LED panel + twisty light calculations
-- [materials/](materials/) — corrugated plastic panels
-- [logistics/](logistics/) — expenses, weight, tasks, parts list, passwords
+- [sound/](sound/) — DJ rig: XDJ-XZ → Mackie → QSC sub + tops
+- [materials/](materials/) — corrugated plastic panels + vinyl wrap
+- [logistics/](logistics/) — expenses, weight, tasks, parts list, passwords, 2026 camp roster
 - [broom/](broom/) — current build design docs
+- [archive/](archive/) — preserved Drive export: pics, design files, DMV apps, original docx files (mostly git-ignored, large binaries)
 - [references.md](references.md) — links to external Google Sheets
-- [_raw/](_raw/) — original `glorb.xlsx` source-of-truth dump
+- [_raw/](_raw/) — original `.xlsx` source-of-truth dumps

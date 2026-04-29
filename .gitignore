@@ -1,2 +1,11 @@
 .DS_Store
 logistics/passwords.md
+
+# Bulk Drive export — kept locally, not tracked in git (too big, mostly binaries)
+archive/pics/
+archive/design/
+archive/dmv/
+archive/specs-photos/
+*.zip
+_raw/cart-instruction-*.docx
+_raw/glorb-camp-roster-2026.xlsx

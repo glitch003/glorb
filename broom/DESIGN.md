@@ -14,97 +14,113 @@ Glorb gets converted into a giant glowing broom.
 | Height | ~3 658 (12 ft) |
 | **Perimeter** | **11 600** |
 
-## Tube spec
+## Chosen strip — ORDERED (sample)
 
-- Flexible 360° silicone neon tube, **22 mm diameter, 5 m long**
-- Source (Alibaba): <https://www.alibaba.com/product-detail/Flexible-360-Degree-Black-White-Silicone_1601739508491.html?spm=a2700.prosearch.normal_offer.d_image.1d1d67afJOPjmS&priceId=c2b1047e281c4079a8f678bd0d41239d>
+> Sample on the way. Final order pending sample evaluation.
 
-## How many tubes?
+**Part:** D22 360° Silicone White Diffuser, RGBIC, double-sided
 
-Tight-packed shoulder-to-shoulder around the perimeter:
+| Spec | Value |
+| --- | --- |
+| Diameter | 22 mm |
+| Length per roll | 5 m |
+| LED chip | SMD 3535 |
+| LED density | 96 LEDs/m × 2 sides = **192 LEDs / m** (960 LEDs per 5 m strip) |
+| Controller IC | **SM16703** (4-pin) |
+| Protocol | Single-wire addressable — same family as WS2811 / WS2812. FastLED: `FastLED.addLeds<SM16703, DATA_PIN, RGB>(...)`. Existing WS2812 experience transfers 1:1. |
+| Power | 28–30 W/m (140–150 W per strip at full brightness, full white) |
+| Voltage | **24 V** (decision below) |
+| Price | $7.75/m → **$38.75 per 5 m strip** |
+| Source | <https://www.alibaba.com/product-detail/Flexible-360-Degree-Black-White-Silicone_1601739508491.html?spm=a2700.prosearch.normal_offer.d_image.1d1d67afJOPjmS&priceId=c2b1047e281c4079a8f678bd0d41239d> |
 
-```
-tubes = perimeter / tube diameter
-      = (2 × 1800 + 2 × 4000) / 22
-      = 11 600 / 22
-      = 527.27   →   527 tubes
-```
+> ⚠️ The pasted spec from the seller reads "12V SM16703" — confirm with seller that the sample shipped is actually 24 V before placing the bulk order. SM16703 is more commonly a 12 V part.
 
-Total tube length: **527 × 5 m = 2 635 m** of neon flex.
+## Voltage: 24 V
 
-Pitch = tube diameter + gap. Tubes = ⌊11 600 / pitch⌋. Power columns assume tubes lit at full brightness; existing loads ([../electrical/power-budget.md](../electrical/power-budget.md)) eat ~7.66 kW, so the broom must fit in the remaining **~6.7 kW** of pack headroom (or run off the genny).
+**Why 24 V over 12 V:** the supplier said 12 V strips need power injected at *both ends* of every strip; 24 V allows single-end injection. At 150+ strips that's 300 vs 150 install splice points — decisive on labor alone. Also: half the current, ¼ the I²R losses, thinner feed wire, cooler strips.
 
-| Gap (mm) | Pitch (mm) | Tubes | Total m | Watts @ 14.4 W/m | Watts @ 7.2 W/m | Fits in 6.7 kW headroom? |
-| ---: | ---: | ---: | ---: | ---: | ---: | :---: |
-| **0 (tight)** | 22 | **527** | 2 635 | 37 944 | 18 972 | ❌ |
-| 1 | 23 | 504 | 2 520 | 36 288 | 18 144 | ❌ |
-| 2 | 24 | 483 | 2 415 | 34 776 | 17 388 | ❌ |
-| 3 | 25 | 464 | 2 320 | 33 408 | 16 704 | ❌ |
-| 5 | 27 | 429 | 2 145 | 30 888 | 15 444 | ❌ |
-| 8 | 30 | 386 | 1 930 | 27 792 | 13 896 | ❌ |
-| 10 | 32 | 362 | 1 810 | 26 064 | 13 032 | ❌ |
-| 15 | 37 | 313 | 1 565 | 22 536 | 11 268 | ❌ |
-| 20 | 42 | 276 | 1 380 | 19 872 | 9 936 | ❌ |
-| 25 | 47 | 246 | 1 230 | 17 712 | 8 856 | ❌ |
-| 30 | 52 | 223 | 1 115 | 16 056 | 8 028 | ❌ |
-| 40 | 62 | 187 | 935 | 13 464 | 6 732 | ⚠️ borderline (7.2 W/m) |
-| 50 | 72 | 161 | 805 | 11 592 | 5 796 | ✅ at 7.2 W/m |
-| 78 | 100 | 116 | 580 | 8 352 | 4 176 | ✅ at 7.2 W/m |
-| 178 | 200 | 58 | 290 | 4 176 | 2 088 | ✅ even at 14.4 W/m |
+**The existing inverter doesn't help here.** The Giandel 4 kW unit is a 12 V DC → 120 V AC inverter ([../electrical/inverter.md](../electrical/inverter.md)) — it feeds the QSC speakers and freezer, not LEDs. LEDs need a separate DC supply path regardless of voltage choice.
 
-> 528 tubes would need 11 616 mm — 16 mm over the perimeter. So 527 is the true cap.
+**Architecture:** dedicated **24 V DC supply** for LED-only load. Two viable topologies:
 
-**Reading the table:** at high-density LEDs (14.4 W/m) you basically can't run off the pack — even with a 200 mm gap (58 tubes!) it's still 4.2 kW. With low-density tubes (7.2 W/m, 30 LEDs/m) you get into pack headroom around a **40–50 mm gap (~187–161 tubes)**. Add PWM brightness reduction or partial-animation patterns and you can push the count back up.
+| Topology | Pros | Cons |
+| --- | --- | --- |
+| **72 V pack → DC-DC → 24 V bus** | Direct from pack, no AC conversion, runs without genny | Need a beefy 72 V → 24 V DC-DC (uncommon part, ~$500–1500). Examples: TDK-Lambda industrial, EV-style Eltek/Eaton golf-cart converters. |
+| **120 V AC (inverter or genny) → 24 V PSU** | Easy off-the-shelf parts (Mean Well RSP-3000-24, ~$700) | Adds a conversion step (genny → AC → DC, or pack → 12 V → AC → DC), worse efficiency. Forces inverter to share its 4 kW budget with LEDs at peak. |
+
+**Recommendation:** go with the 72 V → 24 V DC-DC route. Avoids loading the existing inverter, runs off pack alone, less to fail. Roughly 5–8 kW of DC-DC capacity for the 200-strip ceiling at typical dimming.
+
+## Layout scenarios
+
+Theoretical max around the 11 600 mm perimeter is **527 strips** tight-packed (touching). At this density and wattage that's ~78 kW — physically can't happen — so the question is how sparse to go. Pitch = 11 600 / N.
+
+| Strips | Pitch (mm) | Gap (mm) | Total m | Total LEDs | Cost @ $7.75/m | Watts @ 28 W/m | Watts @ 30 W/m |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 50 | 232 | 210 | 250 | 48 000 | $1 938 | 7 000 | 7 500 |
+| 100 | 116 | 94 | 500 | 96 000 | $3 875 | 14 000 | 15 000 |
+| 150 | 77 | 55 | 750 | 144 000 | $5 813 | 21 000 | 22 500 |
+| 200 | 58 | 36 | 1 000 | 192 000 | $7 750 | 28 000 | 30 000 |
+
+For comparison, theoretical tight pack (no gap):
+
+| 527 | 22 | 0 | 2 635 | 505 920 | $20 421 | 73 780 | 79 050 |
+
+## Power — managed in software
+
+Full-brightness, full-white numbers look scary (200 strips = 30 kW), but the practical plan is **dim them aggressively in software**. SM16703 is per-pixel PWM, so brightness scaling is free and proportional — 30 % brightness draws 30 % of the wattage. Neon flex at 30 % is still bright as hell.
+
+| Strips | Full bright (white) | @ 50% bright | @ 30% bright | @ 30% bright + chase pattern (~30% lit) |
+| ---: | ---: | ---: | ---: | ---: |
+| 50 | 7.0–7.5 kW | 3.5–3.75 kW | 2.1–2.25 kW | ~0.7 kW |
+| 100 | 14–15 kW | 7.0–7.5 kW | 4.2–4.5 kW | ~1.4 kW |
+| 150 | 21–22.5 kW | 10.5–11.25 kW | 6.3–6.75 kW | ~2.0 kW |
+| 200 | 28–30 kW | 14–15 kW | 8.4–9.0 kW | ~2.7 kW |
+
+Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QSC sub rating of 3.6 kW) leaving ~**4.1 kW peak headroom** ([../electrical/power-budget.md](../electrical/power-budget.md)). For sustained playback at typical music levels the loads are closer to ~5.2 kW, leaving ~**9.2 kW typical headroom**.
+
+**Reading the math against headroom:**
+
+- @ 30% bright + animation: even **200 strips (~2.7 kW)** fits inside peak headroom ✅
+- @ 30% bright (no animation, full sweep lit): **150 strips fits typical headroom**, borderline against peak headroom
+- @ 50% bright: **50 strips fits comfortably**; 100 strips overruns peak unless the sound system isn't peaking simultaneously
+- @ 100% bright: needs the genny for any scale ≥ 50 strips
+
+**Practical plan:** buy generously (150–200 strips), set a global brightness cap in firmware (~30%), use animated chase / wave patterns most of the time (the "broom stroke" aesthetic anyway). Reserve full brightness for short bursts when plugged into the genny.
+
+## Recommendation
+
+**150 strips, +5% spares = order ~158 strips (≈ $6 100).** Reasoning:
+
+- 55 mm gap reads visibly as bristles, not a wall of light — actually broom-shaped
+- Real-world animated draw lands ~3–4 kW (genny-easy, even pack-friendly)
+- Headroom to grow (can fill in to 200 later if it looks too sparse)
+- ~$6k is a defensible spend versus the existing $93k project total
+
+Fallbacks:
+
+- If you want maximum impact and the genny can carry it: **200 strips + 5% spares ≈ $8 100**
+- If budget is the constraint: **100 strips + 5% spares ≈ $4 100** (94 mm gap — a bit airy but still reads as bristles in motion)
 
 ## Order math
 
-Tubes ship at a fixed 5 m length, so order by tube count + slack for failures and connectors:
-
-| Plan | Tubes | Notes |
-| --- | ---: | --- |
-| Tight pack, 0 spares | 527 | minimum |
-| Tight pack, +5% spares | **554** | recommended order quantity |
-| Tight pack, +10% spares | 580 | safer for desert use |
-
-## ⚠️ Power problem — read before ordering
-
-At standard neon flex density (60 LEDs/m, ~14.4 W/m), 2 635 m of tube draws:
-
-- **2 635 m × 14.4 W/m ≈ 37 950 W (~38 kW)**
-
-The pack ceiling is **14 400 W** (see [../electrical/power-budget.md](../electrical/power-budget.md)) and existing loads already eat ~7 660 W. **There is no scenario where 527 fully-lit tubes run from the existing batteries.**
-
-Mitigation options (combine as needed):
-
-| Option | Effect | Notes |
-| --- | --- | --- |
-| Lower LED density (e.g. 30 LEDs/m → ~7.2 W/m) | Cuts draw ~half → ~19 kW | Still over budget. Spec available from many sellers. |
-| Run at reduced brightness (PWM ~30%) | Cuts draw to ~30% of max → ~11 kW @ 14.4 W/m, ~5.7 kW @ 7.2 W/m | Software/controller side. Free. |
-| Animate — only a subset lit at any time | Cuts draw proportional to duty cycle | Chase / wave patterns are on-brand for "broom strokes" anyway |
-| Generator runs continuously | Removes pack as bottleneck | We already own a genny — see [../logistics/expenses.md](../logistics/expenses.md) |
-| Reduce tube count (with gaps) | 5 mm gaps → 429 tubes / ~31 kW max | Only buys ~20% — not the lever |
-
-**Probably the path:** lower-density tubes (≤30 LEDs/m) + global PWM brightness cap + animated patterns + run off the generator when the broom is fully lit. Need to confirm exact W/m of the SKU before this calc is real.
-
-## Cost ballpark
-
-Silicone neon flex at 22 mm typically runs $5–15 / m delivered.
-
-| Rate | 2 635 m | + 5% spares (2 770 m) |
+| Plan | Strips | Cost @ $7.75/m |
 | --- | ---: | ---: |
-| $5/m | $13 175 | $13 850 |
-| $10/m | $26 350 | $27 700 |
-| $15/m | $39 525 | $41 550 |
+| 50 + 5% spares | 53 | $2 054 |
+| 100 + 5% spares | 105 | $4 069 |
+| **150 + 5% spares (recommended)** | **158** | **$6 123** |
+| 200 + 5% spares | 210 | $8 138 |
 
-Get a quote from the Alibaba seller for the full quantity — they almost always discount at this volume.
+Ask the Alibaba seller for a volume-discount quote — at 150–200 pieces they almost always come down 10–20% from the listed per-meter price.
 
-## TODOs before ordering
+## TODOs
 
-- [ ] Confirm with seller: LEDs/m options, exact W/m, voltage (12 V vs 24 V), cuttable interval
-- [ ] Confirm tubes ship at exactly 5 m and ask about pricing breaks at 500+ pieces
-- [ ] Decide: addressable (chase patterns, on-brand for broom strokes) vs. solid color
-- [ ] Sketch the controller / PSU topology — 527 tubes × 5 m needs serious wire management; likely many smaller PSUs distributed around the perimeter rather than one big one
-- [ ] Specify how tubes attach top + bottom (clip rail? grommets through corrugated plastic side panels?)
+- [x] ~~Pick strip type~~ — D22 RGBIC SM16703, sample ordered
+- [ ] Evaluate sample on arrival: brightness, diffuser quality, color accuracy, voltage as shipped
+- [ ] Confirm with seller the bulk order is **24 V** (the listing template says 12 V — verify before ordering 150+)
+- [ ] Get a volume quote at 150–200 strips ($ per meter usually drops 10–20% at this scale)
+- [ ] Source the 72 V → 24 V DC-DC converter (sized 5–8 kW for headroom)
+- [ ] Sketch the controller / PSU topology — likely 1 ESP32 + WLED per ~10–20 strip zone, sync'd via E1.31
+- [ ] Specify how strips attach top + bottom (clip rail? grommets through corrugated plastic side panels?)
 - [ ] Stripper pole: source, mount plan, how it ties into the upper deck structurally
 
 ## Open questions

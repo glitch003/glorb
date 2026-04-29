@@ -2,40 +2,40 @@
 
 Firmware password: `QTHN6666`
 
+## Current setup (post 2023-05 swap)
+
+**Main pack:** Tesla modules — 6 modules wired **3s2p** for **72 V nominal**.
+
+| | Value |
+| --- | --- |
+| Configuration | 3 series × 2 parallel = 6 modules |
+| Pack voltage | 72 V nominal |
+| Module weight | ~60 lb each → **360 lb total** |
+| Pack capacity | ~30 kWh (rough — depends on exact Tesla module variant) |
+| Cost (May 2023) | $4 800 total — see [../logistics/expenses.md](../logistics/expenses.md) |
+| BMS | EV Stealth cell-tap boards (custom Tesla-module BMS) + balance charger |
+| Bench measurement | 2023-05-02 with 3s Tesla modules — see [power-measurements.md](power-measurements.md) |
+
+The Tesla pack delivers far more current than the previous EG4 pack — the practical power bottleneck on the cart is now the [4 kW Giandel inverter](inverter.md) and the 72 V → 12 V converter for aux loads, not the cells.
+
+**Aux pack:** EG4 LifePower4 batteries kept from the original 2022 build, repurposed as auxiliary 12 V supply (~300 lb total per [../logistics/weight.md](../logistics/weight.md)). Powers 12 V loads (RPi, dashboard, lighting controllers, the 4 kW inverter input bus).
+
 ## Compartment (in)
 
 | Width | Length | Height |
 | --- | --- | --- |
 | 40 | 70.87 | 17.72 |
 
-## Options evaluated
-
-### EG4 LifePower4 12V 400Ah
-
-- <https://signaturesolar.com/eg4-lifepower4-lithium-battery-12v-400ah/>
-- 12 V · 400 Ah · 5.12 kWh each
-- Series 6 × Parallel 1 = **6 batteries** → 30.72 kWh total
-- Cost: $1,500 each → **$9,000 total**
-- Weight: 109 lb each → **654 lb total**
-- Dimensions (in): 17.4 W × 18.5 L × 6.1 H
-- Pack layout: 2 wide × 3 long × 1 tall (fits compartment)
-- Charger draw: 75 A @ 12 V each (12.5 A @ 120 V wall) → 75 A wall total
-- Charge time: ~5.33 h
-- Range @ 600 Wh/mi: **51.2 mi** → 10.24 h drive time @ 5 mph
-
-### EG4 LifePower4 24V 200Ah
-
-- <https://signaturesolar.com/eg4-lifepower4-lithium-battery-24v-200ah/>
-- 24 V · 200 Ah · 5.12 kWh each
-- Series 3 × Parallel 1 = **3 batteries** → 15.36 kWh total
-- Cost: $1,500 each → **$4,500 total**
-- Weight: 109 lb each → **327 lb total**
-- Dimensions (in): 17.4 W × 18.5 L × 6.1 H
-- Charger draw: 45 A @ 12 V each
-- Charge time: ~4.44 h
-- Range @ 600 Wh/mi: **25.6 mi** → 5.12 h drive time @ 5 mph
+This was sized for the EG4 12V 400Ah footprint (17.4 × 18.5 × 6.1 in, 2 wide × 3 long × 1 tall). The Tesla modules fit in a custom cage built by Anthony in May 2023 ([../logistics/expenses.md](../logistics/expenses.md): "Anthony / Battery cage work").
 
 ## Operating constants
 
 - Car speed: 5 mph
 - Range model: 600 Wh / mile
+- Pack capacity ~30 kWh → theoretical range ~50 miles, drive time ~10 h @ 5 mph
+
+## Original 2022 plan (superseded)
+
+The cart shipped in 2022 with **EG4 LifePower4 12 V 400 Ah** as the main pack — 6 batteries in series for 72 V, $9 000, 654 lb. Replaced by Tesla modules in May 2023 because Tesla cells are lighter, cheaper used, and deliver much higher continuous current. The remaining EG4s became the aux pack.
+
+The EG4 24 V 200 Ah variant (3 in series, $4 500, 327 lb) was also evaluated in 2022 but not chosen.

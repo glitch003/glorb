@@ -1,4 +1,5 @@
 .DS_Store
+.env
 logistics/passwords.md
 
 # Bulk Drive export — kept locally, not tracked in git (too big, mostly binaries)

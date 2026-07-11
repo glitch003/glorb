@@ -18,7 +18,7 @@ Firmware password: `QTHN6666`
 
 The Tesla pack delivers far more current than the previous EG4 pack — the practical power bottleneck on the cart is now the [4 kW Giandel inverter](inverter.md) and the 72 V → 12 V converter for aux loads, not the cells.
 
-**Aux pack:** EG4 LifePower4 batteries kept from the original 2022 build, repurposed as auxiliary 12 V supply (~300 lb total per [../logistics/weight.md](../logistics/weight.md)). Powers 12 V loads (RPi, dashboard, lighting controllers, the 4 kW inverter input bus).
+**Aux pack:** **3× EG4 LifePower4 12 V 400 Ah** batteries (~4.8 kWh each → ~14.4 kWh) kept from the original 2022 build, repurposed as auxiliary 12 V supply (~300 lb total per [../logistics/weight.md](../logistics/weight.md)). Powers 12 V loads (RPi, dashboard, lighting controllers, the 4 kW inverter input bus). Count confirmed 2026-07-02 (original build had 6; 3 remain).
 
 ## Compartment (in)
 

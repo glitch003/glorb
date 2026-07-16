@@ -73,56 +73,35 @@ Both the 4 AWG power trunk and the tube data lines run along the top rail:
 ## Feet needed
 
 - **4 AWG trunk:** 2 legs × 19 ft × 2 conductors ≈ 76 ft → buy **50 ft red + 50 ft black** for slack + battery-to-split jumpers.
-- **18 AWG drops:** short with zone bus bars (≤ ~0.7 m each) → ~100 tubes × ~1 ft × 2 ≈ 200 ft → **100 ft red + 100 ft black** covers it (less if factory leads reach the bar).
+- **18 AWG drops:** at 116 mm tube pitch ([../broom/DESIGN.md](../broom/DESIGN.md)) the ~6 in factory leads reach the 2–3 tubes nearest each bar directly; the rest need short drops of a few inches to ~0.4 m. Summed across ~10 zones ≈ 30 m total → buy **50 ft red + 50 ft black**. (Densifying to a terminal block every ~3 tubes would let factory leads land direct and drop this to near zero.)
 
-## Order list (BOM)
+## Zone plan — 10 zones × 10 tubes
 
-| # | Item | Qty | Notes |
-| --- | --- | ---: | --- |
-| 1 | DC circuit breaker, 150 A, manual switch, DC-rated ≥32 V | 1 | Combined disconnect + main protection on the + feed |
-| 2 | 4 AWG cable, tinned/marine | 50 ft red + 50 ft black | Two trunk legs |
-| 3 | 18 AWG cable, red + black | 100 ft each (adjust) | Per-tube +24 V / GND drops |
-| 4 | Ring lugs for 4 AWG + adhesive heatshrink | ~30 lugs | Battery, breaker, split junction, + 2 per bus bar |
-| 5 | Bus bars, ≥150 A, multi-terminal (or fused distribution blocks) | ~8–10 | Zone injection nodes; near-battery ones must pass full leg current |
-| 6 | Ferrules/spade terminals for 18 AWG | ~220 | Land tube drops on bus-bar screw terminals |
-| 7 | 1000 µF, ≥35 V electrolytic caps | 100 (+10 spare) | One per injection point (per controllers.md) |
-| 8 | Adhesive cable-tie mounts or P-clips | ~150 | Secure trunk every ~250–300 mm around the rail |
-| 9 | Zip ties | 500-pack | General |
-| 10 | Common ground bus bar | 1 | Tie LED negative + all Angio grounds + battery negative — **shared ground is mandatory** for the data signal |
-| 11 | Inline DC ammeter / shunt, 0–200 A *(optional)* | 1 | Watch real draw, tune the firmware cap |
+Split feed, two legs. **10 injection zones of ~10 tubes each.** Per zone, one **+24 V bar** (tapped off the red 4 AWG trunk) and one **ground bar** (tapped off the black trunk) — single-node bars can't mix polarity, so they come in +/− pairs. 10 zones × 2 = **20 bars** (22 ordered, 2 spare). At 10 tubes/zone (~1.16 m span) the ~6 in factory leads reach the nearest 2–3 tubes; the rest take short ≤~0.58 m drops → 50 ft/color 18 AWG covers it. Near-battery bars pass full leg current, so all bars are 150 A rated.
 
-## Confirm before ordering
+## Ordered — 2026-07-16 (Amazon, total $624.96)
 
-1. **Routing DECIDED: top rail**, power trunk + data lines together. Tubes inject at the top end; trunk and bus bars ride the top.
-2. **Tube factory lead length** — sets 18 AWG quantity and whether drop wire is needed at all vs. landing factory leads straight on the bus bar.
+> Placed 2026-07-16. Everything cross-checked against the zone plan before ordering. Re-verify listings before any reorder — ASINs/prices drift.
 
-## Purchasing — Amazon ASINs (verify before reordering)
+| # | Item | Product | Qty | ~Each | Covers |
+| --- | --- | --- | ---: | ---: | --- |
+| 1 | Disconnect/breaker | Bolipoeq 150 A DC breaker, 12–48 V, IP67, manual reset — 2-pack | 1 | $18.99 | Combined disconnect + main protection on the + feed (spare in the 2-pack) |
+| 2 | 4 AWG trunk | TEMCo 50 ft black + 50 ft red, USA pure copper welding cable | 1 | $168.32 | Two trunk legs. Bare copper (not tinned) — accepted |
+| 3 | 18 AWG drops | 18/2 bonded 2-conductor, 50 ft, tinned stranded | 1 | $15.50 | Per-tube +24 V / GND drops = 50 ft red + 50 ft black |
+| 4 | 4 AWG ring lugs | TKDMR 4 AWG 1/4"/M6 ring lugs + heatshrink, 10-pk | 3 | $7.99 | 30 lugs — battery, breaker, split, + trunk landings on M6 studs |
+| 5 | Bus bars | Ampper 150 A marine busbar, 3× M6 studs + 10× #8 screws, w/ cover, red+black 2-pack | 11 | $23.19 | 22 bars = 10 +/− zone pairs + 2 spare. M6 studs = trunk pass-through; #8 screws = tube drops |
+| 6 | 18 AWG fork terminals | Teansic 200-pc #8 insulated fork, 22–16 AWG (100 red + 100 black) | 2 | $9.99 | 400 forks for ~200 tube drops. Match the #8 busbar screws — **not ferrules** (bars are screw-down) |
+| 7 | Injection caps | Innfeeltech 1000 µF 50 V radial electrolytic, 25-pk | 4 | $6.49 | 100 caps, one per tube. Across +24 V/GND at each tube; polarity matters |
+| 8 | Cap heatshrink | NeoWire 3/4" (19.1 mm) 3:1 dual-wall adhesive-lined, 29 ft | 1 | $30.99 | Sleeve + strain-relief over each soldered cap |
+| 9 | Cable-tie mounts | 140-pk 3/4" adhesive+screw cable-tie bases (**includes zip ties**) | 1 | $9.99 | Secure trunk every ~250–300 mm around the rail |
+| 10 | Ammeter / shunt | CGELE DC monitor meter + shunt, 0–300 A | 1 | $21.59 | On the main before the split — watch real draw, tune firmware cap |
 
-> ⚠️ ASINs and prices **drift** — listings get discontinued, relisted, or change specs. These were pulled from live `/dp/` URLs on **2026-07-09** but not page-confirmed (Amazon blocked automated fetches). Re-verify before any reorder.
-
-| Item | Product | ASIN | Qty | ~Each |
-| --- | --- | --- | ---: | ---: |
-| Disconnect/breaker | Blue Sea 7148 150 A switchable, 48 VDC | B00EF0QSH0 | 1 | $45 |
-| 4 AWG trunk ⚠️ | TEMCo 25 ft red + 25 ft black (×2 = 50 ft/color) | B00LIB7YTU | 2 | $55 |
-| 18 AWG drops | Best Connections 100 ft red + 100 ft black | B01AO0M8TG | 1 | $25 |
-| 4 AWG lugs ⚠️ | 4 AWG ring lugs + heatshrink, 10-pk | B01996UWX0 | 3 | $12 |
-| Bus bars | Blue Sea 2302 common busbar, 150 A, 20-gang | B000K2NZ3C | 10 | $28 |
-| 18 AWG ferrules | TICONN 1200-pc ferrule kit + tool | B09F94TPRV | 1 | $30 |
-| Injection caps | 1000 µF 50 V electrolytic, 100-pk | B0F9TK3V21 | 2 | $15 |
-| Cable-tie mounts | Pro Tie adhesive+screw bases, 100-pk | B005LTJ4PW | 2 | $12 |
-| Zip ties | Southern 94, 8", 500-pk | B075LPQJFK | 1 | $15 |
-| Ammeter (optional) | DC 0-200 A meter + shunt | B0GG1TKHSQ | 1 | $18 |
-
-**One-click add-to-cart URL** (click while logged into Amazon; legacy endpoint may skip third-party ASINs — fall back to `amazon.com/dp/ASIN`):
-
-```
-https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=B00EF0QSH0&Quantity.1=1&ASIN.2=B00LIB7YTU&Quantity.2=2&ASIN.3=B01AO0M8TG&Quantity.3=1&ASIN.4=B01996UWX0&Quantity.4=3&ASIN.5=B000K2NZ3C&Quantity.5=10&ASIN.6=B09F94TPRV&Quantity.6=1&ASIN.7=B0F9TK3V21&Quantity.7=2&ASIN.8=B005LTJ4PW&Quantity.8=2&ASIN.9=B075LPQJFK&Quantity.9=1&ASIN.10=B0GG1TKHSQ&Quantity.10=1
-```
-
-Flags:
-- **4 AWG (B00LIB7YTU)** is **bare copper**, not tinned marine — swap for "Ancor 4 AWG 50 ft" if you want tinned for dust/corrosion resistance.
-- **Lugs (B01996UWX0)** — lowest-confidence ASIN; confirm 4 AWG / 3/8" ring / heatshrink.
-- **Bus bars qty 10** is an estimate: 2302 has 20 gangs → ~10 bars covers 100 tubes' +24 V and ground drops with margin. Doubles as the common ground bar. Adjust to final tubes-per-zone.
+Notes / decisions baked in:
+- **Routing: top rail** — power trunk + data lines together; tubes inject at the top end.
+- **4 AWG is bare copper, not tinned** — accepted the corrosion trade for cost; keep an eye on the lugged joints for playa oxidation.
+- **Caps mount at each tube**, soldered across +24 V / GND, sleeved in the 3:1 adhesive heatshrink. Long lead (+) → +24 V, stripe (−) → GND.
+- **Fork terminals, not ferrules** — busbars are screw-down (single-node), so #8 forks land under the screws.
+- **Ground:** the black-trunk bars are the distributed common ground; tie them, all Angio grounds, and battery negative together — **shared ground is mandatory** for the data signal.
 
 ## Related
 

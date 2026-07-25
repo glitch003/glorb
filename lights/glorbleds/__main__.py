@@ -68,6 +68,11 @@ def main(argv=None):
 
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list", help="print the group map")
+    srv = sub.add_parser("serve", help="launch the web control UI + mock viz")
+    srv.add_argument("--host", dest="serve_host", default="127.0.0.1",
+                     help="bind address (0.0.0.0 to reach from another machine)")
+    srv.add_argument("--port", type=int, default=8080)
+    srv.add_argument("--fps", type=float, default=30.0)
     sp = sub.add_parser("solid", help="fill target with one color")
     sp.add_argument("target"); sp.add_argument("--color", type=parse_color,
                                                default=(255, 255, 255))
@@ -81,6 +86,11 @@ def main(argv=None):
 
     args = p.parse_args(argv)
     gmap = load_map(args.map) if args.map else load_map()
+
+    if args.cmd == "serve":
+        from .webui.server import run
+        run(gmap, host=args.serve_host, port=args.port, fps=args.fps)
+        return 0
 
     if args.cmd == "list":
         m = gmap["meta"]

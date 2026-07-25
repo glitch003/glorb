@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glorb — LED control</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Glorb <span>broom LED control</span></h1>
+  <div class="stat"><span id="fps">–</span> fps · <span id="pxcount">–</span> px</div>
+</header>
+
+<main>
+  <section class="viz">
+    <div class="viewtabs">
+      <button id="view3d" class="active">3D car</button>
+      <button id="view2d">2D flat</button>
+    </div>
+    <canvas id="car"></canvas>
+    <p class="hint" id="hint">3D view — drag to orbit. Tubes hang around 3 sides; front-left open for the driver.</p>
+  </section>
+
+  <aside class="controls">
+    <div class="group">
+      <label>Pattern</label>
+      <div id="patterns" class="patterns"></div>
+    </div>
+
+    <div class="group">
+      <label>Brightness <output id="brightnessOut">30%</output></label>
+      <input type="range" id="brightness" min="0" max="100" value="30">
+    </div>
+    <div class="group">
+      <label>Speed <output id="speedOut">50%</output></label>
+      <input type="range" id="speed" min="0" max="100" value="50">
+    </div>
+    <div class="group">
+      <label>Density <output id="densityOut">40%</output></label>
+      <input type="range" id="density" min="0" max="100" value="40">
+    </div>
+
+    <div class="group colors">
+      <div><label>Color 1</label><input type="color" id="color1" value="#0096ff"></div>
+      <div><label>Color 2</label><input type="color" id="color2" value="#ff3c00"></div>
+    </div>
+
+    <div class="group hw">
+      <label class="row">
+        <input type="checkbox" id="hwEnabled">
+        <span>Send to hardware (Angios)</span>
+      </label>
+      <div class="hwfields">
+        <input type="text" id="hwHost" placeholder="host IP (blank = multicast)">
+        <select id="hwOrder">
+          <option>RGB</option><option>GRB</option><option>RBG</option>
+          <option>GBR</option><option>BRG</option><option>BGR</option>
+        </select>
+      </div>
+      <div id="hwStatus" class="hwstatus">hardware off</div>
+    </div>
+  </aside>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

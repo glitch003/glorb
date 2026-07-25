@@ -8,6 +8,9 @@ color1/color2 = (r,g,b).
 
 import math
 import random
+from pathlib import Path
+
+from .svg_sprite import load_sprite
 
 
 def hsv(h: float, s: float, v: float):
@@ -351,6 +354,57 @@ class Confetti(Pattern):
             buf[j + 2] = int(c[2] * v)
 
 
+class Sprite(Pattern):
+    """Stamp a rasterized vector icon onto the car surface and sweep it around.
+
+    The three lit sides are an unrolled sheet: x = around the perimeter (perim),
+    y = down the tubes (along). The sprite rides across that sheet, wrapping
+    around the perimeter, bobbing gently as it goes — a broom sweeping the car.
+    """
+    TUBE_M = 2.5          # tube length (metres)
+    PERIM_M = 9.8         # lit perimeter run (metres)
+
+    def __init__(self, name, sprite):
+        self.name = name
+        self.sp = sprite
+        self.W = sprite["w"]
+        self.H = sprite["h"]
+        self.alpha = sprite["alpha"]
+        self.aspect = sprite["aspect"]
+
+    def render(self, m, p, t, buf):
+        n = m.total_pixels
+        W, H, alpha = self.W, self.H, self.alpha
+        c1, c2 = p["color1"], p["color2"]
+        # Sprite height in `along` units; width scaled so the icon keeps aspect
+        # (perimeter is ~4x longer in metres than a tube, so x needs squishing).
+        sh = 0.35 + p["density"] * 0.5
+        wp = sh * self.aspect * (self.TUBE_M / self.PERIM_M)
+        cx = (t * p["speed"] * 0.2) % (1.0 + wp) - wp / 2.0
+        cy = 0.5 + 0.05 * math.sin(t * 1.7)
+        top = cy - sh / 2.0
+        perim, along = m.perim, m.along
+        for i in range(n):
+            u = (perim[i] - cx) / wp
+            v = (along[i] - top) / sh
+            j = i * 3
+            if 0.0 <= u < 1.0 and 0.0 <= v < 1.0:
+                a = alpha[int(v * H) * W + int(u * W)]
+            else:
+                a = 0.0
+            if a > 0.0:
+                # tint from color1 (body) toward color2 by height, scaled by coverage
+                mix = v
+                r = (c1[0] * (1 - mix) + c2[0] * mix) * a
+                g = (c1[1] * (1 - mix) + c2[1] * mix) * a
+                b = (c1[2] * (1 - mix) + c2[2] * mix) * a
+                buf[j] = int(r)
+                buf[j + 1] = int(g)
+                buf[j + 2] = int(b)
+            else:
+                buf[j] = buf[j + 1] = buf[j + 2] = 0
+
+
 class Off(Pattern):
     name = "off"
 
@@ -359,10 +413,28 @@ class Off(Pattern):
             buf[i] = 0
 
 
-REGISTRY = {pat.name: pat for pat in [
+def _load_sprite_patterns():
+    """One animated pattern per *.svg in lights/vectors/. Drop in a vector,
+    get a sweeping sprite. Failures are skipped so a bad file can't break the UI.
+    """
+    out = []
+    vdir = Path(__file__).resolve().parents[2] / "vectors"
+    if not vdir.is_dir():
+        return out
+    for svg in sorted(vdir.glob("*.svg")):
+        try:
+            out.append(Sprite(svg.stem, load_sprite(svg)))
+        except Exception as e:
+            print(f"sprite load failed for {svg.name}: {e}")
+    return out
+
+
+_BASE = [
     Solid(), Rainbow(), RainbowSnake(), Brooms(), Comet(), Wave(),
     BroomStroke(), Sides(), Plasma(), Fire(), Rain(), Confetti(),
-    Sparkle(), Off(),
-]}
+    Sparkle(),
+]
+
+REGISTRY = {pat.name: pat for pat in _BASE + _load_sprite_patterns() + [Off()]}
 
 NAMES = list(REGISTRY.keys())

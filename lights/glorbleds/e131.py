@@ -15,6 +15,18 @@ _VECTOR_FRAMING = 0x00000002
 _VECTOR_DMP = 0x02
 
 
+def iface_for(host: str) -> str | None:
+    """Local IP of the interface that routes to host (for multicast pinning)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect((host, E131_PORT))
+        return s.getsockname()[0]
+    except OSError:
+        return None
+    finally:
+        s.close()
+
+
 def multicast_addr(universe: int) -> str:
     """239.255.<hi>.<lo> per E1.31 for universes 1..63999."""
     return f"239.255.{(universe >> 8) & 0xFF}.{universe & 0xFF}"

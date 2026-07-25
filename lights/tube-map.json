@@ -7,7 +7,8 @@
     "total_groups": 34,
     "chip": "SM16703",
     "protocol": "sACN / E1.31",
-    "color_order": "RGB"
+    "color_order": "RGB",
+    "serpentine": true
   },
   "angios": [
     {
@@ -52,7 +53,8 @@
         20
       ],
       "ports_used": 6,
-      "tube_count": 24
+      "tube_count": 24,
+      "ip": "192.168.8.229"
     },
     {
       "name": "A4",

@@ -502,6 +502,36 @@ class PacMan(Pattern):
             buf[j], buf[j + 1], buf[j + 2] = r, gc, b
 
 
+class Mapping(Pattern):
+    """Diagnostic for verifying physical tube order + data direction.
+
+    Per tube (by position within its group): 1=red, 2=green, 3=blue,
+    4=yellow. First 8 px = white (logical pixel 0), then the tube color
+    fading bright->dim toward the logical end. Static, so a photo of the
+    install shows which tubes are swapped or upside down.
+    """
+    name = "mapping"
+
+    COLORS = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)]
+    HEAD = 8
+
+    def render(self, m, p, t, buf):
+        ppt = m.px_per_tube
+        per_group = m.map["meta"]["tubes_per_group"]
+        for ti in range(len(m.tubes)):
+            c = self.COLORS[ti % per_group]
+            base = ti * ppt
+            for j in range(ppt):
+                idx = (base + j) * 3
+                if j < self.HEAD:
+                    buf[idx] = buf[idx + 1] = buf[idx + 2] = 255
+                else:
+                    f = 1.0 - 0.75 * (j - self.HEAD) / (ppt - 1 - self.HEAD)
+                    buf[idx] = int(c[0] * f)
+                    buf[idx + 1] = int(c[1] * f)
+                    buf[idx + 2] = int(c[2] * f)
+
+
 class Off(Pattern):
     name = "off"
 
@@ -529,7 +559,7 @@ def _load_sprite_patterns():
 _BASE = [
     Solid(), Rainbow(), RainbowSnake(), Brooms(), PacMan(), Comet(), Wave(),
     BroomStroke(), Sides(), Plasma(), Fire(), Rain(), Confetti(),
-    Sparkle(),
+    Sparkle(), Mapping(),
 ]
 
 REGISTRY = {pat.name: pat for pat in _BASE + _load_sprite_patterns() + [Off()]}

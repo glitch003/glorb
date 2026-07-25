@@ -14,7 +14,7 @@ import argparse
 import sys
 
 from .controller import Show, load_map, normalize_group
-from .e131 import Sender
+from .e131 import Sender, iface_for
 
 NAMED = {
     "red": (255, 0, 0), "green": (0, 255, 0), "blue": (0, 0, 255),
@@ -101,8 +101,13 @@ def main(argv=None):
                   f"{g['tubes'][0]}-{g['tubes'][-1]}  univ {g['universe']}")
         return 0
 
+    iface = args.iface
+    if not iface and not args.host:
+        probe = next((a.get("ip") for a in gmap.get("angios", [])
+                      if a.get("ip")), None)
+        iface = iface_for(probe) if probe else None
     sender = DrySender() if args.dry_run else Sender(
-        host=args.host, iface=args.iface, source_name=args.source)
+        host=args.host, iface=iface, source_name=args.source)
     show = Show(sender, gmap, brightness=args.brightness,
                 color_order=args.color_order)
 

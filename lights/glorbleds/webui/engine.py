@@ -4,7 +4,7 @@ import queue
 import threading
 import time
 
-from ..e131 import Sender
+from ..e131 import Sender, iface_for
 from .model import CarModel
 from .patterns import REGISTRY, NAMES
 
@@ -28,9 +28,15 @@ class Engine:
             "color1": (0, 150, 255),
             "color2": (255, 60, 0),
         }
-        self.hw = {"enabled": False, "host": None, "iface": None,
+        # Pin multicast to the NIC that routes to the Angios (multi-homed
+        # hosts otherwise send it out the default route).
+        probe = next((a.get("ip") for a in gmap.get("angios", [])
+                      if a.get("ip")), None)
+        self.hw = {"enabled": True, "host": None,
+                   "iface": iface_for(probe) if probe else None,
                    "color_order": "RGB", "error": None}
         self._sender = None
+        self._refresh_sender()
         self._lut = self._make_lut(self.params["brightness"])
 
         self.subs: set[queue.Queue] = set()
@@ -129,6 +135,7 @@ class Engine:
 
     def _send_hw(self, frame, sender, order) -> None:
         perm = _ORDER.get(order, (0, 1, 2))
+        frame = self.model.to_physical(frame)
         try:
             for universe, start, length in self.model.group_slices:
                 chunk = frame[start:start + length]

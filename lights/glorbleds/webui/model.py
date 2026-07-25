@@ -11,15 +11,24 @@ class CarModel:
         self.map = gmap
         self.px_per_tube = gmap["meta"]["pixels_per_tube"]
 
+        # Serpentine wiring: within each group the data snakes, so every
+        # 2nd tube (0-based odd) runs tail-first. Logical frames get those
+        # tubes flipped on the way to the hardware (to_physical).
+        serpentine = gmap["meta"].get("serpentine", False)
+
         self.tubes = []           # canonical order: [{label, side, group, angio}]
         self.group_slices = []    # [(universe, byte_start, byte_len)]
+        self._rev_offsets = []    # frame byte offset of each reversed tube
         byte_start = 0
         for g in gmap["groups"]:
-            for label in g["tubes"]:
+            for k, label in enumerate(g["tubes"]):
                 self.tubes.append({
                     "label": label, "side": label[0],
                     "group": g["group"], "angio": g["angio"],
                 })
+                if serpentine and k % 2 == 1:
+                    self._rev_offsets.append(
+                        (len(self.tubes) - 1) * self.px_per_tube * 3)
             byte_len = g["tube_count"] * self.px_per_tube * 3
             self.group_slices.append((g["universe"], byte_start, byte_len))
             byte_start += byte_len
@@ -42,6 +51,19 @@ class CarModel:
                 self.perim.append(idx / n)
                 self.tube_of.append(ti)
                 idx += 1
+
+    def to_physical(self, frame: bytes) -> bytes:
+        """Logical frame -> wire order: reverse pixels of serpentine tubes."""
+        if not self._rev_offsets:
+            return frame
+        buf = bytearray(frame)
+        n = self.px_per_tube * 3
+        for off in self._rev_offsets:
+            seg = frame[off:off + n]
+            buf[off:off + n:3] = seg[n - 3::-3]
+            buf[off + 1:off + n:3] = seg[n - 2::-3]
+            buf[off + 2:off + n:3] = seg[n - 1::-3]
+        return bytes(buf)
 
     def sides_count(self) -> dict:
         c = {"L": 0, "B": 0, "R": 0}

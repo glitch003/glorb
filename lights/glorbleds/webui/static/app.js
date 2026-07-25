@@ -114,7 +114,10 @@ function draw3d() {
   const order = tubes3d.map((tb, i) => [i, proj(tb.x, tb.y, TUBE_TOP - TUBE_LEN / 2)[2]]);
   order.sort((p, q) => q[1] - p[1]);
 
-  ctx.globalCompositeOperation = "lighter";
+  // Normal blend (not additive): brightness stays consistent at any viewing
+  // angle. Pixels are sized to fill their on-screen spacing so a face-on side
+  // reads solid instead of as sparse dim dots.
+  ctx.globalCompositeOperation = "source-over";
   for (const [ti] of order) {
     const tb = tubes3d[ti];
     let bi = tb.base * 3;
@@ -123,8 +126,8 @@ function draw3d() {
       if (r + gg + b < 10) continue;
       const i = tb.base + j;
       const P = proj(wx[i], wy[i], wz[i]);
-      const dim = Math.max(0.4, Math.min(1, (14 - P[2]) / 7));
-      const sz = Math.max(1.4, Math.min(6, P[3] * 0.022));
+      const dim = Math.max(0.82, Math.min(1, (16 - P[2]) / 6));
+      const sz = Math.max(2, Math.min(10, P[3] * 0.062));
       ctx.globalAlpha = dim;
       ctx.fillStyle = "rgb(" + r + "," + gg + "," + b + ")";
       ctx.fillRect(P[0] - sz / 2, P[1] - sz / 2, sz, sz);

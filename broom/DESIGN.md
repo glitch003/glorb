@@ -2,7 +2,9 @@
 
 Glorb gets converted into a giant glowing broom.
 
-- **Bristles:** flexible 22 mm silicone neon tubes hung vertically around the **full perimeter** of the car. **Tube length 2.5 m, 100 tubes ORDERED** (2026-07-02).
+- **Bristles:** flexible 22 mm silicone neon tubes hung vertically around **3 sides of the car — front left open for the driver's sightline**. **Tube length 2.5 m, 136 tubes installed** at **72 mm pitch / 50 mm gap**.
+  - **Inventory: 150 tubes ordered total** — 100 on 2026-07-02, **+50 on 2026-07-24** — leaving **~14 spare** after the 136-tube install.
+  - **Layout:** open-front U-run of **9 800 mm** (two 4 000 mm long sides + 1 800 mm rear; front 1 800 mm side left bare). Distribution ≈ **56 left + 24 rear + 56 right = 136**.
   - **Length validated on the car (2026-07-01):** 2.5 m matches the existing side panels — **99 in ≈ 2 515 mm** — which are already the perfect size and mount without dragging. Hang the tubes to span the same vertical zone as the panels; the panels prove 2.5 m fits, so the earlier deck-vs-roof drag question is moot.
 - **Handle:** stripper pole mounted on the upper deck.
 
@@ -17,7 +19,7 @@ Glorb gets converted into a giant glowing broom.
 
 ## Chosen strip — ORDERED
 
-> Sample evaluated (2026-06-19, 24 V confirmed). **Bulk order placed 2026-07-02: 100 tubes @ 2.5 m (50× 5 m rolls).**
+> Sample evaluated (2026-06-19, 24 V confirmed). **Orders: 100 tubes @ 2.5 m (50× 5 m rolls) on 2026-07-02, then +50 tubes (25× 5 m rolls) on 2026-07-24 → 150 total. 136 installed (open front), ~14 spare.**
 
 **Part:** D22 360° Silicone White Diffuser, RGBIC, double-sided
 
@@ -42,13 +44,13 @@ Glorb gets converted into a giant glowing broom.
 
 **The existing inverter doesn't help here.** The Giandel 4 kW unit is a 12 V DC → 120 V AC inverter ([../electrical/inverter.md](../electrical/inverter.md)) — it feeds the QSC speakers and freezer, not LEDs. LEDs need a separate DC supply path regardless of voltage choice.
 
-**Architecture:** the 24 V source is now being planned alongside a **12 V → 24 V inverter swap** (the ~370 A 12 V inverter bus is halved at 24 V). Leading option is a **2s2p 24 V bank from the EG4 aux batteries** feeding both LEDs and the new 24 V inverter, buffered/topped by a small 72 V → 24 V DC-DC off the Tesla main pack. Full analysis, battery-count caveat, and 2S-rating gate: **[../electrical/led-power.md](../electrical/led-power.md).**
+**Architecture:** the 24 V source is now being planned alongside a **12 V → 24 V inverter swap** (the ~370 A 12 V inverter bus is halved at 24 V). **SETTLED 2026-07-24: dedicated LED bank = 6× Tesla Model S modules in parallel (6s6p, ~24 V, ~31.8 kWh)**, feeding both LEDs and the new 24 V inverter, with its own BMS/charger. Full analysis: **[../electrical/led-power.md](../electrical/led-power.md).**
 
 ## Layout scenarios
 
-Theoretical max around the 11 600 mm perimeter is **527 strips** tight-packed (touching). At this density and wattage that's ~78 kW — physically can't happen — so the question is how sparse to go. Pitch = 11 600 / N.
+**CHOSEN: 136 tubes on the open-front U-run (9 800 mm), 72 mm pitch / 50 mm gap.** Front-left short side (1 800 mm) left bare so the driver can see out. Pitch = run / N; on the open run 9 800 / 136 = 72 mm.
 
-Tube length is **2.5 m**, **100 tubes ordered** (116 mm pitch, 94 mm gap). All figures below scale with that length:
+The full-perimeter scenarios below (pitch = 11 600 / N) are kept for reference — the earlier plan wrapped all 4 sides. Numbers scale with total meterage regardless of layout.
 
 | Strips | Pitch (mm) | Gap (mm) | Total m (@2.5 m) | Total LEDs | Cost @ $19.38/tube | W full-white @ 28 W/m | @ 30 W/m |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -56,9 +58,12 @@ Tube length is **2.5 m**, **100 tubes ordered** (116 mm pitch, 94 mm gap). All f
 | 60 | 193 | 171 | 150 | 28 800 | $1 163 | 4 200 | 4 500 |
 | 75 | 155 | 133 | 188 | 36 000 | $1 453 | 5 250 | 5 625 |
 | 80 | 145 | 123 | 200 | 38 400 | $1 550 | 5 600 | 6 000 |
-| **100** | **116** | **94** | **250** | **48 000** | **$1 938** | **7 000** | **7 500** |
+| 100 | 116 | 94 | 250 | 48 000 | $1 938 | 7 000 | 7 500 |
+| **136 (open front)** | **72** | **50** | **340** | **65 280** | **$2 636** | **9 520** | **10 200** |
 | 150 | 77 | 55 | 375 | 72 000 | $2 906 | 10 500 | 11 250 |
 | 200 | 58 | 36 | 500 | 96 000 | $3 875 | 14 000 | 15 000 |
+
+> Note the 136 row's pitch (72 mm) is tighter than the 150 row's (77 mm) because 136 tubes pack into the shorter **9 800 mm** open run, not the full 11 600 mm perimeter.
 
 For comparison, theoretical tight pack (no gap):
 
@@ -68,7 +73,7 @@ For comparison, theoretical tight pack (no gap):
 
 ## Power — managed in software
 
-Full-brightness, full-white numbers look scary, but the plan is to **dim aggressively in software** and lean on chase patterns. Software dimming **cannot get you below the idle floor** (10 W/tube at 2.5 m — see scaling note below), no matter how few pixels are lit. At the ordered 100 tubes the idle floor is 1.0 kW; the binding question is now the **power source** (own 24 V bank vs. shared pack — see below), not the tube count.
+Full-brightness, full-white numbers look scary, but the plan is to **dim aggressively in software** and lean on chase patterns. Software dimming **cannot get you below the idle floor** (10 W/tube at 2.5 m — see scaling note below), no matter how few pixels are lit. At **136 tubes the idle floor is 1.36 kW**; the binding question is the **power source** (own 24 V bank vs. shared pack — see below), not the tube count.
 
 > ⚠️ An earlier theoretical table here claimed a "30% bright + chase (~30% lit)" column reaching ~0.7 kW for 50 tubes. **That was wrong and physically impossible** — 50 tubes idle is already 1.0 kW, so nothing in software gets below that. Deleted; use the measured numbers below.
 
@@ -101,17 +106,20 @@ Idle floor, the typical-pattern figure, and the all-lit cases by tube count — 
 | 60  | 0.60 kW | 1.80 kW | ~1.01 kW | 1.98 kW | 4.41 kW |
 | 75  | 0.75 kW | 2.25 kW | ~1.27 kW | 2.48 kW | 5.51 kW |
 | 80  | 0.80 kW | 2.40 kW | ~1.35 kW | 2.64 kW | 5.88 kW |
-| **100** | **1.00 kW** | **3.00 kW** | **~1.69 kW** | **3.30 kW** | **7.35 kW** |
+| 100 | 1.00 kW | 3.00 kW | ~1.69 kW | 3.30 kW | 7.35 kW |
+| **136 (CHOSEN)** | **1.36 kW** | **4.08 kW** | **~2.30 kW** | **4.49 kW** | **9.996 kW** |
 | 150 | 1.50 kW | 4.50 kW | ~2.54 kW | 4.95 kW | 11.03 kW |
 | 200 | 2.00 kW | 6.00 kW | ~3.38 kW | 6.60 kW | 14.70 kW |
+
+Currents @ 24 V for the 136-tube plan: **idle ~57 A · typical ~170 A · worst dimmed-solid ~187 A · 100 % white burst ~417 A** (firmware-capped).
 
 > Note the pattern: a 2.5 m tube at count N draws exactly what a 5 m tube drew at count 0.5 N. So **the ordered 100 × 2.5 m ≡ 50 × 5 m** on every power column.
 
 Implications against headroom (peak ~4.1 kW / typical ~9.2 kW — but see the power-source note: LEDs may get their **own** 24 V bank, off this shared budget entirely):
 
 - **Dimming is NOT proportional** — the 10 W floor doesn't scale. 30% brightness still draws ~45% of full white, not 30%. N × 10 W is the hard minimum any time the bus is hot.
-- **Typical-pattern draw is ~30 W/tube** at 2.5 m → **100 tubes ≈ 3.0 kW** day-to-day. This is the figure to plan against.
-- **100 tubes (ordered) is comfortable.** Idle 1.0 kW, typical 3.0 kW, worst dimmed-solid (30%-white-all-lit) 3.3 kW — all under the 4.1 kW shared peak headroom. Only **100% white solid (7.35 kW)** exceeds peak; it fits *typical* headroom (9.2 kW) for short bursts, or run it on the genny.
+- **Typical-pattern draw is ~30 W/tube** at 2.5 m → **136 tubes ≈ 4.08 kW** day-to-day. This is the figure to plan against.
+- **136 tubes (CHOSEN) needs a dedicated bank to be comfortable.** Idle 1.36 kW, typical 4.08 kW, worst dimmed-solid 4.49 kW. Typical (4.08 kW) is right at the **4.1 kW shared peak headroom**, and worst dimmed-solid (4.49 kW) **exceeds it** — so on the shared pack, 136 tubes runs into the ceiling under normal chase play. This is a key reason to give the LEDs **their own 24 V bank** (the leading plan). 100% white solid is now ~**10.0 kW** — genny territory, firmware-capped.
 - **If LEDs get a dedicated 24 V battery bank** (the plan under discussion), none of this competes with the inverter/drivetrain budget — the shared headroom above stops being the constraint and the LED bank's own capacity/runtime becomes the limit instead.
 - **Per-zone 24 V bus cutoff with contactors when parked** — idle is 1.0 kW at 100 tubes; worth cutting so it isn't draining a bank overnight.
 
@@ -119,20 +127,20 @@ Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QS
 
 **Reading the math against shared headroom (2.5 m tubes, if LEDs share the pack):**
 
-- **Idle floor:** N × 10 W: 100→1.0, 150→1.5, 200→2.0 kW.
-- @ 30% bright + chase (normal operating mode): every count up to **200 (~3.4 kW)** fits peak headroom.
-- @ 30% bright, full sweep lit (worst dimmed case): **100 (3.3 kW)** stays under peak; **150 (4.95 kW)** overruns peak, fits typical; **200 (6.6 kW)** typical only.
-- @ 100% bright: **100 (7.35 kW)** fits typical headroom for short bursts; **150+ needs the genny**.
+- **Idle floor:** N × 10 W: 136→1.36, 150→1.5, 200→2.0 kW.
+- @ 30% bright + chase (normal operating mode): **136 (~2.3 kW)** fits shared peak headroom.
+- @ 30% bright, full sweep lit (worst dimmed case): **136 (4.49 kW)** overruns the 4.1 kW shared peak, fits typical (9.2 kW).
+- @ 100% bright: **136 (~10.0 kW)** exceeds typical headroom — **needs the dedicated bank or the genny**.
 
-**Practical plan:** **100 tubes @ 2.5 m (ORDERED)**, global brightness cap ~30% in firmware, animated chase / wave patterns (the "broom stroke" aesthetic anyway), and **per-zone 24 V bus cutoff** when parked. Reserve full white for short bursts. If LEDs get their own 24 V bank (see Power source), the shared-headroom limits above don't apply — bank runtime does.
+**Practical plan:** **136 tubes @ 2.5 m (open front)**, global brightness cap ~30% in firmware, animated chase / wave patterns (the "broom stroke" aesthetic anyway), and **per-zone 24 V bus cutoff** when parked. Reserve full white for short bursts. The 136-tube load pushes past shared peak on normal chase play, so **the dedicated 24 V LED bank (see Power source) is effectively required** — bank runtime becomes the limit, not shared headroom.
 
 ## Recommendation — SETTLED
 
-**100 tubes @ 2.5 m — ORDERED 2026-07-02 (≈ $1 940, 50 rolls cut 2-per).**
+**136 tubes @ 2.5 m, open-front U-run — 150 tubes ordered (100 on 2026-07-02 + 50 on 2026-07-24), 136 installed, ~14 spare.**
 
-- Idle 1.0 kW, typical chase ~3.0 kW, worst dimmed-solid 3.3 kW — all under the 4.1 kW shared peak headroom. Only 100%-white-solid (7.35 kW) needs typical headroom or the genny; cap it in firmware.
-- 116 mm pitch / 94 mm gap — a solid, clearly-bristled look.
-- Install load: ~100 hangs, ~10 WLED zones, 100 single-end 24 V injection points. Budget the labor.
+- Idle 1.36 kW, typical chase ~4.08 kW, worst dimmed-solid 4.49 kW. Typical sits at the 4.1 kW shared peak and worst-dimmed exceeds it → **plan on the dedicated 24 V LED bank.** 100%-white-solid (~10.0 kW) is genny-only; cap it in firmware.
+- 72 mm pitch / 50 mm gap — dense, clearly-bristled look; **front-left short side open** for driver sightline.
+- Install load: ~136 hangs, ~14 injection zones, 136 single-end 24 V injection points, 3 Angio-8s driving data (see [../lights/controllers.md](../lights/controllers.md)). Budget the labor.
 
 ## Order math
 
@@ -140,11 +148,12 @@ Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QS
 | --- | ---: | ---: | ---: |
 | 50 | 50 | $969 | 0.50 kW |
 | 75 | 75 | $1 453 | 0.75 kW |
-| **100 (ORDERED)** | **100** | **$1 938** | **1.00 kW** |
-| 150 | 150 | $2 906 | 1.50 kW |
+| 100 | 100 | $1 938 | 1.00 kW |
+| **136 (INSTALLED)** | **136** | **$2 636** | **1.36 kW** |
+| 150 (ORDERED) | 150 | $2 906 | 1.50 kW |
 | 200 | 200 | $3 875 | 2.00 kW |
 
-(5 m rolls cut 2 × 2.5 m each = no offcut; 100 tubes = 50 rolls. Ask the seller for a volume quote at 50 rolls / 250 m.)
+(5 m rolls cut 2 × 2.5 m each = no offcut. **150 tubes = 75 rolls**: 50 from the 2026-07-02 order + 25 from 2026-07-24. 136 installed, 14 spare = 7 spare rolls' worth.)
 
 ## TODOs
 
@@ -155,15 +164,16 @@ Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QS
 - [ ] Design per-zone 24 V bus cutoff (contactors) — idle floor is 1.0 kW at 100 tubes; worth cutting when parked
 - [x] ~~Confirm 24 V~~ — bench-confirmed 24 V on sample (2026-06-19); still worth restating to seller on the bulk PO
 - [ ] Get a volume quote at 50 rolls / 250 m ($ per meter often still drops ~10%)
-- [ ] **Decide LED power source** — dedicated 24 V bank (2s2p of the 12 V EG4 aux batteries) + 24 V inverter swap, vs. 72 V → 24 V DC-DC off the Tesla main pack. See [../electrical/led-power.md](../electrical/led-power.md).
-- [x] ~~Sketch the controller topology~~ — settled: 4 Chroma-Tech Angio-8s (one per side, ~3 tubes/output, serpentine reverse in software), data+ground only with separate 24 V injection, xLights/FPP master over wired Ethernet (sACN). See [../lights/controllers.md](../lights/controllers.md).
+- [x] ~~Decide LED power source~~ — **SETTLED 2026-07-24: 6× Tesla Model S modules in parallel (6s6p, ~24 V, ~31.8 kWh) as a dedicated LED + 24 V inverter bank.** Own BMS/charger. See [../electrical/led-power.md](../electrical/led-power.md).
+- [x] ~~Sketch the controller topology~~ — settled: 3 active Chroma-Tech Angio-8s (left / right / rear side, ~4–7 tubes/output, serpentine reverse in software) + 1 spare, data+ground only with separate 24 V injection, xLights/FPP master over wired Ethernet (sACN). See [../lights/controllers.md](../lights/controllers.md).
 - [ ] **Bench-test SM16703 on an Angio-8 output** — the Angio spec page doesn't list chipsets. Wire one tube to one output: confirm it lights, RGB color order, no flicker at length, and that the Angio drives 5 V data logic. Fall back to ESP32 + WLED per zone if it can't clock SM16703. See [../lights/controllers.md](../lights/controllers.md).
 - [ ] Specify how strips attach top + bottom (clip rail? grommets through corrugated plastic side panels?)
 - [ ] Stripper pole: source, mount plan, how it ties into the upper deck structurally
 
 ## Open questions
 
-- **Tube length + hang RESOLVED: 2.5 m, 100 tubes ordered (2026-07-02).** Length matches the existing 99 in (≈2.5 m) side panels, validated on the car 2026-07-01 — tubes span the same zone, no drag. Power = 50% of the 5 m figures (idle 10 W, full white 73.5 W per tube).
+- **Tube length + hang RESOLVED: 2.5 m.** Length matches the existing 99 in (≈2.5 m) side panels, validated on the car 2026-07-01 — tubes span the same zone, no drag. Power = 50% of the 5 m figures (idle 10 W, full white 73.5 W per tube).
+- **Count + layout RESOLVED: 136 tubes, open front (2026-07-24).** 150 ordered total (+50 on 2026-07-24), 72 mm pitch / 50 mm gap on the 9 800 mm open-front U-run; front-left short side bare for the driver's sightline.
 - Bristles end at ground level or above? (Driveability + scraping at Black Rock concerns)
 - Any color zoning around the perimeter (all white = broom-like; rainbow / chase = party-like)?
 - Does the pole itself glow too? (Would tie the silhouette together visually.)

@@ -75,9 +75,25 @@ Both the 4 AWG power trunk and the tube data lines run along the top rail:
 - **4 AWG trunk:** 2 legs × 19 ft × 2 conductors ≈ 76 ft → buy **50 ft red + 50 ft black** for slack + battery-to-split jumpers.
 - **18 AWG drops:** at 116 mm tube pitch ([../broom/DESIGN.md](../broom/DESIGN.md)) the ~6 in factory leads reach the 2–3 tubes nearest each bar directly; the rest need short drops of a few inches to ~0.4 m. Summed across ~10 zones ≈ 30 m total → buy **50 ft red + 50 ft black**. (Densifying to a terminal block every ~3 tubes would let factory leads land direct and drop this to near zero.)
 
-## Zone plan — 10 zones × 10 tubes
+## Zone plan — 14 zones × ~10 tubes (136 tubes, open front)
 
-Split feed, two legs. **10 injection zones of ~10 tubes each.** Per zone, one **+24 V bar** (tapped off the red 4 AWG trunk) and one **ground bar** (tapped off the black trunk) — single-node bars can't mix polarity, so they come in +/− pairs. 10 zones × 2 = **20 bars** (22 ordered, 2 spare). At 10 tubes/zone (~1.16 m span) the ~6 in factory leads reach the nearest 2–3 tubes; the rest take short ≤~0.58 m drops → 50 ft/color 18 AWG covers it. Near-battery bars pass full leg current, so all bars are 150 A rated.
+> ⚠️ **Updated 2026-07-24: tube count went 100 → 136 (open-front U-run).** This changes the injection-zone count and means some consumables ordered for 100 tubes are now short — see **[Reorder for 136 tubes](#reorder-for-136-tubes)** below.
+
+Split feed, two legs. **14 injection zones of ~10 tubes each** (136 / 10 ≈ 14). Per zone, one **+24 V bar** (tapped off the red 4 AWG trunk) and one **ground bar** (tapped off the black trunk) — single-node bars can't mix polarity, so they come in +/− pairs. 14 zones × 2 = **28 bars**. At ~10 tubes/zone (~0.72 m span at the 72 mm pitch) the ~6 in factory leads reach the nearest tubes; the rest take short drops. Near-battery bars pass full leg current, so all bars are 150 A rated.
+
+### Reorder for 136 tubes
+
+The 2026-07-16 order was sized for 100 tubes / 10 zones. Going to 136 tubes / 14 zones, these come up short:
+
+| Item | Have | Need (136) | Reorder |
+| --- | ---: | ---: | --- |
+| Busbars | 22 (11 two-packs) | 28 | **+3 Ampper 2-packs** (→ 28 + 2 spare) |
+| Injection caps | 100 (4× 25-pk) | 136 | **+2 Innfeeltech 25-pks** (→ 150, ~14 spare) |
+| 18 AWG drops | 50 ft/color | ~68 ft/color | **+1 more 50 ft 18/2** roll |
+| 4 AWG ring lugs | 30 | ~60 (2 per bar × 28 = 56 + battery/breaker/split) | **+3–4 TKDMR 10-pks** — recount against final bar count |
+| Fork terminals | 400 | 272 | ✅ enough |
+
+Everything else (breaker, 4 AWG trunk, heatshrink, cable-tie mounts, ammeter) is unaffected.
 
 ## Ordered — 2026-07-16 (Amazon, total $624.96)
 

@@ -1,6 +1,8 @@
 # Broom LED power source
 
-How to power the 24 V LED bus for the broom bristles (**100 × 2.5 m tubes**, [../broom/DESIGN.md](../broom/DESIGN.md)) and, tied to it, whether to swap the 12 V inverter for 24 V.
+How to power the 24 V LED bus for the broom bristles (**136 × 2.5 m tubes**, [../broom/DESIGN.md](../broom/DESIGN.md)) and, tied to it, whether to swap the 12 V inverter for 24 V.
+
+> ✅ **SETTLED 2026-07-24: dedicated LED bank = 6× Tesla Model S modules in parallel (6p).** Each module is internally 6s → the pack is **6s6p, ~24 V nominal (18–25 V range), ~31.8 kWh**. This is **option D** below, scaled from one module to six for runtime. No DC-DC, no 2s2p EG4 string. Details under [Battery topology → D](#battery-topology--four-options) and [Recommendation](#recommendation).
 
 ## What we actually have (correcting the "3× 12 V batteries" assumption)
 
@@ -11,16 +13,16 @@ The cart does **not** run on a bank of 12 V batteries. Per [batteries.md](batter
 
 > **A 2s2p 24 V bank needs 4 batteries** — you have 3, so **source one more matched EG4** (same model/age/capacity). Three batteries can't make a balanced 2s2p; don't mix a 24 V string with an odd battery.
 
-## LED load (100 × 2.5 m, from DESIGN.md)
+## LED load (136 × 2.5 m, from DESIGN.md)
 
-| State | Per tube | 100 tubes | Amps @ 24 V |
+| State | Per tube | 136 tubes | Amps @ 24 V |
 | --- | ---: | ---: | ---: |
-| Idle floor | 10 W | 1.0 kW | 42 A |
-| Typical chase | ~30 W | ~3.0 kW | 125 A |
-| 30% white, all lit | 33 W | 3.3 kW | 138 A |
-| 100% white solid | 73.5 W | 7.35 kW | 306 A |
+| Idle floor | 10 W | 1.36 kW | 57 A |
+| Typical chase | ~30 W | ~4.08 kW | 170 A |
+| 30% white, all lit | 33 W | 4.49 kW | 187 A |
+| 100% white solid | 73.5 W | ~10.0 kW | 417 A |
 
-Plan around **~3 kW / ~125 A typical**, with a firmware cap keeping full-white-solid to short bursts.
+Plan around **~4.1 kW / ~170 A typical**, with a firmware cap keeping full-white-solid to short bursts.
 
 ## The 24 V inverter swap — recommended regardless
 
@@ -51,11 +53,14 @@ Do this. The only cost is buying a comparable 24 V pure-sine inverter and re-ter
 - Cheaper converter than B, far longer runtime than A. Best of both.
 - Same caveats as A: confirm 2S rating, rehome the 12 V loads, match/balance the series pairs.
 
-**D. Tesla Model S module as a dedicated 24 V LED bank (6s74p, 18–25 V).**
+**D. Tesla Model S modules as a dedicated 24 V LED bank (6s, 18–25 V). ✅ CHOSEN — 6 modules in parallel (6p).**
 - A single Model S module is **6s74p** (444 × 18650 cells) → **~25 V full, ~22 V nominal, ~18 V empty**. That range sits inside the tubes' SM16703P **5–24 V** spec, and — critically — **the tubes stay at full brightness across the whole discharge** (see below). No sag, no fade as the module drains.
-- Big native cell bank → handles peaky LED current (and a 24 V inverter, if shared) with no DC-DC. High capacity per module (~5 kWh class), light, and you already source Tesla cells for the main pack.
+- **Chosen build: 6 modules in parallel → 6s6p, ~24 V nominal, ~31.8 kWh (~1 390 Ah).** Big native cell bank → handles peaky LED current (and a 24 V inverter, if shared) with no DC-DC.
+- **Runtime:** LEDs alone at ~4.08 kW typical → **~7.8 h**. Sharing the bank with a ~2.9 kW 24 V inverter (~7 kW combined) → **~4.5 h**. Comfortably covers a night; recharge between.
 - ⚠️ **Top-end edge:** 25 V full charge is over the 24 V *recommended* input, but under the SM16703P's **26 V OUT withstand**; the chip's RD-fed VDD clamp protects the logic rail. Fine, but bench-check one tube at 25 V before committing.
 - ⚠️ Needs its **own BMS/charger** (Tesla-module cell-tap board like the main pack's EV Stealth setup) and doesn't share the EG4 charging path.
+- ✅ **Separate pack — confirmed.** These 6 are dedicated to the LEDs, independent of the 3s2p/72 V main drivetrain pack.
+- **Sourcing (via Henri): 18 modules total.** 6 read **~22 V (healthy)** → these form the 6p LED bank. The other **12 read ~19 V and are untested** — set aside for future testing before any use (see TODO); ~19 V may mean deep-discharged or degraded, so don't assume they're bank-ready.
 - Rehome the 12 V loads on a 24 V → 12 V buck, same as A/C.
 
 ### Why low voltage doesn't dim them (the SM16703P is constant-current)
@@ -74,14 +79,15 @@ Consequences worth noting:
 - **Same amps, fewer watts at low V.** Supply current ≈ channel current (series path), so the ~125 A typical figure holds at 18 V, but power drops (18 V × same A ≈ 2.25 kW vs 3 kW at 24 V). Wire sizing unchanged; less energy burned in the strips' series resistors.
 - ⚠️ **Verify the internal series count.** ~10 V dropout assumes **2 LEDs/channel**. If a batch instead wires a long single series string (e.g. 6 green ≈ 19 V), dropout jumps to ~20 V and 18 V would fail. Bench test: one tube on a supply, full white, sweep 24 V → 18 V — **current holds flat = good**; current sags = note the real floor. Also confirm along-the-tube copper drop still leaves margin at 18 V.
 
-## Recommendation
+## Recommendation — SETTLED (option D)
 
-1. **Swap to a 24 V inverter** — do it, it's a strict improvement.
-2. **Source a 4th matched EG4** (you have 3) and **confirm the LifePower4 12 V is 2S-series-rated.** These gate the 2s2p plan.
-3. **Then go with option C (hybrid):** run LEDs + 24 V inverter off a 2s2p 24 V EG4 bank, and add a small 72 V → 24 V DC-DC to keep it topped from the Tesla main pack. Falls back to option A (no converter) if runtime turns out fine for your event length, or option B if the EG4s can't be series-connected.
+**Dedicated LED bank: 6× Tesla Model S modules in parallel (6s6p, ~24 V, ~31.8 kWh).** Options A/B/C (EG4 2s2p, DC-DC, hybrid) are superseded and kept below for reference only.
+
+1. **Swap to a 24 V inverter** — still a strict improvement, and it can share this same 24 V bank. (Combined LED + inverter runtime ~4.5 h; LED-only ~7.8 h.)
+2. **Build the 6p Tesla bank** with its own BMS/charger (cell-tap boards like the main pack's EV Stealth setup). Confirm the 6 modules are additional to the 72 V main pack.
+3. **Bench-test one tube 24 V → 18 V** (current holds flat = good) and **at 25 V full-charge** before committing — confirms the constant-current dropout margin and top-end withstand.
 4. Rehome the 12 V loads on a small 24 V → 12 V buck.
-
-Option **D** (dedicated Tesla module) is a strong alternative if you'd rather not build a 2s2p EG4 string — it needs its own BMS/charger but drives the tubes at flat brightness across its full 18–25 V discharge. Bench-test one tube 24 V → 18 V first to confirm the constant-current dropout margin.
+5. **Test the 12 spare modules reading ~19 V** (of Henri's 18) — check per-cell voltages, capacity, and whether they recover on a balance charge. If healthy, they're a big reserve (could extend the bank or become a second pack); if degraded, plan around the 6 good ones only.
 
 ## Related
 

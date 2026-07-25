@@ -1,0 +1,634 @@
+{
+  "meta": {
+    "tubes_per_group": 4,
+    "pixels_per_tube": 40,
+    "channels_per_pixel": 3,
+    "total_tubes": 136,
+    "total_groups": 34,
+    "chip": "SM16703",
+    "protocol": "sACN / E1.31",
+    "color_order": "RGB"
+  },
+  "angios": [
+    {
+      "name": "A1",
+      "location": "Left-Front",
+      "groups": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ports_used": 7,
+      "tube_count": 28
+    },
+    {
+      "name": "A2",
+      "location": "Left-Back",
+      "groups": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ports_used": 7,
+      "tube_count": 28
+    },
+    {
+      "name": "A3",
+      "location": "Back",
+      "groups": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "ports_used": 6,
+      "tube_count": 24
+    },
+    {
+      "name": "A4",
+      "location": "Right-Back",
+      "groups": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "ports_used": 7,
+      "tube_count": 28
+    },
+    {
+      "name": "A5",
+      "location": "Right-Front",
+      "groups": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ],
+      "ports_used": 7,
+      "tube_count": 28
+    }
+  ],
+  "groups": [
+    {
+      "group": 1,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 1,
+      "tubes": [
+        "L01",
+        "L02",
+        "L03",
+        "L04"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 1,
+      "channels": 480
+    },
+    {
+      "group": 2,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 2,
+      "tubes": [
+        "L05",
+        "L06",
+        "L07",
+        "L08"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 2,
+      "channels": 480
+    },
+    {
+      "group": 3,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 3,
+      "tubes": [
+        "L09",
+        "L10",
+        "L11",
+        "L12"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 3,
+      "channels": 480
+    },
+    {
+      "group": 4,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 4,
+      "tubes": [
+        "L13",
+        "L14",
+        "L15",
+        "L16"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 4,
+      "channels": 480
+    },
+    {
+      "group": 5,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 5,
+      "tubes": [
+        "L17",
+        "L18",
+        "L19",
+        "L20"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 5,
+      "channels": 480
+    },
+    {
+      "group": 6,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 6,
+      "tubes": [
+        "L21",
+        "L22",
+        "L23",
+        "L24"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 6,
+      "channels": 480
+    },
+    {
+      "group": 7,
+      "angio": "A1",
+      "angio_location": "Left-Front",
+      "port": 7,
+      "tubes": [
+        "L25",
+        "L26",
+        "L27",
+        "L28"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 7,
+      "channels": 480
+    },
+    {
+      "group": 8,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 1,
+      "tubes": [
+        "L29",
+        "L30",
+        "L31",
+        "L32"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 8,
+      "channels": 480
+    },
+    {
+      "group": 9,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 2,
+      "tubes": [
+        "L33",
+        "L34",
+        "L35",
+        "L36"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 9,
+      "channels": 480
+    },
+    {
+      "group": 10,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 3,
+      "tubes": [
+        "L37",
+        "L38",
+        "L39",
+        "L40"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 10,
+      "channels": 480
+    },
+    {
+      "group": 11,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 4,
+      "tubes": [
+        "L41",
+        "L42",
+        "L43",
+        "L44"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 11,
+      "channels": 480
+    },
+    {
+      "group": 12,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 5,
+      "tubes": [
+        "L45",
+        "L46",
+        "L47",
+        "L48"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 12,
+      "channels": 480
+    },
+    {
+      "group": 13,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 6,
+      "tubes": [
+        "L49",
+        "L50",
+        "L51",
+        "L52"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 13,
+      "channels": 480
+    },
+    {
+      "group": 14,
+      "angio": "A2",
+      "angio_location": "Left-Back",
+      "port": 7,
+      "tubes": [
+        "L53",
+        "L54",
+        "L55",
+        "L56"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 14,
+      "channels": 480
+    },
+    {
+      "group": 15,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 1,
+      "tubes": [
+        "B01",
+        "B02",
+        "B03",
+        "B04"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 15,
+      "channels": 480
+    },
+    {
+      "group": 16,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 2,
+      "tubes": [
+        "B05",
+        "B06",
+        "B07",
+        "B08"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 16,
+      "channels": 480
+    },
+    {
+      "group": 17,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 3,
+      "tubes": [
+        "B09",
+        "B10",
+        "B11",
+        "B12"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 17,
+      "channels": 480
+    },
+    {
+      "group": 18,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 4,
+      "tubes": [
+        "B13",
+        "B14",
+        "B15",
+        "B16"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 18,
+      "channels": 480
+    },
+    {
+      "group": 19,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 5,
+      "tubes": [
+        "B17",
+        "B18",
+        "B19",
+        "B20"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 19,
+      "channels": 480
+    },
+    {
+      "group": 20,
+      "angio": "A3",
+      "angio_location": "Back",
+      "port": 6,
+      "tubes": [
+        "B21",
+        "B22",
+        "B23",
+        "B24"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 20,
+      "channels": 480
+    },
+    {
+      "group": 21,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 1,
+      "tubes": [
+        "R01",
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 21,
+      "channels": 480
+    },
+    {
+      "group": 22,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 2,
+      "tubes": [
+        "R05",
+        "R06",
+        "R07",
+        "R08"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 22,
+      "channels": 480
+    },
+    {
+      "group": 23,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 3,
+      "tubes": [
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 23,
+      "channels": 480
+    },
+    {
+      "group": 24,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 4,
+      "tubes": [
+        "R13",
+        "R14",
+        "R15",
+        "R16"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 24,
+      "channels": 480
+    },
+    {
+      "group": 25,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 5,
+      "tubes": [
+        "R17",
+        "R18",
+        "R19",
+        "R20"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 25,
+      "channels": 480
+    },
+    {
+      "group": 26,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 6,
+      "tubes": [
+        "R21",
+        "R22",
+        "R23",
+        "R24"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 26,
+      "channels": 480
+    },
+    {
+      "group": 27,
+      "angio": "A4",
+      "angio_location": "Right-Back",
+      "port": 7,
+      "tubes": [
+        "R25",
+        "R26",
+        "R27",
+        "R28"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 27,
+      "channels": 480
+    },
+    {
+      "group": 28,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 1,
+      "tubes": [
+        "R29",
+        "R30",
+        "R31",
+        "R32"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 28,
+      "channels": 480
+    },
+    {
+      "group": 29,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 2,
+      "tubes": [
+        "R33",
+        "R34",
+        "R35",
+        "R36"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 29,
+      "channels": 480
+    },
+    {
+      "group": 30,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 3,
+      "tubes": [
+        "R37",
+        "R38",
+        "R39",
+        "R40"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 30,
+      "channels": 480
+    },
+    {
+      "group": 31,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 4,
+      "tubes": [
+        "R41",
+        "R42",
+        "R43",
+        "R44"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 31,
+      "channels": 480
+    },
+    {
+      "group": 32,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 5,
+      "tubes": [
+        "R45",
+        "R46",
+        "R47",
+        "R48"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 32,
+      "channels": 480
+    },
+    {
+      "group": 33,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 6,
+      "tubes": [
+        "R49",
+        "R50",
+        "R51",
+        "R52"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 33,
+      "channels": 480
+    },
+    {
+      "group": 34,
+      "angio": "A5",
+      "angio_location": "Right-Front",
+      "port": 7,
+      "tubes": [
+        "R53",
+        "R54",
+        "R55",
+        "R56"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "universe": 34,
+      "channels": 480
+    }
+  ]
+}

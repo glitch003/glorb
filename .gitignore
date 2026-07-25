@@ -10,3 +10,4 @@ archive/specs-photos/
 *.zip
 _raw/cart-instruction-*.docx
 _raw/glorb-camp-roster-2026.xlsx
+.gstack/

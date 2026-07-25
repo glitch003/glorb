@@ -29,21 +29,27 @@
     </div>
 
     <div class="group">
+      <label>Emoji <span id="emojiCurrent" class="emoji-current"></span></label>
+      <div id="emojis" class="emojis"></div>
+      <input type="text" id="emojiCustom" placeholder="paste any emoji + enter" maxlength="8">
+    </div>
+
+    <div class="group">
       <label>Brightness <output id="brightnessOut">30%</output></label>
       <input type="range" id="brightness" min="0" max="100" value="30">
     </div>
-    <div class="group">
+    <div class="group" id="speedGroup">
       <label>Speed <output id="speedOut">50%</output></label>
       <input type="range" id="speed" min="0" max="100" value="50">
     </div>
-    <div class="group">
+    <div class="group" id="densityGroup">
       <label>Density <output id="densityOut">40%</output></label>
       <input type="range" id="density" min="0" max="100" value="40">
     </div>
 
     <div class="group colors">
-      <div><label>Color 1</label><input type="color" id="color1" value="#0096ff"></div>
-      <div><label>Color 2</label><input type="color" id="color2" value="#ff3c00"></div>
+      <div id="c1Group"><label>Color 1</label><input type="color" id="color1" value="#0096ff"></div>
+      <div id="c2Group"><label>Color 2</label><input type="color" id="color2" value="#ff3c00"></div>
     </div>
 
     <div class="group hw">

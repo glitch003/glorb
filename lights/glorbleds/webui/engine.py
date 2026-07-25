@@ -1,5 +1,6 @@
 """Animation engine: one loop -> browser viz + (optional) E1.31 hardware."""
 
+import base64
 import queue
 import threading
 import time
@@ -20,14 +21,10 @@ class Engine:
         self.frame = bytes(self.model.nbytes)
 
         self.lock = threading.Lock()
-        self.params = {
-            "pattern": "rainbow",
-            "brightness": 0.30,
-            "speed": 0.5,
-            "density": 0.4,
-            "color1": (0, 150, 255),
-            "color2": (255, 60, 0),
-        }
+        self.pattern = "rainbow"
+        self.brightness = 0.30
+        # Every pattern remembers its own knob settings.
+        self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
         # Pin multicast to the NIC that routes to the Angios (multi-homed
         # hosts otherwise send it out the default route).
         probe = next((a.get("ip") for a in gmap.get("angios", [])
@@ -37,7 +34,7 @@ class Engine:
                    "color_order": "RGB", "error": None}
         self._sender = None
         self._refresh_sender()
-        self._lut = self._make_lut(self.params["brightness"])
+        self._lut = self._make_lut(self.brightness)
 
         self.subs: set[queue.Queue] = set()
         self._running = False
@@ -73,16 +70,25 @@ class Engine:
     # --- control ---
     def set_control(self, upd: dict) -> None:
         with self.lock:
-            for k in ("pattern", "speed", "density", "brightness"):
+            if "pattern" in upd and upd["pattern"] in REGISTRY:
+                self.pattern = upd["pattern"]
+            if "brightness" in upd:
+                self.brightness = max(0.0, min(1.0, float(upd["brightness"])))
+                self._lut = self._make_lut(self.brightness)
+            p = self.pp[self.pattern]
+            for k in ("speed", "density"):
                 if k in upd:
-                    self.params[k] = upd[k]
+                    p[k] = max(0.0, min(1.0, float(upd[k])))
             for k in ("color1", "color2"):
                 if k in upd and upd[k]:
-                    self.params[k] = tuple(int(v) & 0xFF for v in upd[k])
-            if "brightness" in upd:
-                self._lut = self._make_lut(self.params["brightness"])
-            if self.params["pattern"] not in REGISTRY:
-                self.params["pattern"] = "rainbow"
+                    p[k] = tuple(int(v) & 0xFF for v in upd[k])
+
+            emo = upd.get("emoji")
+            if emo is not None:
+                REGISTRY["emoji"].set_image(
+                    int(emo["w"]), int(emo["h"]),
+                    base64.b64decode(emo["rgba"]), str(emo.get("label", "")))
+                self.pattern = "emoji"
 
             hwu = upd.get("hardware")
             if hwu is not None:
@@ -107,11 +113,18 @@ class Engine:
 
     def state(self) -> dict:
         with self.lock:
-            p = dict(self.params)
+            pattern = self.pattern
+            p = dict(self.pp[pattern])
             hw = dict(self.hw)
+            bri = self.brightness
         return {
-            "patterns": NAMES,
+            "patterns": [{"name": n, "controls": list(REGISTRY[n].controls)}
+                         for n in NAMES],
+            "pattern": pattern,
+            "controls": list(REGISTRY[pattern].controls),
             "params": p,
+            "brightness": bri,
+            "emoji": REGISTRY["emoji"].label,
             "hardware": hw,
             "fps": round(self._meas_fps, 1),
             "target_fps": self.fps,
@@ -120,13 +133,14 @@ class Engine:
     # --- main loop ---
     def _tick(self) -> None:
         with self.lock:
-            p = dict(self.params)
+            pattern = self.pattern
+            p = dict(self.pp[pattern])
             lut = self._lut
             hw_on = self.hw["enabled"]
             order = self.hw["color_order"]
             sender = self._sender
         t = time.monotonic() - self._t0
-        REGISTRY[p["pattern"]].render(self.model, p, t, self._buf)
+        REGISTRY[pattern].render(self.model, p, t, self._buf)
         frame = self._buf.translate(lut)     # brightness in one C call
         self.frame = frame
         self._broadcast(frame)

@@ -287,11 +287,12 @@ function wireView() {
 }
 
 // ---- controls ----
-function post(update) {
-  fetch("control", {
+async function post(update) {
+  const r = await fetch("control", {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify(update),
   });
+  return r.json();
 }
 function hexToRgb(h) {
   return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -300,26 +301,78 @@ function rgbToHex(c) {
   return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
 }
 
+const EMOJIS = ["🔥", "❤️", "🌈", "⭐", "✨", "💀", "👽", "🍄",
+                "🧹", "🚀", "🦋", "🌙", "😎", "🎉", "🌵", "🫠"];
+
 async function loadState() {
   const st = await (await fetch("state")).json();
   const pc = document.getElementById("patterns");
   pc.innerHTML = "";
-  st.patterns.forEach((name) => {
+  st.patterns.forEach((pat) => {
+    if (pat.name === "emoji") return;   // driven by the emoji chooser below
     const b = document.createElement("button");
-    b.textContent = name; b.dataset.name = name;
-    b.onclick = () => { setPattern(name); post({ pattern: name }); };
+    b.textContent = pat.name; b.dataset.name = pat.name;
+    b.onclick = async () => applyState((await post({ pattern: pat.name })).state);
     pc.appendChild(b);
+  });
+  const ec = document.getElementById("emojis");
+  ec.innerHTML = "";
+  EMOJIS.forEach((ch) => {
+    const b = document.createElement("button");
+    b.textContent = ch; b.dataset.emoji = ch;
+    b.onclick = () => sendEmoji(ch);
+    ec.appendChild(b);
+  });
+  const custom = document.getElementById("emojiCustom");
+  custom.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && custom.value.trim()) {
+      sendEmoji(custom.value.trim());
+      custom.value = "";
+    }
   });
   applyState(st);
 }
+
+function rasterizeEmoji(ch) {
+  const S = 64;
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = S;
+  const c = cv.getContext("2d", { willReadFrequently: true });
+  c.textAlign = "center"; c.textBaseline = "middle";
+  c.font = "52px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+  c.fillText(ch, S / 2, S / 2 + 3);
+  const d = c.getImageData(0, 0, S, S).data;
+  let bin = "";
+  for (let i = 0; i < d.length; i += 3000) {
+    bin += String.fromCharCode.apply(null, d.subarray(i, Math.min(i + 3000, d.length)));
+  }
+  return { label: ch, w: S, h: S, rgba: btoa(bin) };
+}
+
+async function sendEmoji(ch) {
+  const res = await post({ emoji: rasterizeEmoji(ch) });
+  applyState(res.state);
+}
+
 function applyState(st) {
+  setPattern(st.pattern);
   const p = st.params;
-  setPattern(p.pattern);
-  setSlider("brightness", Math.round(p.brightness * 100));
+  setSlider("brightness", Math.round(st.brightness * 100));
   setSlider("speed", Math.round(p.speed * 100));
   setSlider("density", Math.round(p.density * 100));
   document.getElementById("color1").value = rgbToHex(p.color1);
   document.getElementById("color2").value = rgbToHex(p.color2);
+  const has = (k) => st.controls.includes(k);
+  document.getElementById("speedGroup").classList.toggle("hidden", !has("speed"));
+  document.getElementById("densityGroup").classList.toggle("hidden", !has("density"));
+  document.getElementById("c1Group").classList.toggle("hidden", !has("color1"));
+  document.getElementById("c2Group").classList.toggle("hidden", !has("color2"));
+  document.querySelector(".colors").classList.toggle(
+    "hidden", !has("color1") && !has("color2"));
+  document.getElementById("emojiCurrent").textContent =
+    st.pattern === "emoji" && st.emoji ? "→ " + st.emoji : "";
+  document.querySelectorAll("#emojis button").forEach((b) =>
+    b.classList.toggle("active", st.pattern === "emoji" && b.dataset.emoji === st.emoji));
   document.getElementById("hwEnabled").checked = st.hardware.enabled;
   document.getElementById("hwHost").value = st.hardware.host || "";
   document.getElementById("hwOrder").value = st.hardware.color_order || "RGB";

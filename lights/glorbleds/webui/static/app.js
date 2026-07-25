@@ -18,6 +18,15 @@ let wx, wy, wz;         // per-pixel world coords (Float32Array)
 
 let yaw = -0.7, pitch = 0.34;   // 3D orbit camera
 
+// Display-only gamma: real LEDs emit light and the eye is gamma-curved, so a
+// linear frame value looks too dark on a monitor. Boost mid-tones for the
+// preview only — the hardware still gets the true linear values from the engine.
+const GAMMA = (() => {
+  const t = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) t[i] = Math.round(255 * Math.pow(i / 255, 1 / 2.2));
+  return t;
+})();
+
 const canvas = document.getElementById("car");
 const ctx = canvas.getContext("2d");
 
@@ -122,8 +131,9 @@ function draw3d() {
     const tb = tubes3d[ti];
     let bi = tb.base * 3;
     for (let j = 0; j < ppt; j++, bi += 3) {
-      const r = frame ? frame[bi] : 0, gg = frame ? frame[bi + 1] : 0, b = frame ? frame[bi + 2] : 0;
-      if (r + gg + b < 10) continue;
+      const r0 = frame ? frame[bi] : 0, g0 = frame ? frame[bi + 1] : 0, b0 = frame ? frame[bi + 2] : 0;
+      if (r0 + g0 + b0 < 10) continue;
+      const r = GAMMA[r0], gg = GAMMA[g0], b = GAMMA[b0];
       const i = tb.base + j;
       const P = proj(wx[i], wy[i], wz[i]);
       const dim = Math.max(0.82, Math.min(1, (16 - P[2]) / 6));
@@ -227,8 +237,9 @@ function draw2d() {
     for (const g of tube2d) {
       let bi = g.base * 3;
       for (let j = 0; j < ppt; j++, bi += 3) {
-        const r = frame[bi], gg = frame[bi + 1], b = frame[bi + 2];
-        if (r + gg + b < 10) continue;
+        const r0 = frame[bi], g0 = frame[bi + 1], b0 = frame[bi + 2];
+        if (r0 + g0 + b0 < 10) continue;
+        const r = GAMMA[r0], gg = GAMMA[g0], b = GAMMA[b0];
         ctx.fillStyle = "rgb(" + r + "," + gg + "," + b + ")";
         const x = g.x0 + g.dx * j, y = g.y0 + g.dy * j;
         ctx.fillRect(x - PX / 2, y - PX / 2, PX, PX);

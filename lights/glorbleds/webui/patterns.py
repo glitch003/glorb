@@ -405,6 +405,103 @@ class Sprite(Pattern):
                 buf[j] = buf[j + 1] = buf[j + 2] = 0
 
 
+class PacMan(Pattern):
+    """Pac-Man chomps a boustrophedon path down the car eating a trail of dots,
+    a ghost hot on his tail. The three lit sides are an unrolled sheet: he runs
+    right across a row, drops down, runs left across the next, spiralling top to
+    bottom, then loops back to the top with a fresh field of dots.
+    """
+    name = "pacman"
+
+    TUBE_M = 2.5
+    PERIM_M = 9.8
+
+    def render(self, m, p, t, buf):
+        n = m.total_pixels
+        perim, along = m.perim, m.along
+        rows = 4 + int(p["density"] * 4)              # 4..8 rows top->bottom
+        g = (t * p["speed"] * 0.15) % 1.0             # descent progress
+        # Pac-Man head position on the boustrophedon path.
+        row_f = g * rows
+        hrow = min(rows - 1, int(row_f))
+        frac = row_f - hrow
+        h_even = hrow % 2 == 0
+        hx = frac if h_even else 1.0 - frac
+        hy = (hrow + 0.5) / rows
+        hdir = 1.0 if h_even else -1.0
+        # Ghost trails behind by a fixed gap in path-progress. Clamp at the top
+        # so a fresh lap starts with the ghost on Pac-Man's tail rather than
+        # teleporting to the bottom as progress wraps.
+        ghost_g = g - 0.32 / rows
+        if ghost_g < 0.0:
+            ghost_g = 0.0
+        grow_f = ghost_g * rows
+        grow = min(rows - 1, int(grow_f))
+        gfrac = grow_f - grow
+        g_even = grow % 2 == 0
+        gx = gfrac if g_even else 1.0 - gfrac
+        gy = (grow + 0.5) / rows
+        # Body radii: round in real metres (perim is ~4x longer than a tube).
+        ry = 0.5 / rows
+        rx = ry * (self.TUBE_M / self.PERIM_M)
+        m_ang = 0.95 * (0.5 + 0.5 * math.sin(t * 7.0))   # mouth half-angle
+        ndots = 10
+        dot_step = 1.0 / ndots
+        dot_ry = ry * 0.32
+        dot_rx = 0.006
+        pac = (255, 220, 0)
+        ghost = p["color1"]
+        dot = (255, 255, 255)
+        atan2, sqrt = math.atan2, math.sqrt
+        for i in range(n):
+            px, py = perim[i], along[i]
+            j = i * 3
+            r = gc = b = 0
+            # --- dots on each row's centre-line, eaten once Pac-Man passes ---
+            prow = min(rows - 1, int(py * rows))
+            cy = (prow + 0.5) / rows
+            ddy = py - cy
+            if -dot_ry < ddy < dot_ry:
+                near = round(px / dot_step) * dot_step
+                ddx = px - near
+                if ddx > 0.5:
+                    ddx -= 1.0
+                elif ddx < -0.5:
+                    ddx += 1.0
+                if -dot_rx < ddx < dot_rx:
+                    within = near if prow % 2 == 0 else 1.0 - near
+                    if (prow + within) / rows > g:        # not yet eaten
+                        r, gc, b = dot
+            # --- ghost ---
+            dyg = py - gy
+            if -ry < dyg < ry:
+                dxg = px - gx
+                if dxg > 0.5:
+                    dxg -= 1.0
+                elif dxg < -0.5:
+                    dxg += 1.0
+                if -rx < dxg < rx:
+                    nx, ny = dxg / rx, dyg / ry
+                    if nx * nx + ny * ny <= 1.0:
+                        r, gc, b = ghost
+            # --- Pac-Man (drawn last so he rides on top) ---
+            dy = py - hy
+            if -ry < dy < ry:
+                dx = px - hx
+                if dx > 0.5:
+                    dx -= 1.0
+                elif dx < -0.5:
+                    dx += 1.0
+                if -rx < dx < rx:
+                    nx, ny = dx / rx, dy / ry
+                    if nx * nx + ny * ny <= 1.0:
+                        if -m_ang < atan2(ny, nx * hdir) < m_ang:
+                            r = gc = b = 0               # open mouth
+                        else:
+                            r, gc, b = pac
+            buf[j], buf[j + 1], buf[j + 2] = r, gc, b
+
+
 class Off(Pattern):
     name = "off"
 
@@ -430,7 +527,7 @@ def _load_sprite_patterns():
 
 
 _BASE = [
-    Solid(), Rainbow(), RainbowSnake(), Brooms(), Comet(), Wave(),
+    Solid(), Rainbow(), RainbowSnake(), Brooms(), PacMan(), Comet(), Wave(),
     BroomStroke(), Sides(), Plasma(), Fire(), Rain(), Confetti(),
     Sparkle(),
 ]

@@ -16,7 +16,7 @@ let tube2d = [];        // per-tube {x0,y0,dx,dy,base}
 let tubes3d = [];       // per-tube {x,y,base}
 let wx, wy, wz;         // per-pixel world coords (Float32Array)
 
-let yaw = -0.7, pitch = 0.34;   // 3D orbit camera
+let yaw = 0.7, pitch = 0.34;   // 3D orbit camera
 
 // Display-only gamma: real LEDs emit light and the eye is gamma-curved, so a
 // linear frame value looks too dark on a monitor. Boost mid-tones for the
@@ -89,7 +89,9 @@ function makeProjector() {
     const rz2 = ry * sP + z * cP;
     const depth = ry2 + camDist;
     const f = focal / depth;
-    return [cx + rx * f, cy - rz2 * f, depth, f];
+    // screen x is negated: the raw rotation is left-handed and mirror-images
+    // the car (B01 appeared on the wrong side vs. the real install)
+    return [cx - rx * f, cy - rz2 * f, depth, f];
   };
 }
 
@@ -277,7 +279,7 @@ function wireView() {
   });
   canvas.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    yaw += (e.clientX - lx) * 0.01;
+    yaw -= (e.clientX - lx) * 0.01;
     pitch = Math.max(-0.1, Math.min(0.9, pitch + (e.clientY - ly) * 0.01));
     lx = e.clientX; ly = e.clientY;
   });
@@ -346,11 +348,24 @@ function rasterizeEmoji(ch) {
   for (let i = 0; i < d.length; i += 3000) {
     bin += String.fromCharCode.apply(null, d.subarray(i, Math.min(i + 3000, d.length)));
   }
-  return { label: ch, w: S, h: S, rgba: btoa(bin) };
+  return { w: S, h: S, rgba: btoa(bin) };
 }
 
-async function sendEmoji(ch) {
-  const res = await post({ emoji: rasterizeEmoji(ch) });
+function splitGraphemes(s) {
+  if (typeof Intl !== "undefined" && Intl.Segmenter) {
+    return [...new Intl.Segmenter("en", { granularity: "grapheme" }).segment(s)]
+      .map((x) => x.segment).filter((x) => x.trim());
+  }
+  return [...s].filter((x) => x.trim());
+}
+
+async function sendEmoji(str) {
+  const chars = splitGraphemes(str);
+  if (!chars.length) return;
+  const res = await post({ emoji: {
+    label: chars.join(""),
+    images: chars.map(rasterizeEmoji),
+  }});
   applyState(res.state);
 }
 

@@ -102,7 +102,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 1,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L01",
+      "power_in": [
+        "L01",
+        "L03"
+      ]
     },
     {
       "group": 2,
@@ -118,7 +123,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 2,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L05",
+      "power_in": [
+        "L05",
+        "L07"
+      ]
     },
     {
       "group": 3,
@@ -134,7 +144,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 3,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L09",
+      "power_in": [
+        "L09",
+        "L11"
+      ]
     },
     {
       "group": 4,
@@ -150,7 +165,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 4,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L13",
+      "power_in": [
+        "L13",
+        "L15"
+      ]
     },
     {
       "group": 5,
@@ -166,7 +186,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 5,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L17",
+      "power_in": [
+        "L17",
+        "L19"
+      ]
     },
     {
       "group": 6,
@@ -182,7 +207,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 6,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L21",
+      "power_in": [
+        "L21",
+        "L23"
+      ]
     },
     {
       "group": 7,
@@ -198,7 +228,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 7,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L25",
+      "power_in": [
+        "L25",
+        "L27"
+      ]
     },
     {
       "group": 8,
@@ -214,7 +249,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 8,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L29",
+      "power_in": [
+        "L29",
+        "L31"
+      ]
     },
     {
       "group": 9,
@@ -230,7 +270,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 9,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L33",
+      "power_in": [
+        "L33",
+        "L35"
+      ]
     },
     {
       "group": 10,
@@ -246,7 +291,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 10,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L37",
+      "power_in": [
+        "L37",
+        "L39"
+      ]
     },
     {
       "group": 11,
@@ -262,7 +312,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 11,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L41",
+      "power_in": [
+        "L41",
+        "L43"
+      ]
     },
     {
       "group": 12,
@@ -278,7 +333,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 12,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L45",
+      "power_in": [
+        "L45",
+        "L47"
+      ]
     },
     {
       "group": 13,
@@ -294,7 +354,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 13,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L49",
+      "power_in": [
+        "L49",
+        "L51"
+      ]
     },
     {
       "group": 14,
@@ -310,7 +375,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 14,
-      "channels": 480
+      "channels": 480,
+      "data_in": "L53",
+      "power_in": [
+        "L53",
+        "L55"
+      ]
     },
     {
       "group": 15,
@@ -326,7 +396,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 15,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B01",
+      "power_in": [
+        "B01",
+        "B03"
+      ]
     },
     {
       "group": 16,
@@ -342,7 +417,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 16,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B05",
+      "power_in": [
+        "B05",
+        "B07"
+      ]
     },
     {
       "group": 17,
@@ -358,7 +438,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 17,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B09",
+      "power_in": [
+        "B09",
+        "B11"
+      ]
     },
     {
       "group": 18,
@@ -374,7 +459,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 18,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B13",
+      "power_in": [
+        "B13",
+        "B15"
+      ]
     },
     {
       "group": 19,
@@ -390,7 +480,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 19,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B17",
+      "power_in": [
+        "B17",
+        "B19"
+      ]
     },
     {
       "group": 20,
@@ -406,7 +501,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 20,
-      "channels": 480
+      "channels": 480,
+      "data_in": "B21",
+      "power_in": [
+        "B21",
+        "B23"
+      ]
     },
     {
       "group": 21,
@@ -422,7 +522,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 21,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R01",
+      "power_in": [
+        "R01",
+        "R03"
+      ]
     },
     {
       "group": 22,
@@ -438,7 +543,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 22,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R05",
+      "power_in": [
+        "R05",
+        "R07"
+      ]
     },
     {
       "group": 23,
@@ -454,7 +564,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 23,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R09",
+      "power_in": [
+        "R09",
+        "R11"
+      ]
     },
     {
       "group": 24,
@@ -470,7 +585,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 24,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R13",
+      "power_in": [
+        "R13",
+        "R15"
+      ]
     },
     {
       "group": 25,
@@ -486,7 +606,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 25,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R17",
+      "power_in": [
+        "R17",
+        "R19"
+      ]
     },
     {
       "group": 26,
@@ -502,7 +627,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 26,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R21",
+      "power_in": [
+        "R21",
+        "R23"
+      ]
     },
     {
       "group": 27,
@@ -518,7 +648,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 27,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R25",
+      "power_in": [
+        "R25",
+        "R27"
+      ]
     },
     {
       "group": 28,
@@ -534,7 +669,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 28,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R29",
+      "power_in": [
+        "R29",
+        "R31"
+      ]
     },
     {
       "group": 29,
@@ -550,7 +690,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 29,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R33",
+      "power_in": [
+        "R33",
+        "R35"
+      ]
     },
     {
       "group": 30,
@@ -566,7 +711,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 30,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R37",
+      "power_in": [
+        "R37",
+        "R39"
+      ]
     },
     {
       "group": 31,
@@ -582,7 +732,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 31,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R41",
+      "power_in": [
+        "R41",
+        "R43"
+      ]
     },
     {
       "group": 32,
@@ -598,7 +753,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 32,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R45",
+      "power_in": [
+        "R45",
+        "R47"
+      ]
     },
     {
       "group": 33,
@@ -614,7 +774,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 33,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R49",
+      "power_in": [
+        "R49",
+        "R51"
+      ]
     },
     {
       "group": 34,
@@ -630,7 +795,12 @@
       "tube_count": 4,
       "pixels": 160,
       "universe": 34,
-      "channels": 480
+      "channels": 480,
+      "data_in": "R53",
+      "power_in": [
+        "R53",
+        "R55"
+      ]
     }
   ]
 }

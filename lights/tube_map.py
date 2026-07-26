@@ -35,6 +35,13 @@ ANGIO_COLORS = {
     "A4": "#457B9D", "A5": "#9D4EDD",
 }
 
+# Known controller IPs (DHCP reservations on the glorb router).
+ANGIO_IPS = {"A3": "192.168.8.229"}
+
+# Data enters each group at its first tube; +24V power is injected every
+# 2 tubes (tube 1 and tube 3 of each group of 4).
+POWER_EVERY = 2
+
 
 # ---- build the map ---------------------------------------------------------
 def build():
@@ -58,6 +65,8 @@ def build():
                 "pixels": len(chunk) * PIX_PER_TUBE,
                 "universe": gnum,
                 "channels": len(chunk) * PIX_PER_TUBE * CHAN_PER_PIX,
+                "data_in": labels[0],
+                "power_in": labels[::POWER_EVERY],
             })
     return {
         "meta": {
@@ -69,12 +78,14 @@ def build():
             "chip": "SM16703",
             "protocol": "sACN / E1.31",
             "color_order": "RGB",
+            "serpentine": True,
         },
         "angios": [
             {"name": a[0], "location": a[1],
              "groups": [g["group"] for g in groups if g["angio"] == a[0]],
              "ports_used": len([g for g in groups if g["angio"] == a[0]]),
-             "tube_count": sum(g["tube_count"] for g in groups if g["angio"] == a[0])}
+             "tube_count": sum(g["tube_count"] for g in groups if g["angio"] == a[0]),
+             **({"ip": ANGIO_IPS[a[0]]} if a[0] in ANGIO_IPS else {})}
             for a in ANGIOS
         ],
         "groups": groups,
@@ -120,12 +131,17 @@ def write_md(data):
 
     lines.append("## Full group map")
     lines.append("")
-    lines.append("| Group | Angio | Port | Tubes | Px | Universe |")
-    lines.append("| ---: | --- | ---: | --- | ---: | ---: |")
+    lines.append("Data enters each group at its **first tube** (the DIN head). "
+                 "+24 V power is injected **every 2 tubes** — tube 1 and "
+                 "tube 3 of each group.")
+    lines.append("")
+    lines.append("| Group | Angio | Port | Tubes | Px | Universe | Data in | Power in |")
+    lines.append("| ---: | --- | ---: | --- | ---: | ---: | --- | --- |")
     for g in data["groups"]:
         tr = f"`{g['tubes'][0]}`–`{g['tubes'][-1]}`"
+        pw = ", ".join(f"`{t}`" for t in g["power_in"])
         lines.append(f"| **G{g['group']}** | {g['angio']} | {g['port']} | {tr} | "
-                     f"{g['pixels']} | {g['universe']} |")
+                     f"{g['pixels']} | {g['universe']} | `{g['data_in']}` | {pw} |")
     lines.append("")
 
     lines.append("## Labeling scheme")
@@ -194,21 +210,26 @@ def _font(size, bold=False):
     return ImageFont.load_default()
 
 
-def _cell(draw, x, y, w, h, color, gnum, trange, port):
+def _cell(draw, x, y, w, h, color, g):
     draw.rounded_rectangle([x, y, x + w, y + h], radius=6, fill=color)
     f_big = _font(20, bold=True)
     f_sm = _font(13)
-    draw.text((x + w / 2, y + 10), f"G{gnum}", font=f_big, fill="white",
+    f_xs = _font(12)
+    trange = f"{g['tubes'][0]}–{g['tubes'][-1]}"
+    draw.text((x + w / 2, y + 8), f"G{g['group']}", font=f_big, fill="white",
               anchor="mt")
-    draw.text((x + w / 2, y + h - 26), trange, font=f_sm, fill="white",
-              anchor="mt")
-    draw.text((x + w / 2, y + h - 11), f"p{port}", font=f_sm, fill="#ffffffcc",
-              anchor="mt")
+    draw.text((x + w / 2, y + 34), f"{trange}  ·  p{g['port']}", font=f_sm,
+              fill="white", anchor="mt")
+    draw.text((x + w / 2, y + h - 34), f"data→{g['data_in']}", font=f_xs,
+              fill="#ffe08a", anchor="mt")
+    draw.text((x + w / 2, y + h - 18),
+              "pwr " + "+".join(g["power_in"]), font=f_xs,
+              fill="#9bf0ff", anchor="mt")
 
 
 def write_png(data):
     W = 1500
-    cw, ch, gap = 150, 74, 10
+    cw, ch, gap = 150, 104, 10
     by = data["groups"]
     left = [g for g in by if g["angio"] in ("A1", "A2")]
     back = [g for g in by if g["angio"] == "A3"]
@@ -227,20 +248,21 @@ def write_png(data):
            font=_font(30, bold=True), fill="white", anchor="mt")
     d.text((W / 2, 62), "front-left OPEN (driver sightline)  ·  "
            "front is the TOP edge", font=_font(16), fill="#a9c0d6", anchor="mt")
+    d.text((W / 2, 84), "bird's-eye view from ABOVE — standing BEHIND the car "
+           "you see B01 on your LEFT  ·  data→ = DIN head  ·  pwr = +24V taps",
+           font=_font(16), fill="#ffe08a", anchor="mt")
     col_x_left = 120
     col_x_right = W - 120 - cw
 
     # left column: front (top) -> back (bottom)
     for i, g in enumerate(left):
         y = top + i * (ch + gap)
-        _cell(d, col_x_left, y, cw, ch, ANGIO_COLORS[g["angio"]],
-              g["group"], f"{g['tubes'][0]}–{g['tubes'][-1]}", g["port"])
+        _cell(d, col_x_left, y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 
     # right column: front (top) -> back (bottom): reverse so back is at bottom
     for i, g in enumerate(reversed(right)):
         y = top + i * (ch + gap)
-        _cell(d, col_x_right, y, cw, ch, ANGIO_COLORS[g["angio"]],
-              g["group"], f"{g['tubes'][0]}–{g['tubes'][-1]}", g["port"])
+        _cell(d, col_x_right, y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 
     # back row: left -> right, along the bottom
     n = len(back)
@@ -248,8 +270,7 @@ def write_png(data):
     start_x = (W - total_w) / 2
     for i, g in enumerate(back):
         x = start_x + i * (cw + gap)
-        _cell(d, x, back_y, cw, ch, ANGIO_COLORS[g["angio"]],
-              g["group"], f"{g['tubes'][0]}–{g['tubes'][-1]}", g["port"])
+        _cell(d, x, back_y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 
     # side labels
     d.text((col_x_left + cw / 2, top - 26), "LEFT (L01→L56)",

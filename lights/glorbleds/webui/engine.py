@@ -85,9 +85,10 @@ class Engine:
 
             emo = upd.get("emoji")
             if emo is not None:
-                REGISTRY["emoji"].set_image(
-                    int(emo["w"]), int(emo["h"]),
-                    base64.b64decode(emo["rgba"]), str(emo.get("label", "")))
+                images = [(int(im["w"]), int(im["h"]),
+                           base64.b64decode(im["rgba"]))
+                          for im in emo["images"]]
+                REGISTRY["emoji"].set_images(images, str(emo.get("label", "")))
                 self.pattern = "emoji"
 
             hwu = upd.get("hardware")

@@ -232,41 +232,51 @@ class Plasma(Pattern):
 
 
 class Fire(Pattern):
-    """Flames licking up each tube from the bottom, flickering."""
+    """Fire2012-style heat simulation per tube: sparks ignite at the bottom,
+    heat convects upward, cools, and flames dance independently on every
+    bristle. speed = spark rate, density = flame height."""
     name = "fire"
     controls = ("speed", "density")
     defaults = {"density": 0.5}
 
+    # 256-step palette lookup so the hot loop avoids per-pixel function calls
+    PAL = [_fire(i / 255.0) for i in range(256)]
+
     def __init__(self):
-        self.flick = None
+        self.heat = None
 
     def render(self, m, p, t, buf):
         nt = len(m.tubes)
         ppt = m.px_per_tube
-        if self.flick is None or len(self.flick) != nt:
-            self.flick = [1.0] * nt
-        flick = self.flick
-        height = 0.45 + p["density"] * 0.5
-        top = 1.0 - height                     # along where the flame starts
+        if self.heat is None or len(self.heat) != nt * ppt:
+            self.heat = [0.0] * (nt * ppt)
+        heat = self.heat
+        cool = (1.05 - p["density"]) * 0.09     # more density = taller flames
+        sparks = 0.35 + p["speed"] * 0.55       # ignition chance per tube/frame
         rnd = random.random
-        rng = random.uniform
-        mixr = 0.12 + p["speed"] * 0.5
-        keep = 1.0 - mixr
+        pal = self.PAL
         for ti in range(nt):
-            flick[ti] = flick[ti] * keep + rng(0.55, 1.0) * mixr
-            fl = flick[ti]
             base = ti * ppt
+            # cool every cell a random amount
             for j in range(ppt):
-                a = j / (ppt - 1)              # 0 top, 1 bottom
-                heat = (a - top) / height
+                h = heat[base + j] - rnd() * cool
+                heat[base + j] = h if h > 0.0 else 0.0
+            # convect upward (j decreasing = up the tube)
+            for j in range(ppt - 3):
+                heat[base + j] = (heat[base + j + 1] * 2.0
+                                  + heat[base + j + 2]) / 3.05
+            # ignite sparks near the bottom
+            if rnd() < sparks:
+                j = base + ppt - 1 - int(rnd() * 4)
+                h = heat[j] + 0.5 + rnd() * 0.5
+                heat[j] = h if h < 1.0 else 1.0
+            # paint
+            for j in range(ppt):
+                r, g, b = pal[int(heat[base + j] * 255)]
                 idx = (base + j) * 3
-                if heat <= 0.0:
-                    buf[idx] = buf[idx + 1] = buf[idx + 2] = 0
-                else:
-                    r, g, b = _fire(heat * fl * (0.8 + 0.2 * rnd()))
-                    buf[idx] = r
-                    buf[idx + 1] = g
-                    buf[idx + 2] = b
+                buf[idx] = r
+                buf[idx + 1] = g
+                buf[idx + 2] = b
 
 
 class Rain(Pattern):
@@ -369,24 +379,30 @@ class Sprite(Pattern):
         # (perimeter is ~4x longer in metres than a tube, so x needs squishing).
         sh = 0.35 + p["density"] * 0.5
         wp = sh * self.aspect * (self.TUBE_M / self.PERIM_M)
-        cx = (t * p["speed"] * 0.2) % (1.0 + wp) - wp / 2.0
-        cy = 0.5 + 0.05 * math.sin(t * 1.7)
-        top = cy - sh / 2.0
+        # Tile as many copies as fit, marching together. Position wraps mod 1
+        # so a sprite leaving one end of the U pops out on the other side.
+        count = max(1, min(8, int(1.0 / (wp * 1.7))))
+        slot = 1.0 / count
+        cx = (t * p["speed"] * 0.2) % 1.0
+        sin = math.sin
+        bob = [0.5 + 0.05 * sin(t * 1.7 + k * 1.3) - sh / 2.0
+               for k in range(count)]
         perim, along = m.perim, m.along
         for i in range(n):
-            u = (perim[i] - cx) / wp
-            v = (along[i] - top) / sh
+            x = (perim[i] - cx) % 1.0
+            k = int(x * count)
+            u = (x - k * slot) / wp
             j = i * 3
-            if 0.0 <= u < 1.0 and 0.0 <= v < 1.0:
-                a = alpha[int(v * H) * W + int(u * W)]
-            else:
-                a = 0.0
+            a = 0.0
+            if 0.0 <= u < 1.0:
+                v = (along[i] - bob[k]) / sh
+                if 0.0 <= v < 1.0:
+                    a = alpha[int(v * H) * W + int(u * W)]
             if a > 0.0:
                 # tint from color1 (body) toward color2 by height, scaled by coverage
-                mix = v
-                r = (c1[0] * (1 - mix) + c2[0] * mix) * a
-                g = (c1[1] * (1 - mix) + c2[1] * mix) * a
-                b = (c1[2] * (1 - mix) + c2[2] * mix) * a
+                r = (c1[0] * (1 - v) + c2[0] * v) * a
+                g = (c1[1] * (1 - v) + c2[1] * v) * a
+                b = (c1[2] * (1 - v) + c2[2] * v) * a
                 buf[j] = int(r)
                 buf[j + 1] = int(g)
                 buf[j + 2] = int(b)
@@ -455,10 +471,6 @@ class PacMan(Pattern):
             if -dot_ry < ddy < dot_ry:
                 near = round(px / dot_step) * dot_step
                 ddx = px - near
-                if ddx > 0.5:
-                    ddx -= 1.0
-                elif ddx < -0.5:
-                    ddx += 1.0
                 if -dot_rx < ddx < dot_rx:
                     within = near if prow % 2 == 0 else 1.0 - near
                     if (prow + within) / rows > g:        # not yet eaten
@@ -467,10 +479,6 @@ class PacMan(Pattern):
             dyg = py - gy
             if -ry < dyg < ry:
                 dxg = px - gx
-                if dxg > 0.5:
-                    dxg -= 1.0
-                elif dxg < -0.5:
-                    dxg += 1.0
                 if -rx < dxg < rx:
                     nx, ny = dxg / rx, dyg / ry
                     if nx * nx + ny * ny <= 1.0:
@@ -479,10 +487,6 @@ class PacMan(Pattern):
             dy = py - hy
             if -ry < dy < ry:
                 dx = px - hx
-                if dx > 0.5:
-                    dx -= 1.0
-                elif dx < -0.5:
-                    dx += 1.0
                 if -rx < dx < rx:
                     nx, ny = dx / rx, dy / ry
                     if nx * nx + ny * ny <= 1.0:
@@ -505,6 +509,21 @@ class Breathe(Pattern):
         v = 0.30 + 0.70 * (0.5 - 0.5 * math.cos(4 * math.pi * ph))  # swell
         c = _mix(p["color1"], p["color2"], w)
         buf[:] = bytes(_scale(c, v)) * m.total_pixels
+
+
+class RainbowBreathe(Pattern):
+    """Whole car breathes while the color drifts through the rainbow.
+    density = breath depth."""
+    name = "rainbreathe"
+    controls = ("speed", "density")
+    defaults = {"density": 0.7}
+
+    def render(self, m, p, t, buf):
+        hue = (t * (0.015 + p["speed"] * 0.09)) % 1.0
+        ph = (t * (0.06 + p["speed"] * 0.3)) % 1.0
+        depth = 0.15 + p["density"] * 0.75
+        v = (1.0 - depth) + depth * (0.5 - 0.5 * math.cos(2 * math.pi * ph))
+        buf[:] = bytes(hsv(hue, 1.0, v)) * m.total_pixels
 
 
 class Aurora(Pattern):
@@ -669,8 +688,9 @@ class Storm(Pattern):
 
 
 class EmojiSprite(Pattern):
-    """Full-color bitmap (an emoji rasterized by the browser) sweeping around
-    the car like the SVG sprites, but with its real colors."""
+    """Full-color bitmaps (emoji rasterized by the browser) parading around
+    the car. One emoji gets tiled into several copies; pasting several
+    different emojis cycles through them around the perimeter."""
     name = "emoji"
     controls = ("speed", "density")
 
@@ -678,40 +698,50 @@ class EmojiSprite(Pattern):
     PERIM_M = 9.8
 
     def __init__(self):
-        self.w = 0
-        self.h = 0
-        self.rgba = b""
+        self.images = []        # [(w, h, rgba), ...]
         self.label = ""
 
-    def set_image(self, w, h, rgba, label=""):
-        if w * h * 4 != len(rgba):
-            raise ValueError("rgba size mismatch")
-        self.w, self.h, self.rgba, self.label = w, h, rgba, label
+    def set_images(self, images, label=""):
+        for w, h, rgba in images:
+            if w * h * 4 != len(rgba):
+                raise ValueError("rgba size mismatch")
+        self.images = list(images)
+        self.label = label
 
     def render(self, m, p, t, buf):
-        if not self.w:
+        if not self.images:
             buf[:] = bytes(len(buf))
             return
         n = m.total_pixels
-        W, H, rgba = self.w, self.h, self.rgba
         sh = 0.35 + p["density"] * 0.5
-        wp = sh * (W / H) * (self.TUBE_M / self.PERIM_M)
-        cx = (t * p["speed"] * 0.2) % (1.0 + wp) - wp / 2.0
-        cy = 0.5 + 0.05 * math.sin(t * 1.7)
-        top = cy - sh / 2.0
+        w0, h0, _ = self.images[0]
+        wp = sh * (w0 / h0) * (self.TUBE_M / self.PERIM_M)
+        # As many copies as fit with breathing room, at least one per image.
+        count = max(len(self.images), min(8, int(1.0 / (wp * 1.7))))
+        slot = 1.0 / count
+        cx = (t * p["speed"] * 0.2) % 1.0
         perim, along = m.perim, m.along
+        imgs = self.images
+        nimg = len(imgs)
+        sin = math.sin
+        bob = [0.5 + 0.05 * sin(t * 1.7 + k * 1.3) - sh / 2.0
+               for k in range(count)]
         for i in range(n):
-            u = (perim[i] - cx) / wp
-            v = (along[i] - top) / sh
+            x = (perim[i] - cx) % 1.0
+            k = int(x * count)
+            u = (x - k * slot) / wp
             j = i * 3
-            if 0.0 <= u < 1.0 and 0.0 <= v < 1.0:
-                k = (int(v * H) * W + int(u * W)) * 4
-                a = rgba[k + 3]
-                if a:
-                    buf[j] = rgba[k] * a // 255
-                    buf[j + 1] = rgba[k + 1] * a // 255
-                    buf[j + 2] = rgba[k + 2] * a // 255
-                    continue
+            if 0.0 <= u < 1.0:
+                W, H, rgba = imgs[k % nimg]
+                v = (along[i] - bob[k]) / sh
+                if 0.0 <= v < 1.0:
+                    q = (int(v * H) * W + int(u * W)) * 4
+                    a = rgba[q + 3]
+                    if a:
+                        buf[j] = rgba[q] * a // 255
+                        buf[j + 1] = rgba[q + 1] * a // 255
+                        buf[j + 2] = rgba[q + 2] * a // 255
+                        continue
             buf[j] = buf[j + 1] = buf[j + 2] = 0
 
 
@@ -763,9 +793,14 @@ def _load_sprite_patterns():
     vdir = Path(__file__).resolve().parents[2] / "vectors"
     if not vdir.is_dir():
         return out
+    tuned = {"burningman": {"color1": (255, 150, 0), "color2": (255, 30, 0),
+                            "density": 0.9, "speed": 0.4}}
     for svg in sorted(vdir.glob("*.svg")):
         try:
-            out.append(Sprite(svg.stem, load_sprite(svg)))
+            pat = Sprite(svg.stem, load_sprite(svg))
+            if svg.stem in tuned:
+                pat.defaults = tuned[svg.stem]
+            out.append(pat)
         except Exception as e:
             print(f"sprite load failed for {svg.name}: {e}")
     return out
@@ -773,8 +808,9 @@ def _load_sprite_patterns():
 
 _BASE = [
     Rainbow(), Aurora(), Fire(), Plasma(), RainbowSnake(), Meteors(),
-    Storm(), Stripes(), Breathe(), Wave(), Comet(), Rain(), Sparkle(),
-    Confetti(), BroomStroke(), PacMan(), Solid(), EmojiSprite(),
+    Storm(), Stripes(), Breathe(), RainbowBreathe(), Wave(), Comet(),
+    Rain(), Sparkle(), Confetti(), BroomStroke(), PacMan(), Solid(),
+    EmojiSprite(),
 ]
 
 REGISTRY = {pat.name: pat for pat in

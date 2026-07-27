@@ -2,7 +2,7 @@
 
 Tracks which groups have their 4 tubes **labeled (both ends)** and **grouped up**. See [tube-map.md](tube-map.md) for the full map; this file is hand-maintained.
 
-**Progress: 13 / 34 groups** (52 / 136 tubes) — last updated 2026-07-26
+**Progress: 24 / 34 groups** (96 / 136 tubes) — last updated 2026-07-26
 
 ## A1 — Left-Front
 - [ ] G1 · L01–L04
@@ -17,10 +17,10 @@ Tracks which groups have their 4 tubes **labeled (both ends)** and **grouped up*
 - [ ] G8 · L29–L32
 - [ ] G9 · L33–L36
 - [ ] G10 · L37–L40
-- [ ] G11 · L41–L44
-- [ ] G12 · L45–L48
-- [ ] G13 · L49–L52
-- [ ] G14 · L53–L56
+- [x] G11 · L41–L44
+- [x] G12 · L45–L48
+- [x] G13 · L49–L52
+- [x] G14 · L53–L56
 
 ## A3 — Back ✅ complete
 - [x] G15 · B01–B04
@@ -39,11 +39,11 @@ Tracks which groups have their 4 tubes **labeled (both ends)** and **grouped up*
 - [x] G26 · R21–R24
 - [x] G27 · R25–R28
 
-## A5 — Right-Front
-- [ ] G28 · R29–R32
-- [ ] G29 · R33–R36
-- [ ] G30 · R37–R40
-- [ ] G31 · R41–R44
-- [ ] G32 · R45–R48
-- [ ] G33 · R49–R52
-- [ ] G34 · R53–R56
+## A5 — Right-Front ✅ complete
+- [x] G28 · R29–R32
+- [x] G29 · R33–R36
+- [x] G30 · R37–R40
+- [x] G31 · R41–R44
+- [x] G32 · R45–R48
+- [x] G33 · R49–R52
+- [x] G34 · R53–R56

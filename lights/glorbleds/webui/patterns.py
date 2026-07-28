@@ -497,6 +497,103 @@ class PacMan(Pattern):
             buf[j], buf[j + 1], buf[j + 2] = r, gc, b
 
 
+_CUBE_VERTS = [(x, y, z) for x in (-1, 1) for y in (-1, 1) for z in (-1, 1)]
+_CUBE_EDGES = [(a, b) for a in range(8) for b in range(a + 1, 8)
+               if sum(1 for i in range(3)
+                      if _CUBE_VERTS[a][i] != _CUBE_VERTS[b][i]) == 1]
+
+
+class Cubes(Pattern):
+    """3D wireframe cubes tumbling in place around the car. Edges shade
+    color2 (far) -> color1 (near) by depth. density = cube size,
+    speed = spin rate."""
+    name = "cubes"
+    defaults = {"color1": (0, 255, 190), "color2": (170, 0, 255),
+                "density": 0.5}
+
+    TUBE_M = 2.5
+    PERIM_M = 9.8
+
+    VERTS = _CUBE_VERTS
+    EDGES = _CUBE_EDGES
+
+    def render(self, m, p, t, buf):
+        buf[:] = bytes(len(buf))
+        n = m.total_pixels
+        sh = 0.30 + p["density"] * 0.5          # cube box height (along units)
+        wp = sh * (self.TUBE_M / self.PERIM_M)  # same box width (perim units)
+        count = max(1, min(6, int(1.0 / (wp * 1.6))))
+        slot = 1.0 / count
+        drift = (t * p["speed"] * 0.06) % 1.0
+        spin = t * (0.3 + p["speed"] * 1.4)
+        c1, c2 = p["color1"], p["color2"]
+        sin, cos, sqrt = math.sin, math.cos, math.sqrt
+
+        # Per-cube: rotate vertices, project orthographically to the cube's
+        # local square (u,v in -1..1), keep z for depth shading.
+        cubes = []
+        for k in range(count):
+            ax = spin * 0.9 + k * 2.1
+            ay = spin * 0.7 + k * 1.3
+            ca, sa = cos(ax), sin(ax)
+            cb, sb = cos(ay), sin(ay)
+            pts = []
+            for x, y, z in self.VERTS:
+                y, z = y * ca - z * sa, y * sa + z * ca
+                x, z = x * cb + z * sb, -x * sb + z * cb
+                pts.append((x * 0.62, y * 0.62, z * 0.62))
+            segs = []
+            for a, b in self.EDGES:
+                x1, y1, z1 = pts[a]
+                x2, y2, z2 = pts[b]
+                dx, dy = x2 - x1, y2 - y1
+                l2 = dx * dx + dy * dy
+                if l2 < 1e-9:           # edge seen end-on: a point
+                    l2 = 1.0
+                    dx = dy = 0.0
+                segs.append((x1, y1, dx, dy, l2, (z1 + z2) * 0.5))
+            cubes.append(segs)
+
+        th = 0.16                               # edge half-thickness (local units)
+        cy = 0.5                                # cubes ride the vertical center
+        perim, along = m.perim, m.along
+        for i in range(n):
+            v = (along[i] - cy) / (sh * 0.5)
+            if v < -1.1 or v > 1.1:
+                continue
+            x = (perim[i] - drift) % 1.0
+            k = int(x * count)
+            u = (x - (k + 0.5) * slot) / (wp * 0.5)
+            if u < -1.1 or u > 1.1:
+                continue
+            best = th
+            bz = 0.0
+            for x1, y1, dx, dy, l2, z in cubes[k]:
+                px, py = u - x1, v - y1
+                w = (px * dx + py * dy) / l2
+                if w < 0.0:
+                    w = 0.0
+                elif w > 1.0:
+                    w = 1.0
+                ex, ey = px - dx * w, py - dy * w
+                d = sqrt(ex * ex + ey * ey)
+                if d < best:
+                    best = d
+                    bz = z
+            if best < th:
+                f = 1.0 - best / th
+                w = (bz / 0.62 + 1.0) * 0.5     # 0 = far, 1 = near
+                if w < 0.0:
+                    w = 0.0
+                elif w > 1.0:
+                    w = 1.0
+                depth = 0.35 + 0.65 * w
+                j = i * 3
+                buf[j] = int((c2[0] + (c1[0] - c2[0]) * w) * f * depth)
+                buf[j + 1] = int((c2[1] + (c1[1] - c2[1]) * w) * f * depth)
+                buf[j + 2] = int((c2[2] + (c1[2] - c2[2]) * w) * f * depth)
+
+
 class Breathe(Pattern):
     """Whole car slowly crossfades color1 <-> color2 while breathing."""
     name = "breathe"
@@ -808,7 +905,7 @@ def _load_sprite_patterns():
 
 _BASE = [
     Rainbow(), Aurora(), Fire(), Plasma(), RainbowSnake(), Meteors(),
-    Storm(), Stripes(), Breathe(), RainbowBreathe(), Wave(), Comet(),
+    Storm(), Stripes(), Cubes(), Breathe(), RainbowBreathe(), Wave(), Comet(),
     Rain(), Sparkle(), Confetti(), BroomStroke(), PacMan(), Solid(),
     EmojiSprite(),
 ]

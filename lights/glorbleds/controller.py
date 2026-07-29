@@ -4,7 +4,7 @@ import json
 import time
 from pathlib import Path
 
-from .e131 import Sender
+from .e131 import Sender, send_span
 
 DEFAULT_MAP = Path(__file__).resolve().parent.parent / "tube-map.json"
 
@@ -25,13 +25,19 @@ def normalize_group(token) -> int:
 
 class Show:
     def __init__(self, sender: Sender, gmap: dict,
-                 brightness: float = 0.3, color_order: str = "RGB"):
+                 brightness: float = 1.0, color_order: str = "RGB"):
         self.sender = sender
         self.map = gmap
         self.brightness = max(0.0, min(1.0, brightness))
         self.color_order = color_order.upper()
         self._by_group = {g["group"]: g for g in gmap["groups"]}
         self.pix_per_tube = gmap["meta"]["pixels_per_tube"]
+        # Groups share universes now (170 px/universe per Angio), so keep a
+        # whole-board buffer per Angio and always transmit the full span.
+        # Note: groups not touched in this session are sent as black.
+        self._angios = {a["name"]: a for a in gmap["angios"]}
+        self._abuf = {a["name"]: bytearray(a["pixels"] * 3)
+                      for a in gmap["angios"]}
 
     # --- lookups ---
     def group(self, token) -> dict:
@@ -57,7 +63,12 @@ class Show:
         return b"".join(self._pixel_bytes(p) for p in pixels)
 
     def _send(self, group: dict, pixels) -> None:
-        self.sender.send(group["universe"], self._frame(pixels))
+        frame = self._frame(pixels)
+        buf = self._abuf[group["angio"]]
+        off = group["px_offset"] * 3
+        buf[off:off + len(frame)] = frame
+        send_span(self.sender,
+                  self._angios[group["angio"]]["start_universe"], bytes(buf))
 
     # --- static patterns ---
     def solid(self, token, rgb=(255, 255, 255)) -> None:

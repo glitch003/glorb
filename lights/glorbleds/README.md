@@ -11,12 +11,14 @@ without the car plugged in. Runs the same on Mac and Windows.
 - **136 tubes** hang vertically down 3 sides: 56 left + 24 rear + 56 right.
   The front-left corner is left open for the driver.
 - Each tube is 2.5 m, **40 px/tube** → **5440 pixels** total.
-- Tubes are grouped **4 per group → 34 groups**, one **E1.31 universe** each.
+- Tubes are grouped **4 per group → 34 groups**; each Angio chains 3–4 groups
+  per data line (2 lines/board) and owns one E1.31 pixel space packed
+  **170 px/universe** from its start universe (WLED "Multi" mode).
 - Chip **SM16703**, color order **RGB** (see [../led-tubes.md](../led-tubes.md)).
 
 Physical wiring, power, and the tube layout map live one level up in
 [../](../): `tube-map.json` / `tube-map.md` / `tube-map.pdf` are the source of
-truth for which tube is on which Angio controller port and universe.
+truth for which tube is on which Angio controller line and universe.
 
 ## Layout
 
@@ -54,7 +56,9 @@ python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
 ```
 
 `--dry-run` builds and prints packets instead of transmitting. `--brightness`
-defaults to `0.3` to match the firmware cap. Multicast is the default (no device
+defaults to `1.0`; the Angio boards cap realtime output at 5% (WLED brightness
+13 with force-max-brightness off) while testing near the PSU limit, so 1.0
+here = 5% at the tubes. Raise the WLED cap when the PSU can take it. Multicast is the default (no device
 IPs needed); pass `--host` to unicast, `--iface` to pick the NIC on a
 multi-homed host.
 
@@ -63,7 +67,7 @@ multi-homed host.
 1. **`CarModel`** ([webui/model.py](webui/model.py)) flattens `tube-map.json`
    into a per-pixel model in **canonical order**: groups in map order, each
    group's tubes in order, each tube's pixels 0..39. Because that order is
-   contiguous per group, a group's DMX universe is just a flat slice of the
+   contiguous per Angio, an Angio's pixel space is just a flat slice of the
    frame buffer. For each pixel it precomputes attributes patterns read:
    - `side` — `'L'`/`'B'`/`'R'`
    - `along` — 0..1 down the tube (0 = top, 1 = bottom)
@@ -74,7 +78,7 @@ multi-homed host.
 3. **`Engine`** ([webui/engine.py](webui/engine.py)) runs the loop at `fps`:
    render → scale by brightness via a 256-entry LUT (`buf.translate(lut)`, one
    C call) → broadcast to browsers (SSE, base64) and, if hardware is enabled,
-   split into per-group universe slices and send over E1.31.
+   split into per-Angio slices packed 170 px/universe and send over E1.31.
 4. **`server.py`** serves the static UI, streams frames over Server-Sent
    Events (`/stream`), and takes control updates via `POST /control`.
 5. **`app.js`** in the browser draws the frame two ways: a **3D car** (drag to

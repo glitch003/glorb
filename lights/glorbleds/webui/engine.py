@@ -5,7 +5,7 @@ import queue
 import threading
 import time
 
-from ..e131 import Sender, iface_for
+from ..e131 import Sender, iface_for, send_span
 from .model import CarModel
 from .patterns import REGISTRY, NAMES
 
@@ -22,7 +22,9 @@ class Engine:
 
         self.lock = threading.Lock()
         self.pattern = "rainbow"
-        self.brightness = 0.30
+        # Angio boards cap realtime at 5% (WLED bri 13, force-max off) while
+        # testing near the PSU limit, so 1.0 here = 5% at the tubes.
+        self.brightness = 1.0
         # Every pattern remembers its own knob settings.
         self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
         # Pin multicast to the NIC that routes to the Angios (multi-homed
@@ -152,11 +154,11 @@ class Engine:
         perm = _ORDER.get(order, (0, 1, 2))
         frame = self.model.to_physical(frame)
         try:
-            for universe, start, length in self.model.group_slices:
+            for start_universe, start, length in self.model.angio_slices:
                 chunk = frame[start:start + length]
                 if perm != (0, 1, 2):
                     chunk = self._reorder(chunk, perm)
-                sender.send(universe, chunk)
+                send_span(sender, start_universe, chunk)
         except OSError as e:
             with self.lock:
                 self.hw["error"] = str(e)

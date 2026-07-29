@@ -1,8 +1,9 @@
 """Flattens tube-map.json into a per-pixel model of the whole car.
 
 Canonical pixel order = groups in map order, each group's tubes in order,
-each tube pixel 0..N-1. That order is contiguous per group, so a group's
-DMX universe is just a flat slice of the frame buffer.
+each tube pixel 0..N-1. Groups are contiguous per Angio, so an Angio's
+pixel space (packed 170 px/universe from its start universe) is just a
+flat slice of the frame buffer.
 """
 
 
@@ -17,10 +18,18 @@ class CarModel:
         serpentine = gmap["meta"].get("serpentine", False)
 
         self.tubes = []           # canonical order: [{label, side, group, angio}]
-        self.group_slices = []    # [(universe, byte_start, byte_len)]
+        self.angio_slices = []    # [(start_universe, byte_start, byte_len)]
         self._rev_offsets = []    # frame byte offset of each reversed tube
+        start_univ = {a["name"]: a["start_universe"] for a in gmap["angios"]}
         byte_start = 0
+        cur_angio, cur_start = None, 0
         for g in gmap["groups"]:
+            if g["angio"] != cur_angio:
+                if cur_angio is not None:
+                    self.angio_slices.append(
+                        (start_univ[cur_angio], cur_start,
+                         byte_start - cur_start))
+                cur_angio, cur_start = g["angio"], byte_start
             for k, label in enumerate(g["tubes"]):
                 self.tubes.append({
                     "label": label, "side": label[0],
@@ -29,9 +38,10 @@ class CarModel:
                 if serpentine and k % 2 == 1:
                     self._rev_offsets.append(
                         (len(self.tubes) - 1) * self.px_per_tube * 3)
-            byte_len = g["tube_count"] * self.px_per_tube * 3
-            self.group_slices.append((g["universe"], byte_start, byte_len))
-            byte_start += byte_len
+            byte_start += g["tube_count"] * self.px_per_tube * 3
+        if cur_angio is not None:
+            self.angio_slices.append(
+                (start_univ[cur_angio], cur_start, byte_start - cur_start))
 
         self.total_pixels = len(self.tubes) * self.px_per_tube
         self.nbytes = self.total_pixels * 3
@@ -80,7 +90,7 @@ class CarModel:
             "tubes": self.tubes,
             "groups": [
                 {"group": g["group"], "angio": g["angio"],
-                 "universe": g["universe"], "tubes": g["tubes"]}
+                 "line": g["line"], "tubes": g["tubes"]}
                 for g in self.map["groups"]
             ],
         }

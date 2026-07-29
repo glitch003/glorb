@@ -56,8 +56,9 @@ def resolve_targets(show: Show, target: str):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="glorbleds")
     p.add_argument("--map", help="path to tube-map.json")
-    p.add_argument("--brightness", type=float, default=0.3,
-                   help="0..1 global scale (default 0.3, matches firmware cap)")
+    p.add_argument("--brightness", type=float, default=1.0,
+                   help="0..1 global scale (Angios board-cap realtime at 5%%, "
+                        "so 1.0 = 5%% at the tubes)")
     p.add_argument("--color-order", default="RGB")
     p.add_argument("--host", help="unicast to this IP (default: multicast)")
     p.add_argument("--iface", help="local IP of the NIC facing the Angios "
@@ -97,8 +98,11 @@ def main(argv=None):
         print(f"{m['total_tubes']} tubes, {m['total_groups']} groups, "
               f"{m['pixels_per_tube']} px/tube, order {m['color_order']}")
         for g in gmap["groups"]:
-            print(f"  G{g['group']:<2} {g['angio']} p{g['port']}  "
-                  f"{g['tubes'][0]}-{g['tubes'][-1]}  univ {g['universe']}")
+            us = g["universes"]
+            uspan = f"{us[0]}" if len(us) == 1 else f"{us[0]}-{us[-1]}"
+            print(f"  G{g['group']:<2} {g['angio']} L{g['line']}.{g['line_pos']}  "
+                  f"{g['tubes'][0]}-{g['tubes'][-1]}  univ {uspan}  "
+                  f"px {g['px_offset']}+{g['pixels']}")
         return 0
 
     iface = args.iface

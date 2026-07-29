@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Source of truth for the broom LED tube -> group -> Angio/port -> universe map.
+"""Source of truth for the broom LED tube -> group -> Angio/line -> universe map.
 
 Run this to (re)generate three artifacts next to it:
   - tube-map.json  machine-readable map (consumed by the control software)
@@ -15,19 +15,23 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- knobs -----------------------------------------------------------------
-TUBES_PER_GROUP = 4          # one Angio port = one data line = one group
+TUBES_PER_GROUP = 4          # a group = 4 tubes labeled/powered together
 PIX_PER_TUBE = 40            # 16 px/m * 2.5 m
 CHAN_PER_PIX = 3             # RGB
+# WLED's E1.31 "Multi" mode packs 170 px (510 ch) per universe, addressed
+# sequentially across the whole board's pixel space from its start universe.
+PX_PER_UNIVERSE = 170
 HERE = Path(__file__).parent
 
 # Physical walk of the open-front U, front-left -> back -> front-right.
-# Each Angio covers a contiguous run. (name, physical label, prefix, first, last)
+# Each Angio covers a contiguous run and drives its groups on a few chained
+# data lines. (name, physical label, prefix, first, last, groups per line)
 ANGIOS = [
-    ("A1", "Left-Front",  "L",  1, 28),
-    ("A2", "Left-Back",   "L", 29, 56),
-    ("A3", "Back",        "B",  1, 24),
-    ("A4", "Right-Back",  "R",  1, 28),
-    ("A5", "Right-Front", "R", 29, 56),
+    ("A1", "Left-Front",  "L",  1, 28, (4, 3)),
+    ("A2", "Left-Back",   "L", 29, 56, (4, 3)),
+    ("A3", "Back",        "B",  1, 24, (3, 3)),
+    ("A4", "Right-Back",  "R",  1, 28, (4, 3)),
+    ("A5", "Right-Front", "R", 29, 56, (4, 3)),
 ]
 
 ANGIO_COLORS = {
@@ -46,33 +50,77 @@ POWER_EVERY = 2
 # ---- build the map ---------------------------------------------------------
 def build():
     groups = []
+    angios = []
     gnum = 0
-    for aname, aloc, prefix, first, last in ANGIOS:
+    ustart = 1
+    for aname, aloc, prefix, first, last, line_sizes in ANGIOS:
         tubes = list(range(first, last + 1))
-        port = 0
-        for i in range(0, len(tubes), TUBES_PER_GROUP):
-            gnum += 1
-            port += 1
-            chunk = tubes[i:i + TUBES_PER_GROUP]
-            labels = [f"{prefix}{n:02d}" for n in chunk]
-            groups.append({
-                "group": gnum,
-                "angio": aname,
-                "angio_location": aloc,
-                "port": port,
-                "tubes": labels,
-                "tube_count": len(chunk),
-                "pixels": len(chunk) * PIX_PER_TUBE,
-                "universe": gnum,
-                "channels": len(chunk) * PIX_PER_TUBE * CHAN_PER_PIX,
-                "data_in": labels[0],
-                "power_in": labels[::POWER_EVERY],
+        agroups = [tubes[i:i + TUBES_PER_GROUP]
+                   for i in range(0, len(tubes), TUBES_PER_GROUP)]
+        assert sum(line_sizes) == len(agroups), f"{aname}: line sizes != groups"
+
+        apx = len(tubes) * PIX_PER_TUBE
+        lines = []
+        px_off = 0
+        gi = 0
+        prev_group = None
+        for lnum, nline in enumerate(line_sizes, start=1):
+            line_groups = []
+            for pos in range(1, nline + 1):
+                gnum += 1
+                chunk = agroups[gi]
+                gi += 1
+                labels = [f"{prefix}{n:02d}" for n in chunk]
+                px = len(chunk) * PIX_PER_TUBE
+                u0 = ustart + px_off // PX_PER_UNIVERSE
+                u1 = ustart + (px_off + px - 1) // PX_PER_UNIVERSE
+                groups.append({
+                    "group": gnum,
+                    "angio": aname,
+                    "angio_location": aloc,
+                    "line": lnum,
+                    "line_pos": pos,
+                    "tubes": labels,
+                    "tube_count": len(chunk),
+                    "pixels": px,
+                    "channels": px * CHAN_PER_PIX,
+                    "px_offset": px_off,
+                    "universes": list(range(u0, u1 + 1)),
+                    "data_in": labels[0],
+                    "data_from": (f"{aname} line {lnum}" if pos == 1
+                                  else f"G{prev_group} DOUT"),
+                    "power_in": labels[::POWER_EVERY],
+                })
+                line_groups.append(gnum)
+                prev_group = gnum
+                px_off += px
+            lines.append({
+                "line": lnum,
+                "groups": line_groups,
+                "tube_count": nline * TUBES_PER_GROUP,
+                "pixels": nline * TUBES_PER_GROUP * PIX_PER_TUBE,
+                "start_px": px_off - nline * TUBES_PER_GROUP * PIX_PER_TUBE,
             })
+            prev_group = None
+        n_univ = -(-apx // PX_PER_UNIVERSE)   # ceil
+        angios.append({
+            "name": aname, "location": aloc,
+            "groups": [g["group"] for g in groups if g["angio"] == aname],
+            "lines": lines,
+            "ports_used": len(lines),
+            "tube_count": len(tubes),
+            "pixels": apx,
+            "start_universe": ustart,
+            "universes": n_univ,
+            **({"ip": ANGIO_IPS[aname]} if aname in ANGIO_IPS else {}),
+        })
+        ustart += n_univ
     return {
         "meta": {
             "tubes_per_group": TUBES_PER_GROUP,
             "pixels_per_tube": PIX_PER_TUBE,
             "channels_per_pixel": CHAN_PER_PIX,
+            "px_per_universe": PX_PER_UNIVERSE,
             "total_tubes": sum(g["tube_count"] for g in groups),
             "total_groups": len(groups),
             "chip": "SM16703",
@@ -80,37 +128,35 @@ def build():
             "color_order": "RGB",
             "serpentine": True,
         },
-        "angios": [
-            {"name": a[0], "location": a[1],
-             "groups": [g["group"] for g in groups if g["angio"] == a[0]],
-             "ports_used": len([g for g in groups if g["angio"] == a[0]]),
-             "tube_count": sum(g["tube_count"] for g in groups if g["angio"] == a[0]),
-             **({"ip": ANGIO_IPS[a[0]]} if a[0] in ANGIO_IPS else {})}
-            for a in ANGIOS
-        ],
+        "angios": angios,
         "groups": groups,
     }
 
 
 # ---- markdown doc + checklist ----------------------------------------------
+def _uspan(us):
+    return f"{us[0]}" if len(us) == 1 else f"{us[0]}–{us[-1]}"
+
+
 def write_md(data):
     m = data["meta"]
     lines = []
-    lines.append("# Broom LED tube map — groups, Angios, ports, universes")
+    lines.append("# Broom LED tube map — groups, Angios, lines, universes")
     lines.append("")
     lines.append("> **Generated by [tube_map.py](tube_map.py) — do not hand-edit.** "
                  "Change the knobs in that script and re-run.")
     lines.append("")
     lines.append(f"**{m['total_tubes']} tubes** in **{m['total_groups']} groups** "
-                 f"of {m['tubes_per_group']} across **5 Angio-8s**. "
-                 f"One group = one data line = one Angio port = one sACN universe "
-                 f"({m['tubes_per_group']}×{m['pixels_per_tube']} = "
-                 f"{m['tubes_per_group']*m['pixels_per_tube']} px = "
-                 f"{m['tubes_per_group']*m['pixels_per_tube']*m['channels_per_pixel']} "
-                 f"ch ≤ 512).")
+                 f"of {m['tubes_per_group']} across **5 Angio-8s**. Each Angio "
+                 f"drives **2 data lines** of 3–4 chained groups "
+                 f"(one line = one Angio port, up to 640 px).")
     lines.append("")
     lines.append(f"Chip **{m['chip']}**, color order **{m['color_order']}**, "
-                 f"transport **{m['protocol']}**.")
+                 f"transport **{m['protocol']}** in WLED *Multi* mode: each "
+                 f"Angio owns one pixel space (lines concatenated in order), "
+                 f"packed {m['px_per_universe']} px/universe from its start "
+                 f"universe. A group can span a universe boundary — address "
+                 f"by pixel offset, not universe.")
     lines.append("")
 
     lines.append("## Angio placement (walking the open-front U)")
@@ -120,28 +166,39 @@ def write_md(data):
                  "back `B01`(left)→`B24`(right), "
                  "right `R01`(back)→`R56`(front).")
     lines.append("")
-    lines.append("| Angio | Location | Tubes | Groups | Ports used | Spare ports |")
-    lines.append("| --- | --- | --- | --- | ---: | ---: |")
+    lines.append("| Angio | Location | Tubes | Groups | Lines (ports) | "
+                 "Start univ | Universes |")
+    lines.append("| --- | --- | --- | --- | --- | ---: | --- |")
     for a in data["angios"]:
         gs = a["groups"]
         span = f"G{gs[0]}–G{gs[-1]}"
+        ldesc = " · ".join(
+            f"L{ln['line']}: G{ln['groups'][0]}–G{ln['groups'][-1]} "
+            f"({ln['pixels']} px)" for ln in a["lines"])
         lines.append(f"| {a['name']} | {a['location']} | {a['tube_count']} | "
-                     f"{span} | {a['ports_used']} | {8 - a['ports_used']} |")
+                     f"{span} | {ldesc} | {a['start_universe']} | "
+                     f"{a['start_universe']}–"
+                     f"{a['start_universe'] + a['universes'] - 1} |")
     lines.append("")
 
     lines.append("## Full group map")
     lines.append("")
-    lines.append("Data enters each group at its **first tube** (the DIN head). "
-                 "+24 V power is injected **every 2 tubes** — tube 1 and "
-                 "tube 3 of each group.")
+    lines.append("Data enters each group at its **first tube** (the DIN head) — "
+                 "from the Angio port for the first group of a line, from the "
+                 "previous group's DOUT for chained groups. +24 V power is "
+                 "injected **every 2 tubes** — tube 1 and tube 3 of each group.")
     lines.append("")
-    lines.append("| Group | Angio | Port | Tubes | Px | Universe | Data in | Power in |")
-    lines.append("| ---: | --- | ---: | --- | ---: | ---: | --- | --- |")
+    lines.append("| Group | Angio | Line | Tubes | Px | Px offset | Universes | "
+                 "Data from | Power in |")
+    lines.append("| ---: | --- | --- | --- | ---: | ---: | --- | --- | --- |")
     for g in data["groups"]:
         tr = f"`{g['tubes'][0]}`–`{g['tubes'][-1]}`"
         pw = ", ".join(f"`{t}`" for t in g["power_in"])
-        lines.append(f"| **G{g['group']}** | {g['angio']} | {g['port']} | {tr} | "
-                     f"{g['pixels']} | {g['universe']} | `{g['data_in']}` | {pw} |")
+        lines.append(f"| **G{g['group']}** | {g['angio']} | "
+                     f"{g['line']}.{g['line_pos']} | {tr} | "
+                     f"{g['pixels']} | {g['px_offset']} | "
+                     f"{_uspan(g['universes'])} | {g['data_from']} → "
+                     f"`{g['data_in']}` | {pw} |")
     lines.append("")
 
     lines.append("## Labeling scheme")
@@ -149,22 +206,30 @@ def write_md(data):
     lines.append("Label every tube at **both ends** with its tube ID and its group. "
                  "Example flag on a tube: `L05 / G2` = tube L05, group 2. "
                  "Within a group the data chain runs **serpentine**: the tube nearest "
-                 "the Angio is the DIN head; flip alternate tubes so DOUT→DIN hops "
-                 "stay short, then reverse those strands in software.")
+                 "the data source is the DIN head; flip alternate tubes so DOUT→DIN "
+                 "hops stay short, then reverse those strands in software. "
+                 "Chained groups continue the same data line: the last tube's DOUT "
+                 "feeds the next group's `data_in` tube.")
     lines.append("")
     lines.append("```")
-    lines.append("Angio port ─[330–470Ω]─▶ DIN[tube a] ─DOUT─▶ DIN[tube b] ─▶ "
-                 "DIN[tube c] ─▶ DIN[tube d]   (one group)")
+    lines.append("Angio port ─[330–470Ω]─▶ G_a (4 tubes serpentine) ─DOUT─▶ "
+                 "G_b ─▶ G_c [─▶ G_d]   (one line, 3–4 groups)")
     lines.append("```")
+    lines.append("")
+
+    lines.append("## WLED / Angio config (per board)")
+    lines.append("")
+    lines.append("LED outputs: **output 1 = line 1** (start 0), **output 2 = "
+                 "line 2** (start = line 1 px). Total LED count = board pixels. "
+                 "E1.31: DMX mode *Multi RGB*, start universe per the table "
+                 "above, multicast on.")
     lines.append("")
 
     lines.append("## Install + test sequence")
     lines.append("")
-    lines.append("Do it **one group at a time**. Recommended order below finishes one "
-                 "Angio before moving to the next, so each controller + its network "
-                 "config is validated end-to-end. **Start with G15 (Back Angio A3)** "
-                 "as the very first group — it doubles as the open "
-                 "*bench-test-SM16703-on-Angio-8* check.")
+    lines.append("Do it **one line at a time**. First hardware bring-up was G15 "
+                 "on A3 (2026-07-24). A3's currently-wired output (GPIO 12) is "
+                 "now **line 2 = G18–G20** — next test target.")
     lines.append("")
     lines.append("For each group: hang the 4 tubes → chain data (serpentine) "
                  "→ tap +24 V + shared GND → label both ends → ping me "
@@ -173,11 +238,14 @@ def write_md(data):
     lines.append("")
     for a in data["angios"]:
         lines.append(f"### {a['name']} — {a['location']} "
-                     f"({a['tube_count']} tubes)")
+                     f"({a['tube_count']} tubes, univ "
+                     f"{a['start_universe']}–"
+                     f"{a['start_universe'] + a['universes'] - 1})")
         for g in [g for g in data["groups"] if g["angio"] == a["name"]]:
             tr = f"{g['tubes'][0]}–{g['tubes'][-1]}"
-            lines.append(f"- [ ] **G{g['group']}** · port {g['port']} · "
-                         f"tubes {tr} · universe {g['universe']}")
+            lines.append(f"- [ ] **G{g['group']}** · line {g['line']} "
+                         f"pos {g['line_pos']} · tubes {tr} · "
+                         f"univ {_uspan(g['universes'])}")
         lines.append("")
 
     lines.append("## Diagram")
@@ -218,9 +286,10 @@ def _cell(draw, x, y, w, h, color, g):
     trange = f"{g['tubes'][0]}–{g['tubes'][-1]}"
     draw.text((x + w / 2, y + 8), f"G{g['group']}", font=f_big, fill="white",
               anchor="mt")
-    draw.text((x + w / 2, y + 34), f"{trange}  ·  p{g['port']}", font=f_sm,
+    draw.text((x + w / 2, y + 34),
+              f"{trange}  ·  L{g['line']}.{g['line_pos']}", font=f_sm,
               fill="white", anchor="mt")
-    draw.text((x + w / 2, y + h - 34), f"data→{g['data_in']}", font=f_xs,
+    draw.text((x + w / 2, y + h - 34), f"data {g['data_from']}", font=f_xs,
               fill="#ffe08a", anchor="mt")
     draw.text((x + w / 2, y + h - 18),
               "pwr " + "+".join(g["power_in"]), font=f_xs,
@@ -249,7 +318,7 @@ def write_png(data):
     d.text((W / 2, 62), "front-left OPEN (driver sightline)  ·  "
            "front is the TOP edge", font=_font(16), fill="#a9c0d6", anchor="mt")
     d.text((W / 2, 84), "bird's-eye view from ABOVE — standing BEHIND the car "
-           "you see B01 on your LEFT  ·  data→ = DIN head  ·  pwr = +24V taps",
+           "you see B01 on your LEFT  ·  L1.2 = line 1, 2nd group in chain",
            font=_font(16), fill="#ffe08a", anchor="mt")
     col_x_left = 120
     col_x_right = W - 120 - cw
@@ -300,7 +369,8 @@ def main():
     write_md(data)
     write_png(data)
     print(f"{data['meta']['total_tubes']} tubes, "
-          f"{data['meta']['total_groups']} groups written.")
+          f"{data['meta']['total_groups']} groups, "
+          f"{sum(a['universes'] for a in data['angios'])} universes written.")
 
 
 if __name__ == "__main__":

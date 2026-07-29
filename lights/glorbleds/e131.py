@@ -1,7 +1,8 @@
 """Minimal sACN / E1.31 (ANSI E1.31-2016) packet sender — pure stdlib.
 
-One universe per group (see tube-map.json). Sends by multicast (default,
-no device IPs needed) or unicast to a specific Angio.
+Each Angio owns one pixel space packed 170 px/universe from its start
+universe (WLED "Multi" mode; see tube-map.json). Sends by multicast
+(default, no device IPs needed) or unicast to a specific Angio.
 """
 
 import socket
@@ -9,6 +10,8 @@ import struct
 import uuid
 
 E131_PORT = 5568
+PX_PER_UNIVERSE = 170
+UNIVERSE_BYTES = PX_PER_UNIVERSE * 3
 _ACN_PID = b"ASC-E1.17\x00\x00\x00"
 _VECTOR_ROOT = 0x00000004
 _VECTOR_FRAMING = 0x00000002
@@ -99,3 +102,10 @@ class Sender:
 
     def close(self) -> None:
         self.sock.close()
+
+
+def send_span(sender, start_universe: int, data: bytes) -> None:
+    """Send one Angio's whole pixel space, split at 170-px universes."""
+    for i in range(0, len(data), UNIVERSE_BYTES):
+        sender.send(start_universe + i // UNIVERSE_BYTES,
+                    data[i:i + UNIVERSE_BYTES])

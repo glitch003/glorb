@@ -48,7 +48,7 @@ python3 -m glorbleds tubes G15                 # each tube a distinct color
 python3 -m glorbleds chase G15                 # comet down the chain
 python3 -m glorbleds solid all --color 255,80,0
 python3 -m glorbleds off all
-python3 -m glorbleds solid A3 --color 0,0,255 --host 10.0.0.51   # unicast one Angio
+python3 -m glorbleds solid C --color 0,0,255 --host 10.0.0.51    # unicast one Angio
 
 # the web control UI + 3D mock visualizer
 python3 -m glorbleds serve                     # http://127.0.0.1:8080
@@ -56,9 +56,9 @@ python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
 ```
 
 `--dry-run` builds and prints packets instead of transmitting. `--brightness`
-defaults to `1.0`; the Angio boards cap realtime output at 5% (WLED brightness
-13 with force-max-brightness off) while testing near the PSU limit, so 1.0
-here = 5% at the tubes. Raise the WLED cap when the PSU can take it. Multicast is the default (no device
+defaults to `0.05` (5%) as a safety margin; the Angio boards output realtime
+data at full range (force-max-brightness on) now that the tubes run off the
+main batteries, so what you send is what the tubes show. Multicast is the default (no device
 IPs needed); pass `--host` to unicast, `--iface` to pick the NIC on a
 multi-homed host.
 

@@ -7,7 +7,7 @@ Examples (run from the lights/ dir):
   python3 -m glorbleds chase G15               # comet down the chain
   python3 -m glorbleds solid G15 --color 255,80,0
   python3 -m glorbleds off all
-  python3 -m glorbleds solid A3 --color 0,0,255 --host 10.0.0.51
+  python3 -m glorbleds solid C --color 0,0,255 --host 10.0.0.51
 """
 
 import argparse
@@ -48,7 +48,7 @@ def resolve_targets(show: Show, target: str):
     t = target.upper()
     if t == "ALL":
         return show.all_groups()
-    if t.startswith("A") and t[1:].isdigit():
+    if len(t) == 1 and t in "ABCDE":
         return show.groups_for_angio(t)
     return [show.group(t)]
 
@@ -56,9 +56,9 @@ def resolve_targets(show: Show, target: str):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="glorbleds")
     p.add_argument("--map", help="path to tube-map.json")
-    p.add_argument("--brightness", type=float, default=1.0,
-                   help="0..1 global scale (Angios board-cap realtime at 5%%, "
-                        "so 1.0 = 5%% at the tubes)")
+    p.add_argument("--brightness", type=float, default=0.05,
+                   help="0..1 global scale (boards output full range, "
+                        "default 5%% as a safety margin)")
     p.add_argument("--color-order", default="RGB")
     p.add_argument("--host", help="unicast to this IP (default: multicast)")
     p.add_argument("--iface", help="local IP of the NIC facing the Angios "

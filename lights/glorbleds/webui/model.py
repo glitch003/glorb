@@ -31,8 +31,15 @@ class CarModel:
                          byte_start - cur_start))
                 cur_angio, cur_start = g["angio"], byte_start
             for k, label in enumerate(g["tubes"]):
+                # "pos" = physical slot within the side (labels are
+                # positional: L01 front..L56 back, B01 left..B24 right,
+                # R01 back..R56 front). Canonical (electrical) order can
+                # differ from physical order on mirrored-hung lines
+                # (see REVERSED_LINES in tube_map.py), so anything spatial
+                # must use pos, not canonical index.
                 self.tubes.append({
                     "label": label, "side": label[0],
+                    "pos": int(label[1:]) - 1,
                     "group": g["group"], "angio": g["angio"],
                 })
                 if serpentine and k % 2 == 1:
@@ -46,21 +53,29 @@ class CarModel:
         self.total_pixels = len(self.tubes) * self.px_per_tube
         self.nbytes = self.total_pixels * 3
 
-        # Per-pixel static attributes patterns can read.
+        # Per-pixel static attributes patterns can read. perim uses the
+        # tube's *physical* slot so spatial patterns stay correct even when
+        # electrical order is mirrored.
         self.side = []            # 'L' / 'B' / 'R'
         self.along = []           # 0..1 position along the tube
-        self.perim = []           # 0..1 position around the perimeter
+        self.perim = []           # 0..1 physical position around the perimeter
         self.tube_of = []         # index into self.tubes
-        n = self.total_pixels
-        idx = 0
         ppt = self.px_per_tube
+        counts = self.sides_count()
+        ntubes = len(self.tubes)
+        side_off = {"L": 0, "B": counts["L"],
+                    "R": counts["L"] + counts["B"]}
         for ti, t in enumerate(self.tubes):
+            phys = side_off[t["side"]] + t["pos"]
+            # Constant per tube: a tube is one vertical column at one spot on
+            # the perimeter. Varying perim with j sheared vertical edges
+            # diagonally across each tube.
+            x = (phys + 0.5) / ntubes
             for j in range(ppt):
                 self.side.append(t["side"])
                 self.along.append(j / (ppt - 1) if ppt > 1 else 0.0)
-                self.perim.append(idx / n)
+                self.perim.append(x)
                 self.tube_of.append(ti)
-                idx += 1
 
     def to_physical(self, frame: bytes) -> bytes:
         """Logical frame -> wire order: reverse pixels of serpentine tubes."""

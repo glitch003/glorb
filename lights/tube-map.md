@@ -10,13 +10,15 @@ Chip **SM16703**, color order **RGB**, transport **sACN / E1.31** in WLED *Multi
 
 Tubes numbered around the U from **front-left → back → front-right**: left `L01`(front)→`L56`(back), back `B01`(left)→`B24`(right), right `R01`(back)→`R56`(front).
 
+> ⚠️ **HARDWARE TODO:** D line 1 hung **mirrored** — D1 is injected at `R14` (the middle of the D section) running right-to-left to `R01`; D2 is injected at `R15` running to `R28`. The map below reflects the as-built order. Rehang D1 left-to-right (keep the 14/14 split — that's the standard now, matching E), then delete `REVERSED_LINES` in [tube_map.py](tube_map.py).
+
 | Angio | Location | Tubes | Groups | Lines (ports) | Start univ | Universes |
 | --- | --- | --- | --- | --- | ---: | --- |
-| A1 | Left-Front | 28 | G1–G7 | L1: G1–G4 (640 px) · L2: G5–G7 (480 px) | 1 | 1–7 |
-| A2 | Left-Back | 28 | G8–G14 | L1: G8–G11 (640 px) · L2: G12–G14 (480 px) | 8 | 8–14 |
-| A3 | Back | 24 | G15–G20 | L1: G15–G17 (480 px) · L2: G18–G20 (480 px) | 15 | 15–20 |
-| A4 | Right-Back | 28 | G21–G27 | L1: G21–G24 (640 px) · L2: G25–G27 (480 px) | 21 | 21–27 |
-| A5 | Right-Front | 28 | G28–G34 | L1: G28–G31 (640 px) · L2: G32–G34 (480 px) | 28 | 28–34 |
+| A | Left-Front | 28 | G1–G7 | L1: G1–G4 (640 px) · L2: G5–G7 (480 px) | 1 | 1–7 |
+| B | Left-Back | 28 | G8–G14 | L1: G8–G11 (640 px) · L2: G12–G14 (480 px) | 8 | 8–14 |
+| C | Back | 24 | G15–G20 | L1: G15–G17 (480 px) · L2: G18–G20 (480 px) | 15 | 15–20 |
+| D | Right-Back | 28 | G21–G27 | L1: G21–G24 (560 px) · L2: G25–G27 (560 px) | 21 | 21–27 |
+| E | Right-Front | 28 | G28–G34 | L1: G28–G31 (560 px) · L2: G32–G34 (560 px) | 28 | 28–34 |
 
 ## Full group map
 
@@ -24,40 +26,40 @@ Data enters each group at its **first tube** (the DIN head) — from the Angio p
 
 | Group | Angio | Line | Tubes | Px | Px offset | Universes | Data from | Power in |
 | ---: | --- | --- | --- | ---: | ---: | --- | --- | --- |
-| **G1** | A1 | 1.1 | `L01`–`L04` | 160 | 0 | 1 | A1 line 1 → `L01` | `L01`, `L03` |
-| **G2** | A1 | 1.2 | `L05`–`L08` | 160 | 160 | 1–2 | G1 DOUT → `L05` | `L05`, `L07` |
-| **G3** | A1 | 1.3 | `L09`–`L12` | 160 | 320 | 2–3 | G2 DOUT → `L09` | `L09`, `L11` |
-| **G4** | A1 | 1.4 | `L13`–`L16` | 160 | 480 | 3–4 | G3 DOUT → `L13` | `L13`, `L15` |
-| **G5** | A1 | 2.1 | `L17`–`L20` | 160 | 640 | 4–5 | A1 line 2 → `L17` | `L17`, `L19` |
-| **G6** | A1 | 2.2 | `L21`–`L24` | 160 | 800 | 5–6 | G5 DOUT → `L21` | `L21`, `L23` |
-| **G7** | A1 | 2.3 | `L25`–`L28` | 160 | 960 | 6–7 | G6 DOUT → `L25` | `L25`, `L27` |
-| **G8** | A2 | 1.1 | `L29`–`L32` | 160 | 0 | 8 | A2 line 1 → `L29` | `L29`, `L31` |
-| **G9** | A2 | 1.2 | `L33`–`L36` | 160 | 160 | 8–9 | G8 DOUT → `L33` | `L33`, `L35` |
-| **G10** | A2 | 1.3 | `L37`–`L40` | 160 | 320 | 9–10 | G9 DOUT → `L37` | `L37`, `L39` |
-| **G11** | A2 | 1.4 | `L41`–`L44` | 160 | 480 | 10–11 | G10 DOUT → `L41` | `L41`, `L43` |
-| **G12** | A2 | 2.1 | `L45`–`L48` | 160 | 640 | 11–12 | A2 line 2 → `L45` | `L45`, `L47` |
-| **G13** | A2 | 2.2 | `L49`–`L52` | 160 | 800 | 12–13 | G12 DOUT → `L49` | `L49`, `L51` |
-| **G14** | A2 | 2.3 | `L53`–`L56` | 160 | 960 | 13–14 | G13 DOUT → `L53` | `L53`, `L55` |
-| **G15** | A3 | 1.1 | `B01`–`B04` | 160 | 0 | 15 | A3 line 1 → `B01` | `B01`, `B03` |
-| **G16** | A3 | 1.2 | `B05`–`B08` | 160 | 160 | 15–16 | G15 DOUT → `B05` | `B05`, `B07` |
-| **G17** | A3 | 1.3 | `B09`–`B12` | 160 | 320 | 16–17 | G16 DOUT → `B09` | `B09`, `B11` |
-| **G18** | A3 | 2.1 | `B13`–`B16` | 160 | 480 | 17–18 | A3 line 2 → `B13` | `B13`, `B15` |
-| **G19** | A3 | 2.2 | `B17`–`B20` | 160 | 640 | 18–19 | G18 DOUT → `B17` | `B17`, `B19` |
-| **G20** | A3 | 2.3 | `B21`–`B24` | 160 | 800 | 19–20 | G19 DOUT → `B21` | `B21`, `B23` |
-| **G21** | A4 | 1.1 | `R01`–`R04` | 160 | 0 | 21 | A4 line 1 → `R01` | `R01`, `R03` |
-| **G22** | A4 | 1.2 | `R05`–`R08` | 160 | 160 | 21–22 | G21 DOUT → `R05` | `R05`, `R07` |
-| **G23** | A4 | 1.3 | `R09`–`R12` | 160 | 320 | 22–23 | G22 DOUT → `R09` | `R09`, `R11` |
-| **G24** | A4 | 1.4 | `R13`–`R16` | 160 | 480 | 23–24 | G23 DOUT → `R13` | `R13`, `R15` |
-| **G25** | A4 | 2.1 | `R17`–`R20` | 160 | 640 | 24–25 | A4 line 2 → `R17` | `R17`, `R19` |
-| **G26** | A4 | 2.2 | `R21`–`R24` | 160 | 800 | 25–26 | G25 DOUT → `R21` | `R21`, `R23` |
-| **G27** | A4 | 2.3 | `R25`–`R28` | 160 | 960 | 26–27 | G26 DOUT → `R25` | `R25`, `R27` |
-| **G28** | A5 | 1.1 | `R29`–`R32` | 160 | 0 | 28 | A5 line 1 → `R29` | `R29`, `R31` |
-| **G29** | A5 | 1.2 | `R33`–`R36` | 160 | 160 | 28–29 | G28 DOUT → `R33` | `R33`, `R35` |
-| **G30** | A5 | 1.3 | `R37`–`R40` | 160 | 320 | 29–30 | G29 DOUT → `R37` | `R37`, `R39` |
-| **G31** | A5 | 1.4 | `R41`–`R44` | 160 | 480 | 30–31 | G30 DOUT → `R41` | `R41`, `R43` |
-| **G32** | A5 | 2.1 | `R45`–`R48` | 160 | 640 | 31–32 | A5 line 2 → `R45` | `R45`, `R47` |
-| **G33** | A5 | 2.2 | `R49`–`R52` | 160 | 800 | 32–33 | G32 DOUT → `R49` | `R49`, `R51` |
-| **G34** | A5 | 2.3 | `R53`–`R56` | 160 | 960 | 33–34 | G33 DOUT → `R53` | `R53`, `R55` |
+| **G1** | A | 1.1 | `L01`–`L04` | 160 | 0 | 1 | A line 1 → `L01` | `L01`, `L03` |
+| **G2** | A | 1.2 | `L05`–`L08` | 160 | 160 | 1–2 | G1 DOUT → `L05` | `L05`, `L07` |
+| **G3** | A | 1.3 | `L09`–`L12` | 160 | 320 | 2–3 | G2 DOUT → `L09` | `L09`, `L11` |
+| **G4** | A | 1.4 | `L13`–`L16` | 160 | 480 | 3–4 | G3 DOUT → `L13` | `L13`, `L15` |
+| **G5** | A | 2.1 | `L17`–`L20` | 160 | 640 | 4–5 | A line 2 → `L17` | `L17`, `L19` |
+| **G6** | A | 2.2 | `L21`–`L24` | 160 | 800 | 5–6 | G5 DOUT → `L21` | `L21`, `L23` |
+| **G7** | A | 2.3 | `L25`–`L28` | 160 | 960 | 6–7 | G6 DOUT → `L25` | `L25`, `L27` |
+| **G8** | B | 1.1 | `L29`–`L32` | 160 | 0 | 8 | B line 1 → `L29` | `L29`, `L31` |
+| **G9** | B | 1.2 | `L33`–`L36` | 160 | 160 | 8–9 | G8 DOUT → `L33` | `L33`, `L35` |
+| **G10** | B | 1.3 | `L37`–`L40` | 160 | 320 | 9–10 | G9 DOUT → `L37` | `L37`, `L39` |
+| **G11** | B | 1.4 | `L41`–`L44` | 160 | 480 | 10–11 | G10 DOUT → `L41` | `L41`, `L43` |
+| **G12** | B | 2.1 | `L45`–`L48` | 160 | 640 | 11–12 | B line 2 → `L45` | `L45`, `L47` |
+| **G13** | B | 2.2 | `L49`–`L52` | 160 | 800 | 12–13 | G12 DOUT → `L49` | `L49`, `L51` |
+| **G14** | B | 2.3 | `L53`–`L56` | 160 | 960 | 13–14 | G13 DOUT → `L53` | `L53`, `L55` |
+| **G15** | C | 1.1 | `B01`–`B04` | 160 | 0 | 15 | C line 1 → `B01` | `B01`, `B03` |
+| **G16** | C | 1.2 | `B05`–`B08` | 160 | 160 | 15–16 | G15 DOUT → `B05` | `B05`, `B07` |
+| **G17** | C | 1.3 | `B09`–`B12` | 160 | 320 | 16–17 | G16 DOUT → `B09` | `B09`, `B11` |
+| **G18** | C | 2.1 | `B13`–`B16` | 160 | 480 | 17–18 | C line 2 → `B13` | `B13`, `B15` |
+| **G19** | C | 2.2 | `B17`–`B20` | 160 | 640 | 18–19 | G18 DOUT → `B17` | `B17`, `B19` |
+| **G20** | C | 2.3 | `B21`–`B24` | 160 | 800 | 19–20 | G19 DOUT → `B21` | `B21`, `B23` |
+| **G21** | D | 1.1 | `R14`–`R11` | 160 | 0 | 21 | D line 1 → `R14` | `R14`, `R12` |
+| **G22** | D | 1.2 | `R10`–`R07` | 160 | 160 | 21–22 | G21 DOUT → `R10` | `R10`, `R08` |
+| **G23** | D | 1.3 | `R06`–`R03` | 160 | 320 | 22–23 | G22 DOUT → `R06` | `R06`, `R04` |
+| **G24** | D | 1.4 | `R02`–`R01` | 80 | 480 | 23–24 | G23 DOUT → `R02` | `R02` |
+| **G25** | D | 2.1 | `R15`–`R18` | 160 | 560 | 24–25 | D line 2 → `R15` | `R15`, `R17` |
+| **G26** | D | 2.2 | `R19`–`R22` | 160 | 720 | 25–26 | G25 DOUT → `R19` | `R19`, `R21` |
+| **G27** | D | 2.3 | `R23`–`R28` | 240 | 880 | 26–27 | G26 DOUT → `R23` | `R23`, `R25`, `R27` |
+| **G28** | E | 1.1 | `R29`–`R32` | 160 | 0 | 28 | E line 1 → `R29` | `R29`, `R31` |
+| **G29** | E | 1.2 | `R33`–`R36` | 160 | 160 | 28–29 | G28 DOUT → `R33` | `R33`, `R35` |
+| **G30** | E | 1.3 | `R37`–`R40` | 160 | 320 | 29–30 | G29 DOUT → `R37` | `R37`, `R39` |
+| **G31** | E | 1.4 | `R41`–`R42` | 80 | 480 | 30–31 | G30 DOUT → `R41` | `R41` |
+| **G32** | E | 2.1 | `R43`–`R46` | 160 | 560 | 31–32 | E line 2 → `R43` | `R43`, `R45` |
+| **G33** | E | 2.2 | `R47`–`R50` | 160 | 720 | 32–33 | G32 DOUT → `R47` | `R47`, `R49` |
+| **G34** | E | 2.3 | `R51`–`R56` | 240 | 880 | 33–34 | G33 DOUT → `R51` | `R51`, `R53`, `R55` |
 
 ## Labeling scheme
 
@@ -69,15 +71,15 @@ Angio port ─[330–470Ω]─▶ G_a (4 tubes serpentine) ─DOUT─▶ G_b ─
 
 ## WLED / Angio config (per board)
 
-LED outputs: **output 1 = line 1** (start 0), **output 2 = line 2** (start = line 1 px). Total LED count = board pixels. E1.31: DMX mode *Multi RGB*, start universe per the table above, multicast on.
+Run **[angio_setup.py](angio_setup.py)** to configure a board uniformly from this map — e.g. `python3 angio_setup.py D` (or `--ip x.x.x.x` if not in the map yet). It sets: **output 1 = line 1** (start 0), **output 2 = line 2** (start = line 1 px), GPIOs from the per-line `pin` field in the map (`ANGIO_PINS` in this script — default 13/12, **D is plugged 12/13**); E1.31 DMX mode *Multi RGB*, start universe per the table above, port 5568, multicast on, force-max-brightness on; **boot default = no preset, 5% brightness** (so an offline boot can't burn real power); then reboots + verifies.
 
 ## Install + test sequence
 
-Do it **one line at a time**. First hardware bring-up was G15 on A3 (2026-07-24). A3's currently-wired output (GPIO 12) is now **line 2 = G18–G20** — next test target.
+Do it **one line at a time**. First hardware bring-up was G15 on C (2026-07-24). C's currently-wired output (GPIO 12) is now **line 2 = G18–G20** — next test target.
 
 For each group: hang the 4 tubes → chain data (serpentine) → tap +24 V + shared GND → label both ends → ping me to light it from software → confirm all 4 tubes + color order → check the box.
 
-### A1 — Left-Front (28 tubes, univ 1–7)
+### A — Left-Front (28 tubes, univ 1–7)
 - [ ] **G1** · line 1 pos 1 · tubes L01–L04 · univ 1
 - [ ] **G2** · line 1 pos 2 · tubes L05–L08 · univ 1–2
 - [ ] **G3** · line 1 pos 3 · tubes L09–L12 · univ 2–3
@@ -86,7 +88,7 @@ For each group: hang the 4 tubes → chain data (serpentine) → tap +24 V + sha
 - [ ] **G6** · line 2 pos 2 · tubes L21–L24 · univ 5–6
 - [ ] **G7** · line 2 pos 3 · tubes L25–L28 · univ 6–7
 
-### A2 — Left-Back (28 tubes, univ 8–14)
+### B — Left-Back (28 tubes, univ 8–14)
 - [ ] **G8** · line 1 pos 1 · tubes L29–L32 · univ 8
 - [ ] **G9** · line 1 pos 2 · tubes L33–L36 · univ 8–9
 - [ ] **G10** · line 1 pos 3 · tubes L37–L40 · univ 9–10
@@ -95,7 +97,7 @@ For each group: hang the 4 tubes → chain data (serpentine) → tap +24 V + sha
 - [ ] **G13** · line 2 pos 2 · tubes L49–L52 · univ 12–13
 - [ ] **G14** · line 2 pos 3 · tubes L53–L56 · univ 13–14
 
-### A3 — Back (24 tubes, univ 15–20)
+### C — Back (24 tubes, univ 15–20)
 - [ ] **G15** · line 1 pos 1 · tubes B01–B04 · univ 15
 - [ ] **G16** · line 1 pos 2 · tubes B05–B08 · univ 15–16
 - [ ] **G17** · line 1 pos 3 · tubes B09–B12 · univ 16–17
@@ -103,23 +105,23 @@ For each group: hang the 4 tubes → chain data (serpentine) → tap +24 V + sha
 - [ ] **G19** · line 2 pos 2 · tubes B17–B20 · univ 18–19
 - [ ] **G20** · line 2 pos 3 · tubes B21–B24 · univ 19–20
 
-### A4 — Right-Back (28 tubes, univ 21–27)
-- [ ] **G21** · line 1 pos 1 · tubes R01–R04 · univ 21
-- [ ] **G22** · line 1 pos 2 · tubes R05–R08 · univ 21–22
-- [ ] **G23** · line 1 pos 3 · tubes R09–R12 · univ 22–23
-- [ ] **G24** · line 1 pos 4 · tubes R13–R16 · univ 23–24
-- [ ] **G25** · line 2 pos 1 · tubes R17–R20 · univ 24–25
-- [ ] **G26** · line 2 pos 2 · tubes R21–R24 · univ 25–26
-- [ ] **G27** · line 2 pos 3 · tubes R25–R28 · univ 26–27
+### D — Right-Back (28 tubes, univ 21–27)
+- [ ] **G21** · line 1 pos 1 · tubes R14–R11 · univ 21
+- [ ] **G22** · line 1 pos 2 · tubes R10–R07 · univ 21–22
+- [ ] **G23** · line 1 pos 3 · tubes R06–R03 · univ 22–23
+- [ ] **G24** · line 1 pos 4 · tubes R02–R01 · univ 23–24
+- [ ] **G25** · line 2 pos 1 · tubes R15–R18 · univ 24–25
+- [ ] **G26** · line 2 pos 2 · tubes R19–R22 · univ 25–26
+- [ ] **G27** · line 2 pos 3 · tubes R23–R28 · univ 26–27
 
-### A5 — Right-Front (28 tubes, univ 28–34)
+### E — Right-Front (28 tubes, univ 28–34)
 - [ ] **G28** · line 1 pos 1 · tubes R29–R32 · univ 28
 - [ ] **G29** · line 1 pos 2 · tubes R33–R36 · univ 28–29
 - [ ] **G30** · line 1 pos 3 · tubes R37–R40 · univ 29–30
-- [ ] **G31** · line 1 pos 4 · tubes R41–R44 · univ 30–31
-- [ ] **G32** · line 2 pos 1 · tubes R45–R48 · univ 31–32
-- [ ] **G33** · line 2 pos 2 · tubes R49–R52 · univ 32–33
-- [ ] **G34** · line 2 pos 3 · tubes R53–R56 · univ 33–34
+- [ ] **G31** · line 1 pos 4 · tubes R41–R42 · univ 30–31
+- [ ] **G32** · line 2 pos 1 · tubes R43–R46 · univ 31–32
+- [ ] **G33** · line 2 pos 2 · tubes R47–R50 · univ 32–33
+- [ ] **G34** · line 2 pos 3 · tubes R51–R56 · univ 33–34
 
 ## Diagram
 

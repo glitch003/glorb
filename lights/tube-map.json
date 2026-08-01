@@ -13,7 +13,7 @@
   },
   "angios": [
     {
-      "name": "A1",
+      "name": "A",
       "location": "Left-Front",
       "groups": [
         1,
@@ -35,7 +35,8 @@
           ],
           "tube_count": 16,
           "pixels": 640,
-          "start_px": 0
+          "start_px": 0,
+          "pin": 13
         },
         {
           "line": 2,
@@ -46,7 +47,8 @@
           ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 640
+          "start_px": 640,
+          "pin": 12
         }
       ],
       "ports_used": 2,
@@ -56,7 +58,7 @@
       "universes": 7
     },
     {
-      "name": "A2",
+      "name": "B",
       "location": "Left-Back",
       "groups": [
         8,
@@ -78,7 +80,8 @@
           ],
           "tube_count": 16,
           "pixels": 640,
-          "start_px": 0
+          "start_px": 0,
+          "pin": 13
         },
         {
           "line": 2,
@@ -89,7 +92,8 @@
           ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 640
+          "start_px": 640,
+          "pin": 12
         }
       ],
       "ports_used": 2,
@@ -99,7 +103,7 @@
       "universes": 7
     },
     {
-      "name": "A3",
+      "name": "C",
       "location": "Back",
       "groups": [
         15,
@@ -119,7 +123,8 @@
           ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 0
+          "start_px": 0,
+          "pin": 13
         },
         {
           "line": 2,
@@ -130,7 +135,8 @@
           ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 480
+          "start_px": 480,
+          "pin": 12
         }
       ],
       "ports_used": 2,
@@ -141,7 +147,7 @@
       "ip": "192.168.8.229"
     },
     {
-      "name": "A4",
+      "name": "D",
       "location": "Right-Back",
       "groups": [
         21,
@@ -161,9 +167,10 @@
             23,
             24
           ],
-          "tube_count": 16,
-          "pixels": 640,
-          "start_px": 0
+          "tube_count": 14,
+          "pixels": 560,
+          "start_px": 0,
+          "pin": 12
         },
         {
           "line": 2,
@@ -172,19 +179,21 @@
             26,
             27
           ],
-          "tube_count": 12,
-          "pixels": 480,
-          "start_px": 640
+          "tube_count": 14,
+          "pixels": 560,
+          "start_px": 560,
+          "pin": 13
         }
       ],
       "ports_used": 2,
       "tube_count": 28,
       "pixels": 1120,
       "start_universe": 21,
-      "universes": 7
+      "universes": 7,
+      "ip": "192.168.8.190"
     },
     {
-      "name": "A5",
+      "name": "E",
       "location": "Right-Front",
       "groups": [
         28,
@@ -204,9 +213,10 @@
             30,
             31
           ],
-          "tube_count": 16,
-          "pixels": 640,
-          "start_px": 0
+          "tube_count": 14,
+          "pixels": 560,
+          "start_px": 0,
+          "pin": 12
         },
         {
           "line": 2,
@@ -215,22 +225,24 @@
             33,
             34
           ],
-          "tube_count": 12,
-          "pixels": 480,
-          "start_px": 640
+          "tube_count": 14,
+          "pixels": 560,
+          "start_px": 560,
+          "pin": 13
         }
       ],
       "ports_used": 2,
       "tube_count": 28,
       "pixels": 1120,
       "start_universe": 28,
-      "universes": 7
+      "universes": 7,
+      "ip": "192.168.8.156"
     }
   ],
   "groups": [
     {
       "group": 1,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 1,
       "line_pos": 1,
@@ -248,7 +260,7 @@
         1
       ],
       "data_in": "L01",
-      "data_from": "A1 line 1",
+      "data_from": "A line 1",
       "power_in": [
         "L01",
         "L03"
@@ -256,7 +268,7 @@
     },
     {
       "group": 2,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 1,
       "line_pos": 2,
@@ -283,7 +295,7 @@
     },
     {
       "group": 3,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 1,
       "line_pos": 3,
@@ -310,7 +322,7 @@
     },
     {
       "group": 4,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 1,
       "line_pos": 4,
@@ -337,7 +349,7 @@
     },
     {
       "group": 5,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 2,
       "line_pos": 1,
@@ -356,7 +368,7 @@
         5
       ],
       "data_in": "L17",
-      "data_from": "A1 line 2",
+      "data_from": "A line 2",
       "power_in": [
         "L17",
         "L19"
@@ -364,7 +376,7 @@
     },
     {
       "group": 6,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 2,
       "line_pos": 2,
@@ -391,7 +403,7 @@
     },
     {
       "group": 7,
-      "angio": "A1",
+      "angio": "A",
       "angio_location": "Left-Front",
       "line": 2,
       "line_pos": 3,
@@ -418,7 +430,7 @@
     },
     {
       "group": 8,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 1,
       "line_pos": 1,
@@ -436,7 +448,7 @@
         8
       ],
       "data_in": "L29",
-      "data_from": "A2 line 1",
+      "data_from": "B line 1",
       "power_in": [
         "L29",
         "L31"
@@ -444,7 +456,7 @@
     },
     {
       "group": 9,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 1,
       "line_pos": 2,
@@ -471,7 +483,7 @@
     },
     {
       "group": 10,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 1,
       "line_pos": 3,
@@ -498,7 +510,7 @@
     },
     {
       "group": 11,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 1,
       "line_pos": 4,
@@ -525,7 +537,7 @@
     },
     {
       "group": 12,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 2,
       "line_pos": 1,
@@ -544,7 +556,7 @@
         12
       ],
       "data_in": "L45",
-      "data_from": "A2 line 2",
+      "data_from": "B line 2",
       "power_in": [
         "L45",
         "L47"
@@ -552,7 +564,7 @@
     },
     {
       "group": 13,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 2,
       "line_pos": 2,
@@ -579,7 +591,7 @@
     },
     {
       "group": 14,
-      "angio": "A2",
+      "angio": "B",
       "angio_location": "Left-Back",
       "line": 2,
       "line_pos": 3,
@@ -606,7 +618,7 @@
     },
     {
       "group": 15,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 1,
       "line_pos": 1,
@@ -624,7 +636,7 @@
         15
       ],
       "data_in": "B01",
-      "data_from": "A3 line 1",
+      "data_from": "C line 1",
       "power_in": [
         "B01",
         "B03"
@@ -632,7 +644,7 @@
     },
     {
       "group": 16,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 1,
       "line_pos": 2,
@@ -659,7 +671,7 @@
     },
     {
       "group": 17,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 1,
       "line_pos": 3,
@@ -686,7 +698,7 @@
     },
     {
       "group": 18,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 2,
       "line_pos": 1,
@@ -705,7 +717,7 @@
         18
       ],
       "data_in": "B13",
-      "data_from": "A3 line 2",
+      "data_from": "C line 2",
       "power_in": [
         "B13",
         "B15"
@@ -713,7 +725,7 @@
     },
     {
       "group": 19,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 2,
       "line_pos": 2,
@@ -740,7 +752,7 @@
     },
     {
       "group": 20,
-      "angio": "A3",
+      "angio": "C",
       "angio_location": "Back",
       "line": 2,
       "line_pos": 3,
@@ -767,15 +779,15 @@
     },
     {
       "group": 21,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 1,
       "line_pos": 1,
       "tubes": [
-        "R01",
-        "R02",
-        "R03",
-        "R04"
+        "R14",
+        "R13",
+        "R12",
+        "R11"
       ],
       "tube_count": 4,
       "pixels": 160,
@@ -784,24 +796,24 @@
       "universes": [
         21
       ],
-      "data_in": "R01",
-      "data_from": "A4 line 1",
+      "data_in": "R14",
+      "data_from": "D line 1",
       "power_in": [
-        "R01",
-        "R03"
+        "R14",
+        "R12"
       ]
     },
     {
       "group": 22,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 1,
       "line_pos": 2,
       "tubes": [
-        "R05",
-        "R06",
-        "R07",
-        "R08"
+        "R10",
+        "R09",
+        "R08",
+        "R07"
       ],
       "tube_count": 4,
       "pixels": 160,
@@ -811,24 +823,24 @@
         21,
         22
       ],
-      "data_in": "R05",
+      "data_in": "R10",
       "data_from": "G21 DOUT",
       "power_in": [
-        "R05",
-        "R07"
+        "R10",
+        "R08"
       ]
     },
     {
       "group": 23,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 1,
       "line_pos": 3,
       "tubes": [
-        "R09",
-        "R10",
-        "R11",
-        "R12"
+        "R06",
+        "R05",
+        "R04",
+        "R03"
       ],
       "tube_count": 4,
       "pixels": 160,
@@ -838,124 +850,124 @@
         22,
         23
       ],
-      "data_in": "R09",
+      "data_in": "R06",
       "data_from": "G22 DOUT",
       "power_in": [
-        "R09",
-        "R11"
+        "R06",
+        "R04"
       ]
     },
     {
       "group": 24,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 1,
       "line_pos": 4,
       "tubes": [
-        "R13",
-        "R14",
-        "R15",
-        "R16"
+        "R02",
+        "R01"
       ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
+      "tube_count": 2,
+      "pixels": 80,
+      "channels": 240,
       "px_offset": 480,
       "universes": [
         23,
         24
       ],
-      "data_in": "R13",
+      "data_in": "R02",
       "data_from": "G23 DOUT",
       "power_in": [
-        "R13",
-        "R15"
+        "R02"
       ]
     },
     {
       "group": 25,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 2,
       "line_pos": 1,
       "tubes": [
+        "R15",
+        "R16",
         "R17",
-        "R18",
-        "R19",
-        "R20"
+        "R18"
       ],
       "tube_count": 4,
       "pixels": 160,
       "channels": 480,
-      "px_offset": 640,
+      "px_offset": 560,
       "universes": [
         24,
         25
       ],
-      "data_in": "R17",
-      "data_from": "A4 line 2",
+      "data_in": "R15",
+      "data_from": "D line 2",
       "power_in": [
-        "R17",
-        "R19"
+        "R15",
+        "R17"
       ]
     },
     {
       "group": 26,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 2,
       "line_pos": 2,
       "tubes": [
+        "R19",
+        "R20",
         "R21",
-        "R22",
-        "R23",
-        "R24"
+        "R22"
       ],
       "tube_count": 4,
       "pixels": 160,
       "channels": 480,
-      "px_offset": 800,
+      "px_offset": 720,
       "universes": [
         25,
         26
       ],
-      "data_in": "R21",
+      "data_in": "R19",
       "data_from": "G25 DOUT",
       "power_in": [
-        "R21",
-        "R23"
+        "R19",
+        "R21"
       ]
     },
     {
       "group": 27,
-      "angio": "A4",
+      "angio": "D",
       "angio_location": "Right-Back",
       "line": 2,
       "line_pos": 3,
       "tubes": [
+        "R23",
+        "R24",
         "R25",
         "R26",
         "R27",
         "R28"
       ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
-      "px_offset": 960,
+      "tube_count": 6,
+      "pixels": 240,
+      "channels": 720,
+      "px_offset": 880,
       "universes": [
         26,
         27
       ],
-      "data_in": "R25",
+      "data_in": "R23",
       "data_from": "G26 DOUT",
       "power_in": [
+        "R23",
         "R25",
         "R27"
       ]
     },
     {
       "group": 28,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 1,
       "line_pos": 1,
@@ -973,7 +985,7 @@
         28
       ],
       "data_in": "R29",
-      "data_from": "A5 line 1",
+      "data_from": "E line 1",
       "power_in": [
         "R29",
         "R31"
@@ -981,7 +993,7 @@
     },
     {
       "group": 29,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 1,
       "line_pos": 2,
@@ -1008,7 +1020,7 @@
     },
     {
       "group": 30,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 1,
       "line_pos": 3,
@@ -1035,19 +1047,17 @@
     },
     {
       "group": 31,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 1,
       "line_pos": 4,
       "tubes": [
         "R41",
-        "R42",
-        "R43",
-        "R44"
+        "R42"
       ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
+      "tube_count": 2,
+      "pixels": 80,
+      "channels": 240,
       "px_offset": 480,
       "universes": [
         30,
@@ -1056,87 +1066,89 @@
       "data_in": "R41",
       "data_from": "G30 DOUT",
       "power_in": [
-        "R41",
-        "R43"
+        "R41"
       ]
     },
     {
       "group": 32,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 2,
       "line_pos": 1,
       "tubes": [
+        "R43",
+        "R44",
         "R45",
-        "R46",
-        "R47",
-        "R48"
+        "R46"
       ],
       "tube_count": 4,
       "pixels": 160,
       "channels": 480,
-      "px_offset": 640,
+      "px_offset": 560,
       "universes": [
         31,
         32
       ],
-      "data_in": "R45",
-      "data_from": "A5 line 2",
+      "data_in": "R43",
+      "data_from": "E line 2",
       "power_in": [
-        "R45",
-        "R47"
+        "R43",
+        "R45"
       ]
     },
     {
       "group": 33,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 2,
       "line_pos": 2,
       "tubes": [
+        "R47",
+        "R48",
         "R49",
-        "R50",
-        "R51",
-        "R52"
+        "R50"
       ],
       "tube_count": 4,
       "pixels": 160,
       "channels": 480,
-      "px_offset": 800,
+      "px_offset": 720,
       "universes": [
         32,
         33
       ],
-      "data_in": "R49",
+      "data_in": "R47",
       "data_from": "G32 DOUT",
       "power_in": [
-        "R49",
-        "R51"
+        "R47",
+        "R49"
       ]
     },
     {
       "group": 34,
-      "angio": "A5",
+      "angio": "E",
       "angio_location": "Right-Front",
       "line": 2,
       "line_pos": 3,
       "tubes": [
+        "R51",
+        "R52",
         "R53",
         "R54",
         "R55",
         "R56"
       ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
-      "px_offset": 960,
+      "tube_count": 6,
+      "pixels": 240,
+      "channels": 720,
+      "px_offset": 880,
       "universes": [
         33,
         34
       ],
-      "data_in": "R53",
+      "data_in": "R51",
       "data_from": "G33 DOUT",
       "power_in": [
+        "R51",
         "R53",
         "R55"
       ]

@@ -25,22 +25,45 @@ HERE = Path(__file__).parent
 
 # Physical walk of the open-front U, front-left -> back -> front-right.
 # Each Angio covers a contiguous run and drives its groups on a few chained
-# data lines. (name, physical label, prefix, first, last, groups per line)
+# data lines. (name, physical label, prefix, first, last, line specs)
+# A line spec is either an int (that many groups of TUBES_PER_GROUP) or an
+# explicit list of per-group tube counts (keep each group size EVEN so the
+# serpentine flip stays aligned to the line's chain parity).
+#
+# The tubes hang on 2x4s, two per Angio zone, so 28-tube zones end up split
+# 14/14 tubes per line (one 2x4 each) rather than the planned 16/12 — true
+# for D and E as-built, and probably A and B when they go up (update their
+# specs then). Group count stays 7 per zone so global numbering holds, which
+# makes the last group of line 1 = 2 tubes and of line 2 = 6.
 ANGIOS = [
-    ("A1", "Left-Front",  "L",  1, 28, (4, 3)),
-    ("A2", "Left-Back",   "L", 29, 56, (4, 3)),
-    ("A3", "Back",        "B",  1, 24, (3, 3)),
-    ("A4", "Right-Back",  "R",  1, 28, (4, 3)),
-    ("A5", "Right-Front", "R", 29, 56, (4, 3)),
+    ("A", "Left-Front",  "L",  1, 28, (4, 3)),
+    ("B", "Left-Back",   "L", 29, 56, (4, 3)),
+    ("C", "Back",        "B",  1, 24, (3, 3)),
+    ("D", "Right-Back",  "R",  1, 28, ([4, 4, 4, 2], [4, 4, 6])),
+    ("E", "Right-Front", "R", 29, 56, ([4, 4, 4, 2], [4, 4, 6])),
 ]
 
 ANGIO_COLORS = {
-    "A1": "#E63946", "A2": "#F4A261", "A3": "#2A9D8F",
-    "A4": "#457B9D", "A5": "#9D4EDD",
+    "A": "#E63946", "B": "#F4A261", "C": "#2A9D8F",
+    "D": "#457B9D", "E": "#9D4EDD",
 }
 
 # Known controller IPs (DHCP reservations on the glorb router).
-ANGIO_IPS = {"A3": "192.168.8.229"}
+ANGIO_IPS = {"C": "192.168.8.229", "D": "192.168.8.190",
+             "E": "192.168.8.156"}
+
+# GPIO per data line (line 1, line 2), as physically plugged on each board.
+# C (the first install) is 13/12; D and E are 12/13, which looks like the
+# convention going forward — new boards will probably match D/E.
+DEFAULT_PINS = (13, 12)
+ANGIO_PINS = {"D": (12, 13), "E": (12, 13)}
+
+# HARDWARE TODO: D line 1 (D1) was hung mirrored — data is injected at the
+# R14 end (the middle of the D section) and runs right-to-left back to R01,
+# instead of entering at R01 and running left-to-right (E is hung correctly:
+# both lines left-to-right, 14/14). Rehang D1 the right way round (keep the
+# 14/14 split, matching E), then delete this override.
+REVERSED_LINES = {("D", 1)}   # (angio, line): physical tube order is mirrored
 
 # Data enters each group at its first tube; +24V power is injected every
 # 2 tubes (tube 1 and tube 3 of each group of 4).
@@ -53,23 +76,31 @@ def build():
     angios = []
     gnum = 0
     ustart = 1
-    for aname, aloc, prefix, first, last, line_sizes in ANGIOS:
+    for aname, aloc, prefix, first, last, line_specs in ANGIOS:
         tubes = list(range(first, last + 1))
-        agroups = [tubes[i:i + TUBES_PER_GROUP]
-                   for i in range(0, len(tubes), TUBES_PER_GROUP)]
-        assert sum(line_sizes) == len(agroups), f"{aname}: line sizes != groups"
+        line_sizes = [[TUBES_PER_GROUP] * s if isinstance(s, int) else list(s)
+                      for s in line_specs]
+        assert sum(sum(s) for s in line_sizes) == len(tubes), \
+            f"{aname}: line sizes != tubes"
+        assert all(sz % 2 == 0 for s in line_sizes for sz in s), \
+            f"{aname}: group sizes must be even (serpentine parity)"
 
         apx = len(tubes) * PIX_PER_TUBE
         lines = []
         px_off = 0
-        gi = 0
+        ti = 0
         prev_group = None
-        for lnum, nline in enumerate(line_sizes, start=1):
+        for lnum, sizes in enumerate(line_sizes, start=1):
+            line_tubes = tubes[ti:ti + sum(sizes)]
+            ti += len(line_tubes)
+            if (aname, lnum) in REVERSED_LINES:
+                line_tubes = line_tubes[::-1]
             line_groups = []
-            for pos in range(1, nline + 1):
+            toff = 0
+            for pos, sz in enumerate(sizes, start=1):
                 gnum += 1
-                chunk = agroups[gi]
-                gi += 1
+                chunk = line_tubes[toff:toff + sz]
+                toff += sz
                 labels = [f"{prefix}{n:02d}" for n in chunk]
                 px = len(chunk) * PIX_PER_TUBE
                 u0 = ustart + px_off // PX_PER_UNIVERSE
@@ -97,9 +128,10 @@ def build():
             lines.append({
                 "line": lnum,
                 "groups": line_groups,
-                "tube_count": nline * TUBES_PER_GROUP,
-                "pixels": nline * TUBES_PER_GROUP * PIX_PER_TUBE,
-                "start_px": px_off - nline * TUBES_PER_GROUP * PIX_PER_TUBE,
+                "tube_count": sum(sizes),
+                "pixels": sum(sizes) * PIX_PER_TUBE,
+                "start_px": px_off - sum(sizes) * PIX_PER_TUBE,
+                "pin": ANGIO_PINS.get(aname, DEFAULT_PINS)[lnum - 1],
             })
             prev_group = None
         n_univ = -(-apx // PX_PER_UNIVERSE)   # ceil
@@ -166,6 +198,16 @@ def write_md(data):
                  "back `B01`(left)→`B24`(right), "
                  "right `R01`(back)→`R56`(front).")
     lines.append("")
+    if REVERSED_LINES:
+        lines.append("> ⚠️ **HARDWARE TODO:** " + ", ".join(
+            f"{a} line {ln}" for a, ln in sorted(REVERSED_LINES)) +
+            " hung **mirrored** — D1 is injected at `R14` (the middle of "
+            "the D section) running right-to-left to `R01`; D2 is injected "
+            "at `R15` running to `R28`. The map below reflects the as-built "
+            "order. Rehang D1 left-to-right (keep the 14/14 split — that's "
+            "the standard now, matching E), then delete `REVERSED_LINES` in "
+            "[tube_map.py](tube_map.py).")
+        lines.append("")
     lines.append("| Angio | Location | Tubes | Groups | Lines (ports) | "
                  "Start univ | Universes |")
     lines.append("| --- | --- | --- | --- | --- | ---: | --- |")
@@ -219,16 +261,23 @@ def write_md(data):
 
     lines.append("## WLED / Angio config (per board)")
     lines.append("")
-    lines.append("LED outputs: **output 1 = line 1** (start 0), **output 2 = "
-                 "line 2** (start = line 1 px). Total LED count = board pixels. "
-                 "E1.31: DMX mode *Multi RGB*, start universe per the table "
-                 "above, multicast on.")
+    lines.append("Run **[angio_setup.py](angio_setup.py)** to configure a "
+                 "board uniformly from this map — e.g. `python3 angio_setup.py "
+                 "D` (or `--ip x.x.x.x` if not in the map yet). It sets: "
+                 "**output 1 = line 1** (start 0), **output 2 = line 2** "
+                 "(start = line 1 px), GPIOs from the per-line `pin` field "
+                 "in the map (`ANGIO_PINS` in this script — default 13/12, "
+                 "**D is plugged 12/13**); E1.31 DMX mode "
+                 "*Multi RGB*, start universe per the table above, port 5568, "
+                 "multicast on, force-max-brightness on; **boot default = no "
+                 "preset, 5% brightness** (so an offline boot can't burn real "
+                 "power); then reboots + verifies.")
     lines.append("")
 
     lines.append("## Install + test sequence")
     lines.append("")
     lines.append("Do it **one line at a time**. First hardware bring-up was G15 "
-                 "on A3 (2026-07-24). A3's currently-wired output (GPIO 12) is "
+                 "on C (2026-07-24). C's currently-wired output (GPIO 12) is "
                  "now **line 2 = G18–G20** — next test target.")
     lines.append("")
     lines.append("For each group: hang the 4 tubes → chain data (serpentine) "
@@ -300,9 +349,9 @@ def write_png(data):
     W = 1500
     cw, ch, gap = 150, 104, 10
     by = data["groups"]
-    left = [g for g in by if g["angio"] in ("A1", "A2")]
-    back = [g for g in by if g["angio"] == "A3"]
-    right = [g for g in by if g["angio"] in ("A4", "A5")]
+    left = [g for g in by if g["angio"] in ("A", "B")]
+    back = [g for g in by if g["angio"] == "C"]
+    right = [g for g in by if g["angio"] in ("D", "E")]
 
     top = 110
     col_rows = max(len(left), len(right))
@@ -323,21 +372,26 @@ def write_png(data):
     col_x_left = 120
     col_x_right = W - 120 - cw
 
-    # left column: front (top) -> back (bottom)
-    for i, g in enumerate(left):
+    # Place cells by *physical* tube position (labels are positional), not by
+    # group number — a mirrored line (REVERSED_LINES) reorders groups on-car.
+    def tkey(g):
+        return min(int(t[1:]) for t in g["tubes"])
+
+    # left column: front (top, L01) -> back (bottom, L56)
+    for i, g in enumerate(sorted(left, key=tkey)):
         y = top + i * (ch + gap)
         _cell(d, col_x_left, y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 
-    # right column: front (top) -> back (bottom): reverse so back is at bottom
-    for i, g in enumerate(reversed(right)):
+    # right column: front (top, R56) -> back (bottom, R01)
+    for i, g in enumerate(sorted(right, key=tkey, reverse=True)):
         y = top + i * (ch + gap)
         _cell(d, col_x_right, y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 
-    # back row: left -> right, along the bottom
+    # back row: left (B01) -> right (B24), along the bottom
     n = len(back)
     total_w = n * cw + (n - 1) * gap
     start_x = (W - total_w) / 2
-    for i, g in enumerate(back):
+    for i, g in enumerate(sorted(back, key=tkey)):
         x = start_x + i * (cw + gap)
         _cell(d, x, back_y, cw, ch, ANGIO_COLORS[g["angio"]], g)
 

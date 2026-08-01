@@ -22,9 +22,9 @@ class Engine:
 
         self.lock = threading.Lock()
         self.pattern = "rainbow"
-        # Angio boards cap realtime at 5% (WLED bri 13, force-max off) while
-        # testing near the PSU limit, so 1.0 here = 5% at the tubes.
-        self.brightness = 1.0
+        # Boards output full range (force-max-brightness on) now that we're
+        # on the real batteries — start conservative, raise from the UI.
+        self.brightness = 0.05
         # Every pattern remembers its own knob settings.
         self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
         # Pin multicast to the NIC that routes to the Angios (multi-homed

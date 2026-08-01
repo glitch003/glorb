@@ -59,9 +59,8 @@ function buildGeometry3D() {
   wx = new Float32Array(n); wy = new Float32Array(n); wz = new Float32Array(n);
   tubes3d = [];
   const hw = CAR.W / 2, hl = CAR.L / 2;
-  const cnt = { L: 0, B: 0, R: 0 };
   layout.tubes.forEach((t, ti) => {
-    const c = cnt[t.side]++;
+    const c = t.pos;   // physical slot within the side (from the tube label)
     let x, y;
     if (t.side === "L") { x = -hw; y = -hl + (c + 0.5) / s.L * CAR.L; }
     else if (t.side === "R") { x = hw; y = hl - (c + 0.5) / s.R * CAR.L; }
@@ -209,10 +208,9 @@ function buildGeometry2D() {
   const TY = MARGIN, BY = TY + Hside;
   const W = RX + BRISTLE + MARGIN, H = BY + BRISTLE + MARGIN;
 
-  const step = { L: 0, B: 0, R: 0 };
   const spacing = BRISTLE / (ppt - 1);
   tube2d = layout.tubes.map((t, ti) => {
-    const c = step[t.side]++;
+    const c = t.pos;   // physical slot within the side (from the tube label)
     let x0, y0, dx = 0, dy = 0;
     if (t.side === "L") { x0 = LX; y0 = TY + (c + 0.5) * STEPV; dx = -spacing; }
     else if (t.side === "R") { x0 = RX; y0 = BY - (c + 0.5) * STEPV; dx = spacing; }

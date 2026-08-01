@@ -27,6 +27,8 @@ glorbleds/
   __main__.py      CLI: list / solid / tubes / colorcheck / chase / off / serve
   controller.py    tube-map.json -> groups; install-time test patterns (Show)
   e131.py          minimal sACN / E1.31 packet builder + UDP Sender
+  benchmark.py     repeatable per-pattern + E1.31 bandwidth benchmark
+  PERFORMANCE_AUDIT.md  measured architecture, wire, FPS, and visual audit
   webui/
     server.py      stdlib HTTP server: static UI + SSE frame stream + control POST
     engine.py      animation loop -> browser viz + (optional) hardware
@@ -53,6 +55,11 @@ python3 -m glorbleds solid C --color 0,0,255 --host 10.0.0.51    # unicast one A
 # the web control UI + 3D mock visualizer
 python3 -m glorbleds serve                     # http://127.0.0.1:8080
 python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
+
+# performance regression checks (stdlib only)
+python3 -m glorbleds.benchmark --frames 120 --fps 30
+python3 -m glorbleds.benchmark --frames 120 --fps 30 --udp-host 127.0.0.1 --udp-frames 1000
+python3 -m unittest discover -s tests -v
 ```
 
 `--dry-run` builds and prints packets instead of transmitting. `--brightness`
@@ -61,6 +68,10 @@ data at full range (force-max-brightness on) now that the tubes run off the
 main batteries, so what you send is what the tubes show. Multicast is the default (no device
 IPs needed); pass `--host` to unicast, `--iface` to pick the NIC on a
 multi-homed host.
+
+See [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) for measured frame/network
+budgets, buffering rationale, the per-pattern visual review, and the remaining
+Angio hardware acceptance checks.
 
 ## How the pipeline fits together
 

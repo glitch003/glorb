@@ -1,6 +1,7 @@
 """Animation engine: one loop -> browser viz + (optional) E1.31 hardware."""
 
 import base64
+import math
 import queue
 import threading
 import time
@@ -15,12 +16,15 @@ _ORDER = {"RGB": (0, 1, 2), "RBG": (0, 2, 1), "GRB": (1, 0, 2),
 
 class Engine:
     def __init__(self, gmap: dict, fps: float = 30.0):
+        if not math.isfinite(fps) or fps <= 0:
+            raise ValueError("fps must be a positive finite number")
         self.model = CarModel(gmap)
         self.fps = fps
         self._buf = bytearray(self.model.nbytes)
         self.frame = bytes(self.model.nbytes)
 
         self.lock = threading.Lock()
+        self._lifecycle_lock = threading.Lock()
         self.pattern = "rainbow"
         # Boards output full range (force-max-brightness on) now that we're
         # on the real batteries — start conservative, raise from the UI.
@@ -34,15 +38,19 @@ class Engine:
         self.hw = {"enabled": True, "host": None,
                    "iface": iface_for(probe) if probe else None,
                    "color_order": "RGB", "error": None}
+        self._sender_lock = threading.Lock()
         self._sender = None
+        self._sender_order = "RGB"
         self._refresh_sender()
         self._lut = self._make_lut(self.brightness)
 
         self.subs: set[queue.Queue] = set()
         self._running = False
+        self._thread: threading.Thread | None = None
         self._t0 = time.monotonic()
         self._meas_fps = 0.0
         self._frames = 0
+        self._dropped_frames = 0
         self._last_fps_t = self._t0
 
     # --- lookup table for brightness scaling ---
@@ -53,7 +61,8 @@ class Engine:
 
     # --- subscribers (SSE clients) ---
     def subscribe(self) -> queue.Queue:
-        q: queue.Queue = queue.Queue(maxsize=2)
+        # A preview wants the newest complete frame, never a FIFO backlog.
+        q: queue.Queue = queue.Queue(maxsize=1)
         with self.lock:
             self.subs.add(q)
         return q
@@ -63,11 +72,22 @@ class Engine:
             self.subs.discard(q)
 
     def _broadcast(self, frame) -> None:
-        for q in list(self.subs):
+        with self.lock:
+            subscribers = tuple(self.subs)
+        for q in subscribers:
             try:
                 q.put_nowait(frame)
             except queue.Full:
-                pass
+                # Replace the stale frame. The consumer can race the get, so
+                # tolerate an already-empty queue and retry the put once.
+                try:
+                    q.get_nowait()
+                except queue.Empty:
+                    pass
+                try:
+                    q.put_nowait(frame)
+                except queue.Full:
+                    pass
 
     # --- control ---
     def set_control(self, upd: dict) -> None:
@@ -101,18 +121,20 @@ class Engine:
                 self._refresh_sender()
 
     def _refresh_sender(self) -> None:
-        if self._sender:
-            self._sender.close()
-            self._sender = None
-        self.hw["error"] = None
-        if self.hw["enabled"]:
-            try:
-                self._sender = Sender(host=self.hw["host"] or None,
-                                      iface=self.hw["iface"] or None,
-                                      source_name="glorb-ui")
-            except OSError as e:
-                self.hw["error"] = str(e)
-                self.hw["enabled"] = False
+        with self._sender_lock:
+            if self._sender:
+                self._sender.close()
+                self._sender = None
+            self._sender_order = self.hw["color_order"]
+            self.hw["error"] = None
+            if self.hw["enabled"]:
+                try:
+                    self._sender = Sender(host=self.hw["host"] or None,
+                                          iface=self.hw["iface"] or None,
+                                          source_name="glorb-ui")
+                except OSError as e:
+                    self.hw["error"] = str(e)
+                    self.hw["enabled"] = False
 
     def state(self) -> dict:
         with self.lock:
@@ -131,6 +153,7 @@ class Engine:
             "hardware": hw,
             "fps": round(self._meas_fps, 1),
             "target_fps": self.fps,
+            "dropped_frames": self._dropped_frames,
         }
 
     # --- main loop ---
@@ -139,29 +162,34 @@ class Engine:
             pattern = self.pattern
             p = dict(self.pp[pattern])
             lut = self._lut
-            hw_on = self.hw["enabled"]
-            order = self.hw["color_order"]
-            sender = self._sender
         t = time.monotonic() - self._t0
         REGISTRY[pattern].render(self.model, p, t, self._buf)
         frame = self._buf.translate(lut)     # brightness in one C call
         self.frame = frame
         self._broadcast(frame)
-        if hw_on and sender is not None:
-            self._send_hw(frame, sender, order)
+        self._send_hw(frame)
 
-    def _send_hw(self, frame, sender, order) -> None:
-        perm = _ORDER.get(order, (0, 1, 2))
+    def _send_hw(self, frame) -> None:
+        error = None
         frame = self.model.to_physical(frame)
-        try:
-            for start_universe, start, length in self.model.angio_slices:
-                chunk = frame[start:start + length]
-                if perm != (0, 1, 2):
-                    chunk = self._reorder(chunk, perm)
-                send_span(sender, start_universe, chunk)
-        except OSError as e:
+        # Sender and color order are one generation under this lock. State
+        # reads stay responsive while the nonblocking UDP burst is emitted.
+        with self._sender_lock:
+            sender = self._sender
+            if sender is None:
+                return
+            perm = _ORDER.get(self._sender_order, (0, 1, 2))
+            try:
+                for start_universe, start, length in self.model.angio_slices:
+                    chunk = frame[start:start + length]
+                    if perm != (0, 1, 2):
+                        chunk = self._reorder(chunk, perm)
+                    send_span(sender, start_universe, chunk)
+            except OSError as e:
+                error = str(e)
+        if error is not None:
             with self.lock:
-                self.hw["error"] = str(e)
+                self.hw["error"] = error
 
     @staticmethod
     def _reorder(chunk, perm):
@@ -172,6 +200,17 @@ class Engine:
             out[i + 1] = chunk[i + b]
             out[i + 2] = chunk[i + c]
         return bytes(out)
+
+    @staticmethod
+    def _advance_deadline(deadline: float, now: float,
+                          period: float) -> tuple[float, int]:
+        """Return the next future deadline and count skipped frame slots."""
+        deadline += period
+        if deadline <= now:
+            dropped = int((now - deadline) // period) + 1
+            deadline += dropped * period
+            return deadline, dropped
+        return deadline, 0
 
     def _loop(self) -> None:
         period = 1.0 / self.fps
@@ -184,14 +223,45 @@ class Engine:
                 self._meas_fps = self._frames / (now - self._last_fps_t)
                 self._frames = 0
                 self._last_fps_t = now
-            nxt += period
+            nxt, dropped = self._advance_deadline(nxt, now, period)
+            self._dropped_frames += dropped
             time.sleep(max(0.0, nxt - time.monotonic()))
 
-    def start(self) -> None:
+    def _start_locked(self) -> None:
+        """Start a worker while the state lock is held."""
+        if self.hw["enabled"] and self._sender is None:
+            self._refresh_sender()
         self._running = True
-        threading.Thread(target=self._loop, daemon=True).start()
+        self._thread = threading.Thread(target=self._loop, daemon=True,
+                                        name="glorbleds-engine")
+        # Publish only a started worker: stop() must never join a Thread
+        # object in the gap between construction and Thread.start().
+        self._thread.start()
+
+    def start(self) -> None:
+        # Serialize complete lifecycle transitions. A start arriving during a
+        # stop waits for cleanup, then starts a fresh worker/sender generation.
+        with self._lifecycle_lock:
+            with self.lock:
+                if self._thread is not None and self._thread.is_alive():
+                    return
+                self._start_locked()
 
     def stop(self) -> None:
-        self._running = False
-        if self._sender:
-            self._sender.close()
+        with self._lifecycle_lock:
+            with self.lock:
+                self._running = False
+                thread = self._thread
+            if thread is not None and thread is not threading.current_thread():
+                # UDP output is nonblocking and every built-in pattern is bounded;
+                # wait for the worker before closing its sender.
+                thread.join()
+            with self.lock:
+                if self._thread is not thread:
+                    return
+                if thread is None or not thread.is_alive():
+                    self._thread = None
+                with self._sender_lock:
+                    if self._sender:
+                        self._sender.close()
+                        self._sender = None

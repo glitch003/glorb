@@ -1,7 +1,6 @@
 import json
 import queue
 import threading
-import time
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -20,6 +19,27 @@ def make_engine(fps=30.0):
     with patch("glorbleds.webui.engine.iface_for", return_value=None), \
          patch("glorbleds.webui.engine.Sender"):
         return Engine(load_map(), fps=fps)
+
+
+class ObservableLock:
+    """Lock that signals when a chosen acquisition attempt begins."""
+    def __init__(self, signal_attempt=2):
+        self._lock = threading.Lock()
+        self._counter_lock = threading.Lock()
+        self._attempts = 0
+        self.attempted = threading.Event()
+        self.signal_attempt = signal_attempt
+
+    def __enter__(self):
+        with self._counter_lock:
+            self._attempts += 1
+            if self._attempts == self.signal_attempt:
+                self.attempted.set()
+        self._lock.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._lock.release()
 
 
 class EngineBufferingTests(unittest.TestCase):
@@ -66,7 +86,7 @@ class EngineSenderConcurrencyTests(unittest.TestCase):
 
         def send(self, universe, dmx):
             self.entered.set()
-            self.release.wait(timeout=1.0)
+            self.release.wait()
             if self.closed:
                 raise OSError("socket closed during frame")
 
@@ -92,18 +112,74 @@ class EngineSenderConcurrencyTests(unittest.TestCase):
             target=engine.set_control,
             args=({"hardware": {"enabled": False}},),
         )
+        refresh_entered = threading.Event()
+        original_refresh = engine._refresh_sender
+
+        def tracked_refresh():
+            refresh_entered.set()
+            original_refresh()
+
+        engine._refresh_sender = tracked_refresh
         refreshing.start()
-        time.sleep(0.02)
-
-        self.assertTrue(refreshing.is_alive())
-        self.assertFalse(sender.closed)
-
-        sender.release.set()
+        try:
+            self.assertTrue(refresh_entered.wait(timeout=1.0))
+            self.assertTrue(refreshing.is_alive())
+            self.assertFalse(sender.closed)
+        finally:
+            sender.release.set()
         sending.join(timeout=1.0)
         refreshing.join(timeout=1.0)
         self.assertFalse(sending.is_alive())
         self.assertFalse(refreshing.is_alive())
         self.assertTrue(sender.closed)
+        engine.stop()
+
+    def test_obsolete_sender_error_does_not_replace_new_hardware_state(self):
+        engine = make_engine(fps=30.0)
+
+        class FailingSender(self.BlockingSender):
+            def send(self, universe, dmx):
+                self.entered.set()
+                self.release.wait()
+                raise OSError("old sender failed")
+
+        if engine._sender:
+            engine._sender.close()
+        sender = FailingSender()
+        engine._sender = sender  # type: ignore[assignment]
+        engine.hw["enabled"] = True
+
+        sending = threading.Thread(
+            target=engine._send_hw, args=(bytes(engine.model.nbytes),)
+        )
+        sending.start()
+        self.assertTrue(sender.entered.wait(timeout=1.0))
+
+        refreshing = threading.Thread(
+            target=engine.set_control,
+            args=({"hardware": {"enabled": False}},),
+        )
+        refresh_entered = threading.Event()
+        original_refresh = engine._refresh_sender
+
+        def tracked_refresh():
+            refresh_entered.set()
+            original_refresh()
+
+        engine._refresh_sender = tracked_refresh
+        refreshing.start()
+        try:
+            self.assertTrue(refresh_entered.wait(timeout=1.0))
+            self.assertTrue(refreshing.is_alive())
+        finally:
+            sender.release.set()
+        sending.join(timeout=1.0)
+        refreshing.join(timeout=1.0)
+
+        self.assertFalse(sending.is_alive())
+        self.assertFalse(refreshing.is_alive())
+        self.assertIsNone(engine.hw["error"])
+        self.assertFalse(engine.hw["enabled"])
         engine.stop()
 
     def test_state_reads_do_not_wait_for_udp_frame_send(self):
@@ -188,14 +264,16 @@ class EnginePacingTests(unittest.TestCase):
 
 
 class EngineLifecycleTests(unittest.TestCase):
-    def test_nonpositive_fps_is_rejected_at_configuration_time(self):
-        for fps in (0.0, -1.0, float("nan"), float("inf")):
+    def test_out_of_range_fps_is_rejected_at_configuration_time(self):
+        for fps in (0.0, -1.0, 60.1, float("nan"), float("inf")):
             with self.subTest(fps=fps):
                 with self.assertRaises(ValueError):
                     make_engine(fps=fps)
+        engine = make_engine(fps=60.0)
+        engine.stop()
 
     def setUp(self):
-        self.engine = make_engine(fps=120.0)
+        self.engine = make_engine(fps=60.0)
         self.engine.set_control({"hardware": {"enabled": False}})
 
     def tearDown(self):
@@ -214,6 +292,8 @@ class EngineLifecycleTests(unittest.TestCase):
 
     def test_start_and_stop_are_safe_when_called_concurrently(self):
         engine = self.engine
+        lifecycle_lock = ObservableLock(signal_attempt=2)
+        engine._lifecycle_lock = lifecycle_lock  # type: ignore[assignment]
         original_start = threading.Thread.start
         start_entered = threading.Event()
         allow_start = threading.Event()
@@ -237,7 +317,7 @@ class EngineLifecycleTests(unittest.TestCase):
 
             stopper = threading.Thread(target=stop_engine)
             original_start(stopper)
-            time.sleep(0.02)
+            self.assertTrue(lifecycle_lock.attempted.wait(timeout=1.0))
             allow_start.set()
             starter.join(timeout=2.0)
             stopper.join(timeout=2.0)
@@ -263,12 +343,20 @@ class EngineLifecycleTests(unittest.TestCase):
         engine.start()
         self.assertTrue(entered.wait(timeout=1.0))
 
+        join_entered = threading.Event()
+        worker = engine._thread
+        assert worker is not None
+        original_join = worker.join
+
+        def tracked_join(*args, **kwargs):
+            join_entered.set()
+            return original_join(*args, **kwargs)
+
+        worker.join = tracked_join  # type: ignore[method-assign]
+
         stopper = threading.Thread(target=engine.stop)
         stopper.start()
-        for _ in range(100):
-            if not engine._running:
-                break
-            time.sleep(0.001)
+        self.assertTrue(join_entered.wait(timeout=1.0))
         self.assertFalse(engine._running)
 
         start_returned = threading.Event()
@@ -304,7 +392,7 @@ class EngineLifecycleTests(unittest.TestCase):
         self.assertIsNone(self.engine._thread)
 
     def test_restart_recreates_hardware_sender(self):
-        engine = make_engine(fps=120.0)
+        engine = make_engine(fps=60.0)
         engine.stop()
         self.assertIsNone(engine._sender)
 

@@ -12,12 +12,13 @@ from .patterns import REGISTRY, NAMES
 
 _ORDER = {"RGB": (0, 1, 2), "RBG": (0, 2, 1), "GRB": (1, 0, 2),
           "GBR": (1, 2, 0), "BRG": (2, 0, 1), "BGR": (2, 1, 0)}
+MAX_FPS = 60.0
 
 
 class Engine:
     def __init__(self, gmap: dict, fps: float = 30.0):
-        if not math.isfinite(fps) or fps <= 0:
-            raise ValueError("fps must be a positive finite number")
+        if not math.isfinite(fps) or not 0 < fps <= MAX_FPS:
+            raise ValueError(f"fps must be finite and in the range (0, {MAX_FPS:g}]")
         self.model = CarModel(gmap)
         self.fps = fps
         self._buf = bytearray(self.model.nbytes)
@@ -41,6 +42,7 @@ class Engine:
         self._sender_lock = threading.Lock()
         self._sender = None
         self._sender_order = "RGB"
+        self._sender_generation = 0
         self._refresh_sender()
         self._lut = self._make_lut(self.brightness)
 
@@ -122,6 +124,7 @@ class Engine:
 
     def _refresh_sender(self) -> None:
         with self._sender_lock:
+            self._sender_generation += 1
             if self._sender:
                 self._sender.close()
                 self._sender = None
@@ -178,6 +181,7 @@ class Engine:
             sender = self._sender
             if sender is None:
                 return
+            generation = self._sender_generation
             perm = _ORDER.get(self._sender_order, (0, 1, 2))
             try:
                 for start_universe, start, length in self.model.angio_slices:
@@ -189,7 +193,10 @@ class Engine:
                 error = str(e)
         if error is not None:
             with self.lock:
-                self.hw["error"] = error
+                with self._sender_lock:
+                    if (self._sender is sender
+                            and self._sender_generation == generation):
+                        self.hw["error"] = error
 
     @staticmethod
     def _reorder(chunk, perm):

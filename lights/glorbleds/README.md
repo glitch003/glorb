@@ -55,6 +55,7 @@ python3 -m glorbleds solid C --color 0,0,255 --host 10.0.0.51    # unicast one A
 # the web control UI + 3D mock visualizer
 python3 -m glorbleds serve                     # http://127.0.0.1:8080
 python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
+# Engine output is capped at 60 FPS; keep production at 30 pending an Angio bench test.
 
 # performance regression checks (stdlib only)
 python3 -m glorbleds.benchmark --frames 120 --fps 30

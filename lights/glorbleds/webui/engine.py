@@ -26,7 +26,7 @@ class Engine:
 
         self.lock = threading.Lock()
         self._lifecycle_lock = threading.Lock()
-        self.pattern = "rainbow"
+        self.pattern = "plasma"
         # Boards output full range (force-max-brightness on) now that we're
         # on the real batteries — start conservative, raise from the UI.
         self.brightness = 0.05

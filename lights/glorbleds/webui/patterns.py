@@ -100,6 +100,39 @@ def _side_unroll(m):
     return cached
 
 
+def _surface_grid(m):
+    """Map the physically unrolled LED surface to a dense x/y grid.
+
+    The frame buffer follows electrical order, which is not always spatial
+    order. Cellular patterns use this lookup so their neighbors cross group
+    and side boundaries in the same order that the tubes meet on the car.
+    Returns (width, height, canonical_pixel_for_grid_cell).
+    """
+    cached = getattr(m, "_surface_grid_cache", None)
+    if cached is None:
+        counts = m.sides_count()
+        offsets = {"L": 0, "B": counts["L"],
+                   "R": counts["L"] + counts["B"]}
+        width, height = len(m.tubes), m.px_per_tube
+        pixel_of = [0] * (width * height)
+        for ti, tube in enumerate(m.tubes):
+            x = offsets[tube["side"]] + tube["pos"]
+            for y in range(height):
+                pixel_of[x * height + y] = ti * height + y
+        cached = (width, height, pixel_of)
+        m._surface_grid_cache = cached
+    return cached
+
+
+def _surface_to_buffer(surface, pixel_of, buf):
+    """Copy an x-major RGB surface grid into canonical electrical order."""
+    for grid_i, pixel_i in enumerate(pixel_of):
+        src, dst = grid_i * 3, pixel_i * 3
+        buf[dst] = surface[src]
+        buf[dst + 1] = surface[src + 1]
+        buf[dst + 2] = surface[src + 2]
+
+
 def _side_slots(m, wp, gap):
     """Slot tiling that restarts at every corner of the car, so shapes never
     bend around one. wp = sprite width in whole-perimeter units, gap = slot
@@ -1149,6 +1182,1048 @@ class Hypno(Pattern):
             buf[i * 3:i * 3 + 3] = c1 if s < 0.5 else c2
 
 
+class Scrub(Pattern):
+    """The car behaves like one enormous brush scrubbing front-to-back and
+    back again. A broad compression front sweeps both long sides, wraps the
+    rear, flexes down the bristles, and leaves luminous motion echoes."""
+    name = "scrub"
+    defaults = {"color1": (20, 220, 255), "color2": (255, 30, 150),
+                "speed": 0.48, "density": 0.55}
+
+    @staticmethod
+    def _longitudinal(m):
+        cached = getattr(m, "_longitudinal_cache", None)
+        if cached is None:
+            counts = m.sides_count()
+            values = [0.0] * m.total_pixels
+            for i, ti in enumerate(m.tube_of):
+                tube = m.tubes[ti]
+                if tube["side"] == "L":
+                    x = 0.78 * tube["pos"] / max(1, counts["L"] - 1)
+                elif tube["side"] == "R":
+                    x = 0.78 * (1.0 - tube["pos"] / max(1, counts["R"] - 1))
+                else:
+                    across = tube["pos"] / max(1, counts["B"] - 1)
+                    # Both side strokes enter at the rear corners, converge
+                    # toward its center, and reverse there.
+                    x = 0.78 + 0.22 * (1.0 - abs(across * 2.0 - 1.0))
+                values[i] = x
+            cached = values
+            m._longitudinal_cache = cached
+        return cached
+
+    def render(self, m, p, t, buf):
+        longitudinal = self._longitudinal(m)
+        tau = 2.0 * math.pi
+        phase = t * (0.055 + p["speed"] * 0.20) * tau
+        direction = math.sin(phase)
+        width = 0.10 + p["density"] * 0.14
+        centers = [0.5 - 0.5 * math.cos(phase - echo * 0.19)
+                   for echo in range(3)]
+        c1, c2 = p["color1"], p["color2"]
+        along = m.along
+        sin = math.sin
+        for i in range(m.total_pixels):
+            x, y = longitudinal[i], along[i]
+            energy = 0.0
+            signed = 0.0
+            for echo, center in enumerate(centers):
+                rel = (x - center) / width
+                if -1.0 < rel < 1.0:
+                    envelope = (1.0 - abs(rel)) ** 2 / (1.0 + echo * 1.25)
+                    energy += envelope
+                    if echo == 0:
+                        signed = rel
+            energy = min(1.0, energy)
+            # The diagonal phase shift changes sign at each turnaround, which
+            # makes light appear to flex along the hanging bristles.
+            bristle = 0.5 + 0.5 * sin(
+                tau * (y * (1.15 + p["density"] * 0.9)
+                       - signed * direction * 0.24) - phase * 0.48)
+            bristle = 0.30 + bristle * 0.70
+            lead = max(0.0, 1.0 - abs(signed - direction * 0.54) / 0.16)
+            lead = lead * lead * energy
+            level = energy * bristle
+            blend = 0.5 + 0.5 * sin(tau * (y * 0.72 + x * 0.38) - phase * 0.14)
+            color = _mix(c1, c2, blend)
+            hot = lead * abs(direction) * (0.45 + bristle * 0.55)
+            j = i * 3
+            buf[j] = min(255, int(color[0] * level + 255 * hot))
+            buf[j + 1] = min(255, int(color[1] * level + 255 * hot))
+            buf[j + 2] = min(255, int(color[2] * level + 255 * hot))
+
+
+class Ribbons(Pattern):
+    """Intertwined neon ribbons flow continuously around all three sides.
+    They brighten from color1 to color2 and burn white wherever several
+    strands braid across one another."""
+    name = "ribbons"
+    defaults = {"color1": (0, 255, 210), "color2": (255, 20, 190),
+                "speed": 0.42, "density": 0.52}
+
+    def render(self, m, p, t, buf):
+        count = 3 + int(p["density"] * 6.0)
+        width = 0.020 + p["density"] * 0.018
+        motion = t * (0.045 + p["speed"] * 0.23)
+        c1, c2 = p["color1"], p["color2"]
+        tau = 2.0 * math.pi
+        sin = math.sin
+        perim, along = m.perim, m.along
+        for i in range(m.total_pixels):
+            x, y = perim[i], along[i]
+            red = green = blue = 0
+            total = 0.0
+            for k in range(count):
+                freq = 1 + (k % 3)
+                phase = k * 1.618
+                center = (0.5
+                          + 0.31 * sin(tau * (x * freq
+                                             + motion * (0.65 + k * 0.07))
+                                       + phase)
+                          + 0.075 * sin(tau * (x * (freq + 2)
+                                              - motion * 0.47) - phase * 0.63))
+                d = abs(y - center)
+                if d >= width * 3.5:
+                    continue
+                bloom = 1.0 - d / (width * 3.5)
+                bloom = bloom * bloom * bloom * 0.22
+                if d < width:
+                    core = 1.0 - d / width
+                    core *= core
+                else:
+                    core = 0.0
+                strength = bloom + core * 0.82
+                total += strength
+                color = _mix(c1, c2, k / max(1, count - 1))
+                red += int(color[0] * strength)
+                green += int(color[1] * strength)
+                blue += int(color[2] * strength)
+            crossing = max(0.0, total - 0.92)
+            crossing = min(1.0, crossing * crossing * 0.72)
+            j = i * 3
+            buf[j] = min(255, red + int(255 * crossing))
+            buf[j + 1] = min(255, green + int(255 * crossing))
+            buf[j + 2] = min(255, blue + int(255 * crossing))
+
+
+class Voronoi(Pattern):
+    """Living stained glass: drifting color seeds divide the entire car into
+    soft polygonal cells. Their shared walls flare as cells squeeze, split,
+    and exchange neighbors."""
+    name = "voronoi"
+    controls = ("speed", "density")
+    defaults = {"speed": 0.34, "density": 0.5}
+
+    PERIM_OVER_TUBE = 9.8 / 2.5
+
+    def render(self, m, p, t, buf):
+        count = 14 + int(p["density"] * 21.0)
+        motion = t * (0.035 + p["speed"] * 0.18)
+        sites = []
+        sin = math.sin
+        aspect = self.PERIM_OVER_TUBE
+        for k in range(count):
+            base_x = (k * 0.61803398875 + 0.07) % 1.0
+            base_y = 0.07 + 0.86 * ((k * 0.38196601125 + 0.23) % 1.0)
+            x = (base_x + 0.065 * sin(motion * (0.73 + k % 4 * 0.08)
+                                     + k * 2.17)) % 1.0
+            y = base_y + 0.095 * sin(-motion * (0.61 + k % 5 * 0.06)
+                                     + k * 1.31)
+            y = max(0.015, min(0.985, y))
+            hue = (k * 0.61803398875 + t * 0.012) % 1.0
+            pulse = 0.5 + 0.5 * sin(motion * 0.7 + k * 2.4)
+            sites.append((x, y, hue, pulse))
+
+        boundary_w = 0.010 + p["density"] * 0.012
+        perim, along = m.perim, m.along
+        for i in range(m.total_pixels):
+            px, py = perim[i], along[i]
+            best = second = 999.0
+            nearest = 0
+            for k, (x, y, _, _) in enumerate(sites):
+                dx = abs(px - x)
+                if dx > 0.5:
+                    dx = 1.0 - dx
+                dx *= aspect
+                dy = py - y
+                d2 = dx * dx + dy * dy
+                if d2 < best:
+                    second, best, nearest = best, d2, k
+                elif d2 < second:
+                    second = d2
+            gap = second - best
+            edge = max(0.0, 1.0 - gap / boundary_w)
+            edge = edge * edge * edge
+            _, _, hue, pulse = sites[nearest]
+            value = min(1.0, 0.14 + pulse * 0.17 + edge * 0.88)
+            saturation = 0.88 - edge * 0.48
+            r, g, b = hsv(hue, saturation, value)
+            j = i * 3
+            buf[j], buf[j + 1], buf[j + 2] = r, g, b
+
+
+class Life(Pattern):
+    """Conway's Game of Life wraps around the complete unrolled car.
+    New cells flare white, survivors age from color1 to color2, and extinct
+    cells leave phosphorescent trails. Occasional seeds keep the ecosystem
+    from settling into a museum of still lifes."""
+    name = "life"
+    defaults = {"color1": (80, 255, 40), "color2": (150, 0, 255),
+                "speed": 0.5, "density": 0.45}
+
+    SEED_SHAPES = (
+        ((0, 1), (1, 0), (1, 1), (1, 2), (2, 0)),       # R-pentomino
+        ((0, 1), (1, 2), (2, 0), (2, 1), (2, 2)),       # glider
+        ((0, 0), (0, 1), (0, 2), (1, 0), (2, 1)),
+    )
+
+    def __init__(self):
+        self.cells = None
+        self.next_cells = None
+        self.age = None
+        self.trail = None
+        self.neighbors = None
+        self.pixel_of = None
+        self.width = self.height = 0
+        self.last_t = None
+        self.accumulator = 0.0
+        self.generation = 0
+
+    def _init(self, m, p):
+        w, h, pixel_of = _surface_grid(m)
+        self.width, self.height, self.pixel_of = w, h, pixel_of
+        n = w * h
+        chance = 0.16 + p["density"] * 0.13
+        self.cells = bytearray(1 if random.random() < chance else 0
+                               for _ in range(n))
+        self.next_cells = bytearray(n)
+        self.age = bytearray(1 if cell else 0 for cell in self.cells)
+        self.trail = bytearray(220 if cell else 0 for cell in self.cells)
+        neighbors = []
+        for x in range(w):
+            xm, xp = (x - 1) % w, (x + 1) % w
+            for y in range(h):
+                ym, yp = (y - 1) % h, (y + 1) % h
+                neighbors.append((xm * h + ym, xm * h + y, xm * h + yp,
+                                  x * h + ym, x * h + yp,
+                                  xp * h + ym, xp * h + y, xp * h + yp))
+        self.neighbors = neighbors
+
+    def _inject(self, target, count=1):
+        w, h = self.width, self.height
+        for _ in range(count):
+            shape = random.choice(self.SEED_SHAPES)
+            ox, oy = random.randrange(w), random.randrange(h)
+            for dx, dy in shape:
+                idx = ((ox + dx) % w) * h + (oy + dy) % h
+                target[idx] = 1
+                self.age[idx] = 1
+                self.trail[idx] = 255
+
+    def _step(self, density):
+        cells, nxt = self.cells, self.next_cells
+        age, trail = self.age, self.trail
+        assert cells is not None and nxt is not None
+        assert age is not None and trail is not None and self.neighbors is not None
+        for i, nb in enumerate(self.neighbors):
+            near = (cells[nb[0]] + cells[nb[1]] + cells[nb[2]]
+                    + cells[nb[3]] + cells[nb[4]] + cells[nb[5]]
+                    + cells[nb[6]] + cells[nb[7]])
+            alive = near == 3 or (cells[i] and near == 2)
+            nxt[i] = 1 if alive else 0
+            if alive:
+                age[i] = min(255, age[i] + 7) if cells[i] else 1
+                trail[i] = 255
+            else:
+                age[i] = 0
+                trail[i] = trail[i] * 21 // 25
+        self.cells, self.next_cells = nxt, cells
+        self.generation += 1
+        interval = 18 + int((1.0 - density) * 46)
+        if self.generation % interval == 0:
+            self._inject(self.cells, 1 + int(density * 2.0))
+
+    def render(self, m, p, t, buf):
+        if self.cells is None or len(self.cells) != m.total_pixels:
+            self._init(m, p)
+        if self.last_t is None:
+            dt = 1.0 / 30.0
+        else:
+            dt = max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        self.accumulator += dt * (3.0 + p["speed"] * 15.0)
+        steps = int(self.accumulator)
+        self.accumulator -= steps
+        for _ in range(steps):
+            self._step(p["density"])
+
+        c1, c2 = p["color1"], p["color2"]
+        assert self.cells is not None and self.age is not None
+        assert self.trail is not None and self.pixel_of is not None
+        for grid_i, pixel_i in enumerate(self.pixel_of):
+            out = pixel_i * 3
+            if self.cells[grid_i]:
+                lived = self.age[grid_i]
+                tone = min(1.0, lived / 105.0)
+                color = _mix(c1, c2, tone)
+                newborn = max(0.0, 1.0 - lived / 18.0) * 0.72
+                buf[out] = min(255, int(color[0] * 0.85 + 255 * newborn))
+                buf[out + 1] = min(255, int(color[1] * 0.85 + 255 * newborn))
+                buf[out + 2] = min(255, int(color[2] * 0.85 + 255 * newborn))
+            else:
+                glow = self.trail[grid_i] / 255.0
+                glow = glow * glow * 0.30
+                buf[out] = int(c2[0] * glow)
+                buf[out + 1] = int(c2[1] * glow)
+                buf[out + 2] = int(c2[2] * glow)
+
+
+class Reaction(Pattern):
+    """A Gray-Scott reaction-diffusion chemistry grows alien coral, cells,
+    and crawling labyrinths over the whole car. Unlike a looped texture, the
+    organism continuously evolves and never renders the same frame twice."""
+    name = "reaction"
+    defaults = {"color1": (30, 255, 120), "color2": (170, 20, 255),
+                "speed": 0.45, "density": 0.52}
+
+    def __init__(self):
+        self.u = self.v = self.next_u = self.next_v = None
+        self.neighbors = None
+        self.pixel_of = None
+        self.width = self.height = 0
+        self.last_t = None
+        self.accumulator = 0.0
+        self.generation = 0
+
+    def _seed_patch(self, cx, cy, radius=2):
+        w, h = self.width, self.height
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                if dx * dx + dy * dy <= radius * radius:
+                    i = ((cx + dx) % w) * h + (cy + dy) % h
+                    self.u[i], self.v[i] = 0.08, 0.92
+
+    def _init(self, m, density):
+        w, h, pixel_of = _surface_grid(m)
+        self.width, self.height, self.pixel_of = w, h, pixel_of
+        n = w * h
+        self.u, self.v = [1.0] * n, [0.0] * n
+        self.next_u, self.next_v = [0.0] * n, [0.0] * n
+        self.neighbors = []
+        for x in range(w):
+            for y in range(h):
+                self.neighbors.append((((x - 1) % w) * h + y,
+                                       ((x + 1) % w) * h + y,
+                                       x * h + (y - 1) % h,
+                                       x * h + (y + 1) % h))
+        # Many irregular, overlapping inoculation sites reach the interesting
+        # merge/competition phase immediately instead of opening as a row of
+        # tidy circular colonies.
+        seeds = 22 + int(density * 22.0)
+        for k in range(seeds):
+            self._seed_patch((11 + k * 37 + k * k * 3) % w,
+                             (7 + k * 17 + k * k * 5) % h,
+                             1 + (k % 3))
+
+    def _step(self, density):
+        u, v, nu, nv = self.u, self.v, self.next_u, self.next_v
+        assert u is not None and v is not None and nu is not None and nv is not None
+        assert self.neighbors is not None
+        # This path through Gray-Scott parameter space favors connected coral
+        # and maze regimes over isolated circular spots.
+        feed = 0.026 + density * 0.012
+        kill = 0.055 + density * 0.006
+        for i, nb in enumerate(self.neighbors):
+            ui, vi = u[i], v[i]
+            lap_u = u[nb[0]] + u[nb[1]] + u[nb[2]] + u[nb[3]] - 4.0 * ui
+            lap_v = v[nb[0]] + v[nb[1]] + v[nb[2]] + v[nb[3]] - 4.0 * vi
+            uvv = ui * vi * vi
+            a = ui + 0.16 * lap_u - uvv + feed * (1.0 - ui)
+            b = vi + 0.08 * lap_v + uvv - (feed + kill) * vi
+            nu[i] = 0.0 if a < 0.0 else (1.0 if a > 1.0 else a)
+            nv[i] = 0.0 if b < 0.0 else (1.0 if b > 1.0 else b)
+        self.u, self.next_u = nu, u
+        self.v, self.next_v = nv, v
+        self.generation += 1
+        if self.generation % 360 == 0:
+            self._seed_patch((self.generation * 17) % self.width,
+                             (self.generation * 7) % self.height, 2)
+
+    def render(self, m, p, t, buf):
+        if self.u is None or len(self.u) != m.total_pixels:
+            self._init(m, p["density"])
+        if self.last_t is None:
+            dt = 1.0 / 30.0
+        else:
+            dt = max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        self.accumulator += dt * (6.0 + p["speed"] * 24.0)
+        steps = int(self.accumulator)
+        self.accumulator -= steps
+        for _ in range(steps):
+            self._step(p["density"])
+
+        c1, c2 = p["color1"], p["color2"]
+        assert self.u is not None and self.v is not None
+        assert self.neighbors is not None and self.pixel_of is not None
+        for grid_i, pixel_i in enumerate(self.pixel_of):
+            ui, vi = self.u[grid_i], self.v[grid_i]
+            nb = self.neighbors[grid_i]
+            avg_v = (self.v[nb[0]] + self.v[nb[1]]
+                     + self.v[nb[2]] + self.v[nb[3]]) * 0.25
+            edge = min(1.0, abs(vi - avg_v) * 14.0)
+            tone = min(1.0, vi * 2.35 + (1.0 - ui) * 0.28)
+            level = min(1.0, 0.025 + tone * 0.78 + edge * 0.62)
+            color = _mix(c1, c2, tone)
+            hot = edge * edge * 0.30
+            out = pixel_i * 3
+            buf[out] = min(255, int(color[0] * level + 255 * hot))
+            buf[out + 1] = min(255, int(color[1] * level + 255 * hot))
+            buf[out + 2] = min(255, int(color[2] * level + 255 * hot))
+
+
+class Breakout(Pattern):
+    """An autonomous game of Breakout spanning the full car. The paddle
+    chases the ball, bricks really disappear on impact, and every hit throws
+    a little shower of colored debris."""
+    name = "breakout"
+    controls = ("speed", "density")
+    defaults = {"speed": 0.48, "density": 0.48}
+
+    BRICK_TOP = 0.075
+    BRICK_HEIGHT = 0.068
+    PADDLE_Y = 0.91
+
+    def __init__(self):
+        self.width = self.height = 0
+        self.pixel_of = None
+        self.rows = self.cols = 0
+        self.bricks = None
+        self.ball_x = self.ball_y = 0.0
+        self.ball_vx = self.ball_vy = 0.0
+        self.paddle_x = 0.5
+        self.trail = []
+        self.sparks = []
+        self.last_t = None
+
+    def _new_ball(self):
+        self.ball_x, self.ball_y = self.paddle_x, self.PADDLE_Y - 0.055
+        self.ball_vx, self.ball_vy = 0.17, -0.38
+        self.trail = []
+
+    def _reset(self, m, density):
+        self.width, self.height, self.pixel_of = _surface_grid(m)
+        self.rows = 4 + int(density * 4.0)
+        self.cols = 14 + int(density * 11.0)
+        self.bricks = bytearray([1]) * (self.rows * self.cols)
+        self.paddle_x = 0.5
+        self.sparks = []
+        self._new_ball()
+
+    def _burst(self, row, col):
+        hue = (row / max(1, self.rows) * 0.72 + col * 0.013) % 1.0
+        for k in range(9):
+            angle = k * 2.0 * math.pi / 9.0 + row * 0.31
+            speed = 0.045 + (k % 3) * 0.018
+            self.sparks.append([
+                self.ball_x, self.ball_y,
+                math.cos(angle) * speed,
+                math.sin(angle) * speed,
+                0.0, hue,
+            ])
+
+    def _physics(self, p, dt):
+        pace = 0.52 + p["speed"] * 1.48
+        steps = max(1, int(dt * 180.0) + 1)
+        step = dt * pace / steps
+        paddle_w = 0.11 + (1.0 - p["density"]) * 0.055
+        for _ in range(steps):
+            # The paddle is fallible: it follows the ball with finite speed,
+            # rather than teleporting underneath it.
+            delta = self.ball_x - self.paddle_x
+            move = min(abs(delta), step * 0.53)
+            self.paddle_x += move if delta > 0.0 else -move
+            self.paddle_x = max(paddle_w * 0.5,
+                                min(1.0 - paddle_w * 0.5, self.paddle_x))
+
+            old_y = self.ball_y
+            self.ball_x += self.ball_vx * step
+            self.ball_y += self.ball_vy * step
+            if self.ball_x <= 0.008:
+                self.ball_x, self.ball_vx = 0.008, abs(self.ball_vx)
+            elif self.ball_x >= 0.992:
+                self.ball_x, self.ball_vx = 0.992, -abs(self.ball_vx)
+            if self.ball_y <= 0.015:
+                self.ball_y, self.ball_vy = 0.015, abs(self.ball_vy)
+
+            # Only the solid interior of a brick counts; the gaps stay dark.
+            row = int((self.ball_y - self.BRICK_TOP) / self.BRICK_HEIGHT)
+            col = min(self.cols - 1, max(0, int(self.ball_x * self.cols)))
+            if 0 <= row < self.rows:
+                local_x = self.ball_x * self.cols - col
+                local_y = ((self.ball_y - self.BRICK_TOP)
+                           / self.BRICK_HEIGHT - row)
+                brick_i = row * self.cols + col
+                if (self.bricks[brick_i] and 0.07 < local_x < 0.93
+                        and 0.10 < local_y < 0.90):
+                    self.bricks[brick_i] = 0
+                    self.ball_y = old_y
+                    self.ball_vy = -self.ball_vy
+                    self._burst(row, col)
+
+            if (self.ball_vy > 0.0 and old_y < self.PADDLE_Y <= self.ball_y
+                    and abs(self.ball_x - self.paddle_x) <= paddle_w * 0.55):
+                english = (self.ball_x - self.paddle_x) / (paddle_w * 0.5)
+                self.ball_y = self.PADDLE_Y - 0.012
+                self.ball_vy = -abs(self.ball_vy)
+                self.ball_vx = max(-0.34, min(0.34,
+                                             self.ball_vx + english * 0.075))
+            if self.ball_y > 1.03:
+                self._new_ball()
+        if self.bricks is not None and not any(self.bricks):
+            self.bricks[:] = bytes([1]) * len(self.bricks)
+            self._new_ball()
+
+    def render(self, m, p, t, buf):
+        wanted = (4 + int(p["density"] * 4.0),
+                  14 + int(p["density"] * 11.0))
+        if self.bricks is None or (self.rows, self.cols) != wanted:
+            self._reset(m, p["density"])
+        dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        self._physics(p, dt)
+
+        alive_sparks = []
+        for spark in self.sparks:
+            spark[0] += spark[2] * dt
+            spark[1] += spark[3] * dt
+            spark[3] += 0.12 * dt
+            spark[4] += dt
+            if spark[4] < 1.0:
+                alive_sparks.append(spark)
+        self.sparks = alive_sparks[-90:]
+        self.trail.append((self.ball_x, self.ball_y))
+        self.trail = self.trail[-11:]
+
+        w, h = self.width, self.height
+        surface = bytearray(w * h * 3)
+
+        def put(x, y, color):
+            if 0 <= x < w and 0 <= y < h:
+                q = (x * h + y) * 3
+                surface[q] = max(surface[q], color[0])
+                surface[q + 1] = max(surface[q + 1], color[1])
+                surface[q + 2] = max(surface[q + 2], color[2])
+
+        for k in range(32):
+            put((k * 47 + 9) % w, (k * 19 + 5) % h, (2, 4, 12 + k % 9))
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if not self.bricks[row * self.cols + col]:
+                    continue
+                color = hsv((row * 0.115 + col * 0.006 + t * 0.008) % 1.0,
+                            0.88, 1.0)
+                x0 = int(col * w / self.cols) + 1
+                x1 = int((col + 1) * w / self.cols) - 1
+                y0 = int((self.BRICK_TOP + row * self.BRICK_HEIGHT) * h) + 1
+                y1 = int((self.BRICK_TOP + (row + 1) * self.BRICK_HEIGHT) * h) - 1
+                for x in range(x0, x1 + 1):
+                    for y in range(y0, y1 + 1):
+                        put(x, y, color)
+
+        for k, (x, y) in enumerate(self.trail):
+            f = (k + 1) / len(self.trail) * 0.34
+            put(int(x * w), int(y * h), (int(60 * f), int(150 * f), int(255 * f)))
+        bx, by = int(self.ball_x * w), int(self.ball_y * h)
+        for dx, dy in ((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)):
+            put(bx + dx, by + dy, (255, 255, 255) if dx == dy == 0
+                else (90, 190, 255))
+        paddle_w = 0.11 + (1.0 - p["density"]) * 0.055
+        px0 = int((self.paddle_x - paddle_w * 0.5) * w)
+        px1 = int((self.paddle_x + paddle_w * 0.5) * w)
+        py = int(self.PADDLE_Y * h)
+        for x in range(px0, px1 + 1):
+            put(x, py, (255, 40, 190))
+            put(x, py + 1, (90, 220, 255))
+        for x, y, _, _, age, hue in self.sparks:
+            value = max(0.0, 1.0 - age)
+            put(int(x * w), int(y * h), hsv(hue, 0.75, value))
+        _surface_to_buffer(surface, self.pixel_of, buf)
+
+
+class SpaceInvaders(Pattern):
+    """A complete self-playing Space Invaders battle. The formation marches,
+    descends, shoots, and animates while the cannon tracks targets, returns
+    fire, destroys individual invaders, and starts a fresh wave."""
+    name = "invaders"
+    controls = ("speed", "density")
+    defaults = {"speed": 0.48, "density": 0.52}
+
+    ALIENS = (
+        ("01110", "11111", "10101", "01010"),
+        ("01110", "11111", "01010", "10101"),
+    )
+    PLAYER = ("00100", "01110", "11111")
+    UFO = ("0111110", "1111111", "1010101")
+    SHIELD = ("0111110", "1111111", "1100011")
+
+    def __init__(self):
+        self.width = self.height = 0
+        self.pixel_of = None
+        self.rows = self.cols = 0
+        self.alive = None
+        self.fleet_x = self.fleet_y = 0.0
+        self.direction = 1.0
+        self.player_x = 0.0
+        self.player_bullet = None
+        self.enemy_bullets = []
+        self.explosions = []
+        self.enemy_accumulator = 0.0
+        self.enemy_emission = 0
+        self.target = 0
+        self.reset_timer = 0.0
+        self.last_t = None
+
+    def _reset(self, m, density):
+        self.width, self.height, self.pixel_of = _surface_grid(m)
+        self.rows = 3 + int(density * 2.99)
+        self.cols = 9 + int(density * 5.0)
+        self.alive = bytearray([1]) * (self.rows * self.cols)
+        formation_w = (self.cols - 1) * 8 + 5
+        self.fleet_x = (self.width - formation_w) * 0.5
+        self.fleet_y = 3.0
+        self.direction = 1.0
+        self.player_x = self.width * 0.5
+        self.player_bullet = None
+        self.enemy_bullets = []
+        self.explosions = []
+        self.enemy_accumulator = 0.0
+        self.reset_timer = 0.0
+
+    def _alien_xy(self, idx):
+        row, col = divmod(idx, self.cols)
+        return self.fleet_x + col * 8, self.fleet_y + row * 5
+
+    def _update(self, m, p, dt):
+        if self.reset_timer > 0.0:
+            self.reset_timer -= dt
+            if self.reset_timer <= 0.0:
+                self._reset(m, p["density"])
+            return
+        alive_indices = [i for i, value in enumerate(self.alive) if value]
+        if not alive_indices:
+            self.reset_timer = 0.8
+            return
+
+        killed = len(self.alive) - len(alive_indices)
+        fleet_speed = ((3.2 + p["speed"] * 7.5)
+                       * (1.0 + killed / len(self.alive) * 1.8))
+        formation_w = (self.cols - 1) * 8 + 5
+        next_x = self.fleet_x + self.direction * fleet_speed * dt
+        if next_x < 1.0 or next_x + formation_w >= self.width - 1.0:
+            self.direction *= -1.0
+            self.fleet_y += 1.25
+        else:
+            self.fleet_x = next_x
+        if self.fleet_y + self.rows * 5 >= self.height - 7:
+            self.reset_timer = 0.8
+
+        if self.player_bullet is None:
+            alive_indices = [i for i, value in enumerate(self.alive) if value]
+            target = alive_indices[self.target % len(alive_indices)]
+            target_x = self._alien_xy(target)[0] + 2.0
+            delta = target_x - self.player_x
+            move = min(abs(delta), dt * (22.0 + p["speed"] * 22.0))
+            self.player_x += move if delta > 0.0 else -move
+            if abs(delta) < 1.3:
+                self.player_bullet = [self.player_x, self.height - 5.0]
+                self.target += 3
+        else:
+            self.player_bullet[1] -= (15.0 + p["speed"] * 17.0) * dt
+            bx, by = self.player_bullet
+            hit = None
+            for idx in alive_indices:
+                ax, ay = self._alien_xy(idx)
+                if ax - 0.5 <= bx <= ax + 4.5 and ay <= by <= ay + 4.0:
+                    hit = idx
+                    break
+            if hit is not None:
+                self.alive[hit] = 0
+                alive_indices.remove(hit)
+                ax, ay = self._alien_xy(hit)
+                self.explosions.append([ax + 2.0, ay + 1.5, 0.0,
+                                        hit / max(1, len(self.alive) - 1)])
+                self.player_bullet = None
+            elif by < -1.0:
+                self.player_bullet = None
+
+        self.enemy_accumulator += dt * (0.30 + p["density"] * 1.05)
+        while self.enemy_accumulator >= 1.0 and alive_indices:
+            self.enemy_accumulator -= 1.0
+            shooter = alive_indices[(self.enemy_emission * 7) % len(alive_indices)]
+            ax, ay = self._alien_xy(shooter)
+            self.enemy_bullets.append([ax + 2.0, ay + 4.0])
+            self.enemy_emission += 1
+        falling = []
+        for shot in self.enemy_bullets:
+            shot[1] += (8.0 + p["speed"] * 8.0) * dt
+            if shot[1] >= self.height - 3 and abs(shot[0] - self.player_x) < 3.0:
+                self.explosions.append([self.player_x, self.height - 3.0, 0.0, 0.0])
+                self.reset_timer = 0.8
+            elif shot[1] < self.height:
+                falling.append(shot)
+        self.enemy_bullets = falling[-24:]
+        live_explosions = []
+        for explosion in self.explosions:
+            explosion[2] += dt
+            if explosion[2] < 0.75:
+                live_explosions.append(explosion)
+        self.explosions = live_explosions
+
+    def render(self, m, p, t, buf):
+        wanted = (3 + int(p["density"] * 2.99),
+                  9 + int(p["density"] * 5.0))
+        if self.alive is None or (self.rows, self.cols) != wanted:
+            self._reset(m, p["density"])
+        dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        self._update(m, p, dt)
+
+        w, h = self.width, self.height
+        surface = bytearray(w * h * 3)
+
+        def put(x, y, color):
+            if 0 <= x < w and 0 <= y < h:
+                q = (x * h + y) * 3
+                surface[q] = max(surface[q], color[0])
+                surface[q + 1] = max(surface[q + 1], color[1])
+                surface[q + 2] = max(surface[q + 2], color[2])
+
+        def sprite(mask, x0, y0, color):
+            for y, line in enumerate(mask):
+                for x, pixel in enumerate(line):
+                    if pixel == "1":
+                        put(x0 + x, y0 + y, color)
+
+        for k in range(42):
+            value = 12 + ((k * 13 + int(t * 5.0)) % 18)
+            put((k * 43 + 7) % w, (k * 17 + 1) % h, (value // 3, value // 2, value))
+        alien_frame = int(t * (2.5 + p["speed"] * 4.0)) & 1
+        for idx, alive in enumerate(self.alive):
+            if not alive:
+                continue
+            row, _ = divmod(idx, self.cols)
+            x, y = self._alien_xy(idx)
+            color = hsv((0.28 + row * 0.13 + t * 0.006) % 1.0, 0.86, 1.0)
+            sprite(self.ALIENS[alien_frame], int(x), int(y), color)
+
+        for k in range(4):
+            x = int((k + 1) * w / 5) - 3
+            sprite(self.SHIELD, x, h - 10, (30, 190, 80))
+        player_color = (255, 80, 60) if self.reset_timer > 0.0 else (80, 220, 255)
+        sprite(self.PLAYER, int(self.player_x) - 2, h - 4, player_color)
+        if self.player_bullet is not None:
+            x, y = int(self.player_bullet[0]), int(self.player_bullet[1])
+            put(x, y, (255, 255, 255))
+            put(x, y + 1, (80, 220, 255))
+        for x, y in self.enemy_bullets:
+            put(int(x), int(y), (255, 245, 50))
+            put(int(x), int(y) - 1, (255, 50, 30))
+        for x, y, age, tone in self.explosions:
+            color = hsv(tone, 0.65, max(0.0, 1.0 - age / 0.75))
+            radius = 1 + int(age * 7.0)
+            for dx, dy in ((-radius, 0), (radius, 0), (0, -radius), (0, radius),
+                           (-radius, -radius), (radius, -radius),
+                           (-radius, radius), (radius, radius)):
+                put(int(x) + dx, int(y) + dy, color)
+
+        ufo_cycle = t % 8.0
+        if ufo_cycle < 3.8:
+            ufo_x = int(-8 + (w + 16) * ufo_cycle / 3.8)
+            sprite(self.UFO, ufo_x, 0, (255, 35, 80))
+        _surface_to_buffer(surface, self.pixel_of, buf)
+
+
+class Lasers(Pattern):
+    """A sweeping fan of neon laser beams. Intersections flare white;
+    density controls the number of independently moving beams."""
+    name = "lasers"
+    defaults = {"color1": (0, 255, 220), "color2": (255, 0, 180),
+                "speed": 0.55, "density": 0.55}
+
+    def render(self, m, p, t, buf):
+        sx, sid, _ = _side_unroll(m)
+        count = 3 + int(p["density"] * 6.0)
+        motion = t * (0.28 + p["speed"] * 1.55)
+        c1, c2 = p["color1"], p["color2"]
+        beams = []
+        for side in range(3):
+            side_beams = []
+            for k in range(count):
+                x0 = (k + 0.5) / count
+                ph = motion * (0.72 + (k % 4) * 0.11) + k * 1.73 + side * 0.91
+                x1 = 0.5 + 0.52 * math.sin(ph)
+                slope = x1 - x0
+                inv_len = 1.0 / math.sqrt(1.0 + slope * slope)
+                color = _mix(c1, c2, k / max(1, count - 1))
+                side_beams.append((x0, slope, inv_len, color))
+            beams.append(side_beams)
+
+        # Wide colored bloom plus a narrow white-hot beam. The bloom ensures
+        # that a moving line never disappears between physical tube columns.
+        bloom_w = 0.052
+        core_w = 0.014
+        along = m.along
+        for i in range(m.total_pixels):
+            x, y, side = sx[i], along[i], sid[i]
+            red = green = blue = 1
+            for x0, slope, inv_len, color in beams[side]:
+                d = abs(x - (x0 + slope * y)) * inv_len
+                if d >= bloom_w:
+                    continue
+                bloom = 1.0 - d / bloom_w
+                bloom = bloom * bloom * bloom
+                if d < core_w:
+                    core = 1.0 - d / core_w
+                    core *= core
+                else:
+                    core = 0.0
+                level = bloom * 0.18 + core * 0.95
+                hot = core * core * core * core * 0.42
+                red += int(color[0] * level + 255 * hot)
+                green += int(color[1] * level + 255 * hot)
+                blue += int(color[2] * level + 255 * hot)
+
+            # A dim horizontal scan line gives the fan another plane of motion.
+            scan_y = (motion * 0.115 + side * 0.29) % 1.0
+            scan_d = abs(y - scan_y)
+            if scan_d < 0.035:
+                scan = (1.0 - scan_d / 0.035) ** 3 * 0.42
+                red += int(c2[0] * scan)
+                green += int(c2[1] * scan)
+                blue += int(c2[2] * scan)
+            j = i * 3
+            buf[j] = min(255, red)
+            buf[j + 1] = min(255, green)
+            buf[j + 2] = min(255, blue)
+
+
+class Collider(Pattern):
+    """Restless filaments cross and react. Every genuine line intersection
+    emits a growing shockwave; when that wave hits another filament, the
+    contact point re-ignites white. The geometry creates the events instead
+    of playing back a canned burst sequence."""
+    name = "collider"
+    defaults = {"color1": (0, 255, 180), "color2": (255, 20, 120),
+                "speed": 0.48, "density": 0.5}
+
+    PERIM_OVER_TUBE = 9.8 / 2.5
+
+    def __init__(self):
+        self.ripples = []       # [side, x, y, age, color_blend]
+        self.last_t = None
+        self.emit_accumulator = 0.0
+        self.emission = 0
+
+    @staticmethod
+    def _geometry(p, t):
+        count = 4 + int(p["density"] * 4.0)
+        motion = t * (0.20 + p["speed"] * 0.92)
+        c1, c2 = p["color1"], p["color2"]
+        all_beams, all_hits = [], []
+        for side in range(3):
+            beams = []
+            for k in range(count):
+                phase = k * 1.83 + side * 0.74
+                top = 0.5 + 0.53 * math.sin(
+                    motion * (0.61 + (k % 3) * 0.13) + phase)
+                bottom = 0.5 + 0.53 * math.sin(
+                    -motion * (0.47 + (k % 4) * 0.09) + phase * 1.37 + 1.1)
+                slope = bottom - top
+                inv_len = 1.0 / math.sqrt(1.0 + slope * slope)
+                color = _mix(c1, c2, k / max(1, count - 1))
+                beams.append((top, slope, inv_len, color))
+            hits = []
+            for a in range(count):
+                for b in range(a + 1, count):
+                    top_a, slope_a = beams[a][0], beams[a][1]
+                    top_b, slope_b = beams[b][0], beams[b][1]
+                    denom = slope_a - slope_b
+                    if abs(denom) < 1e-6:
+                        continue
+                    y = (top_b - top_a) / denom
+                    x = top_a + slope_a * y
+                    if 0.0 <= x <= 1.0 and 0.0 <= y <= 1.0:
+                        tone = (a + b) / max(1, 2 * count - 2)
+                        hits.append((x, y, tone))
+            all_beams.append(beams)
+            all_hits.append(hits)
+        return all_beams, all_hits
+
+    def _emit(self, hits, initial=False):
+        for side, side_hits in enumerate(hits):
+            if not side_hits:
+                continue
+            if initial:
+                chosen = side_hits[:2]
+            else:
+                chosen = [side_hits[(self.emission + side) % len(side_hits)]]
+            for x, y, tone in chosen:
+                self.ripples.append([side, x, y, 0.08 if initial else 0.0, tone])
+        self.emission += 1
+        if len(self.ripples) > 21:
+            self.ripples = self.ripples[-21:]
+
+    def render(self, m, p, t, buf):
+        beams, hits = self._geometry(p, t)
+        first = self.last_t is None
+        dt = 0.0 if first else max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        alive = []
+        for ripple in self.ripples:
+            ripple[3] += dt
+            if ripple[3] < 2.0:
+                alive.append(ripple)
+        self.ripples = alive
+        if first:
+            self._emit(hits, initial=True)
+        else:
+            interval = 0.21 + (1.0 - p["density"]) * 0.25
+            self.emit_accumulator += dt
+            while self.emit_accumulator >= interval:
+                self.emit_accumulator -= interval
+                self._emit(hits)
+
+        sx, sid, fracs = _side_unroll(m)
+        aspects = [f * self.PERIM_OVER_TUBE for f in fracs]
+        by_side = [[], [], []]
+        for ripple in self.ripples:
+            by_side[ripple[0]].append(ripple)
+        c1, c2 = p["color1"], p["color2"]
+        bloom_w, core_w = 0.047, 0.012
+        along = m.along
+        hypot = math.hypot
+        for i in range(m.total_pixels):
+            x, y, side = sx[i], along[i], sid[i]
+            red, green, blue = 1, 0, 2
+            line_energy = 0.0
+            for top, slope, inv_len, color in beams[side]:
+                d = abs(x - (top + slope * y)) * inv_len
+                if d >= bloom_w:
+                    continue
+                bloom = 1.0 - d / bloom_w
+                bloom = bloom * bloom * bloom
+                if d < core_w:
+                    core = 1.0 - d / core_w
+                    core *= core
+                else:
+                    core = 0.0
+                strength = bloom * 0.16 + core * 0.76
+                line_energy = min(1.0, line_energy + strength)
+                red += int(color[0] * strength + 210 * core * core)
+                green += int(color[1] * strength + 210 * core * core)
+                blue += int(color[2] * strength + 210 * core * core)
+
+            for _, cx, cy, age, tone in by_side[side]:
+                radius = age * (0.13 + p["speed"] * 0.29)
+                d = hypot((x - cx) * aspects[side], y - cy)
+                width = 0.020 + age * 0.010
+                delta = abs(d - radius)
+                if delta >= width * 4.0 and d >= 0.09:
+                    continue
+                if delta < width:
+                    ring = 1.0 - delta / width
+                    ring *= ring
+                else:
+                    ring = 0.0
+                glow_w = width * 4.0
+                if delta < glow_w:
+                    glow = 1.0 - delta / glow_w
+                    glow = glow * glow * glow
+                else:
+                    glow = 0.0
+                core = max(0.0, 1.0 - d / 0.09) * max(0.0, 1.0 - age / 0.6)
+                fade = max(0.0, 1.0 - age / 2.0)
+                reaction = ring * line_energy
+                color = _mix(c1, c2, tone)
+                level = (ring * 0.72 + glow * 0.20 + core * 0.75) * fade
+                hot = (ring * ring * 0.34 + reaction * 0.90 + core * 0.55) * fade
+                red += int(color[0] * level + 255 * hot)
+                green += int(color[1] * level + 255 * hot)
+                blue += int(color[2] * level + 255 * hot)
+            j = i * 3
+            buf[j] = min(255, red)
+            buf[j + 1] = min(255, green)
+            buf[j + 2] = min(255, blue)
+
+
+class Supernova(Pattern):
+    """Overlapping stellar shockwaves bloom across each side: white-hot
+    rims fade from color1 into color2 as they expand."""
+    name = "supernova"
+    defaults = {"color1": (255, 70, 15), "color2": (80, 30, 255),
+                "speed": 0.5, "density": 0.5}
+
+    PERIM_OVER_TUBE = 9.8 / 2.5
+    CENTERS = ((0.16, 0.24), (0.72, 0.68), (0.43, 0.46),
+               (0.84, 0.30), (0.27, 0.78), (0.58, 0.16))
+
+    def render(self, m, p, t, buf):
+        sx, sid, fracs = _side_unroll(m)
+        aspects = [f * self.PERIM_OVER_TUBE for f in fracs]
+        count = 2 + int(p["density"] * 4.0)
+        rate = 0.045 + p["speed"] * 0.17
+        c1, c2 = p["color1"], p["color2"]
+        bursts = []
+        for side in range(3):
+            sb = []
+            reach = 0.76 + aspects[side] * 0.45
+            for k in range(count):
+                phase = (t * rate + k / count + side * 0.217) % 1.0
+                bx, by = self.CENTERS[(k + side * 2) % len(self.CENTERS)]
+                bx = (bx + side * 0.137) % 1.0
+                color = _mix(c1, c2, ((k + side) % count) / max(1, count - 1))
+                sb.append((bx, by, phase * reach, phase, color))
+            bursts.append(sb)
+
+        hypot = math.hypot
+        along = m.along
+        for i in range(m.total_pixels):
+            side = sid[i]
+            x, y = sx[i], along[i]
+            red, green, blue = 1, 0, 3
+            for bx, by, radius, phase, color in bursts[side]:
+                d = hypot((x - bx) * aspects[side], y - by)
+                thickness = 0.022 + phase * 0.032
+                delta = abs(d - radius)
+                if delta < thickness:
+                    ring = 1.0 - delta / thickness
+                    ring *= ring
+                else:
+                    ring = 0.0
+                glow_width = thickness * 4.5
+                if delta < glow_width:
+                    glow = 1.0 - delta / glow_width
+                    glow = glow * glow * glow
+                else:
+                    glow = 0.0
+                fade = 1.0 - phase * 0.70
+                if d < 0.10 and phase < 0.20:
+                    core = 1.0 - d / 0.10
+                    core = core * core * (1.0 - phase / 0.20)
+                else:
+                    core = 0.0
+                level = (ring * 0.95 + glow * 0.24) * fade + core
+                hot = ring ** 3 * 0.60 * fade + core * 0.85
+                red += int(color[0] * level + 255 * hot)
+                green += int(color[1] * level + 255 * hot)
+                blue += int(color[2] * level + 255 * hot)
+            j = i * 3
+            buf[j] = min(255, red)
+            buf[j + 1] = min(255, green)
+            buf[j + 2] = min(255, blue)
+
+
 class Fireworks(Pattern):
     """Rockets shoot up the bristles and burst into gravity-bent spark
     showers. speed = launch rate, density = burst size."""
@@ -1905,9 +2980,13 @@ def _load_sprite_patterns():
 
 
 _BASE = [
-    Rainbow(), Aurora(), Fire(), Plasma(), RainbowSnake(), Meteors(),
-    Storm(), Stripes(), Cubes(), Breathe(), RainbowBreathe(), Wave(), Comet(),
-    Rain(), Sparkle(), Confetti(), BroomStroke(), PacMan(), Fireworks(),
+    Rainbow(), Scrub(), Ribbons(), Voronoi(), Life(), Reaction(),
+    Breakout(),
+    SpaceInvaders(), Aurora(), Supernova(), Lasers(), Collider(), Fire(),
+    Plasma(), RainbowSnake(),
+    Meteors(), Storm(), Stripes(), Cubes(),
+    Breathe(), RainbowBreathe(), Wave(), Comet(), Rain(), Sparkle(), Confetti(),
+    BroomStroke(), PacMan(), Fireworks(),
     Matrix(), Disco(), EKG(), DVD(), DVDPenis(), Police(), Butthole(), Boobs(), Penis(),
     Twerk(), Poop(), UFO(), GooglyEyes(), Sperm(), Lava(), Hypno(), Solid(),
     EmojiSprite(),

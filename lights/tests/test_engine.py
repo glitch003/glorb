@@ -42,6 +42,16 @@ class ObservableLock:
         self._lock.release()
 
 
+class EngineDefaultTests(unittest.TestCase):
+    def test_plasma_is_the_launch_pattern(self):
+        engine = make_engine()
+        try:
+            self.assertEqual(engine.pattern, "plasma")
+            self.assertEqual(engine.state()["pattern"], "plasma")
+        finally:
+            engine.stop()
+
+
 class EngineBufferingTests(unittest.TestCase):
     def setUp(self):
         self.engine = make_engine(fps=30.0)

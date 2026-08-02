@@ -117,12 +117,23 @@ the reason.
 
 ## Patterns
 
-Registered in `NAMES` order (from [webui/patterns.py](webui/patterns.py)):
+Selected built-ins from [webui/patterns.py](webui/patterns.py) (the control UI
+always shows the complete live registry):
 
 | name | what it does |
 |------|--------------|
 | `solid` | fill everything with color1 |
 | `rainbow` | hue sweep around the perimeter |
+| `scrub` | a giant brushing stroke swishing front-to-back and reversing |
+| `ribbons` | intertwined neon strands that flare where they braid together |
+| `voronoi` | living stained-glass cells that drift and exchange neighbors |
+| `life` | Conway's Game of Life with age color, ghost trails, and fresh seeds |
+| `reaction` | evolving reaction-diffusion alien coral and labyrinths |
+| `breakout` | a self-playing brick-breaking game with impact sparks |
+| `invaders` | an autonomous Space Invaders battle with animated formations and crossfire |
+| `supernova` | overlapping stellar shockwaves blooming across the car |
+| `lasers` | sweeping two-color laser fans with white-hot intersections |
+| `collider` | moving filaments whose intersections emit reactive shockwaves |
 | `snake` | rainbow snake along the boustrophedon path |
 | `brooms` | broom-stroke motif repeated around the car |
 | `pacman` | Pac-Man chomps a row of dots top→bottom, a ghost chasing on his tail |

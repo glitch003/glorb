@@ -124,6 +124,58 @@ class PatternRenderTests(unittest.TestCase):
                 pattern.render(self.model, pattern.params(), 0.0, frame)
                 self.assertEqual(len(frame), self.model.nbytes)
 
+    def test_show_patterns_render_nontrivial_frames(self):
+        for name in ("scrub", "ribbons", "voronoi", "life", "reaction",
+                     "breakout", "invaders", "collider", "lasers", "supernova"):
+            with self.subTest(pattern=name):
+                pattern = copy.deepcopy(REGISTRY[name])
+                frame = bytearray(self.model.nbytes)
+                early = None
+                for step in range(45):
+                    pattern.render(self.model, pattern.params(), step / 30.0,
+                                   frame)
+                    if step == 10:
+                        early = bytes(frame)
+                colors = set(zip(frame[0::3], frame[1::3], frame[2::3]))
+                self.assertGreater(len(colors), 16)
+                self.assertGreater(max(frame), 128)
+                changed = sum(a != b for a, b in zip(early, frame))
+                self.assertGreater(changed, self.model.nbytes * 0.05)
+
+    def test_scrub_sweeps_from_the_front_to_the_rear(self):
+        pattern = copy.deepcopy(REGISTRY["scrub"])
+        params = pattern.params()
+        front = bytearray(self.model.nbytes)
+        rear = bytearray(self.model.nbytes)
+        pattern.render(self.model, params, 0.0, front)
+        half_cycle = 0.5 / (0.055 + params["speed"] * 0.20)
+        pattern.render(self.model, params, half_cycle, rear)
+        longitudinal = pattern._longitudinal(self.model)
+
+        def region_energy(frame, predicate):
+            return sum(sum(frame[i * 3:i * 3 + 3])
+                       for i, x in enumerate(longitudinal) if predicate(x))
+
+        self.assertGreater(region_energy(front, lambda x: x < 0.15),
+                           region_energy(front, lambda x: x > 0.85))
+        self.assertGreater(region_energy(rear, lambda x: x > 0.85),
+                           region_energy(rear, lambda x: x < 0.15))
+
+    def test_arcade_patterns_play_forward_instead_of_looping_a_scene(self):
+        cases = (("breakout", "bricks"), ("invaders", "alive"))
+        for name, state_name in cases:
+            with self.subTest(pattern=name):
+                pattern = copy.deepcopy(REGISTRY[name])
+                frame = bytearray(self.model.nbytes)
+                pattern.render(self.model, pattern.params(), 0.0, frame)
+                initial = sum(getattr(pattern, state_name))
+                minimum = initial
+                for step in range(1, 301):
+                    pattern.render(self.model, pattern.params(), step / 30.0,
+                                   frame)
+                    minimum = min(minimum, sum(getattr(pattern, state_name)))
+                self.assertLess(minimum, initial)
+
 
 if __name__ == "__main__":
     unittest.main()

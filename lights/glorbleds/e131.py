@@ -20,14 +20,16 @@ _VECTOR_DMP = 0x02
 
 def iface_for(host: str) -> str | None:
     """Local IP of the interface that routes to host (for multicast pinning)."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s = None
     try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect((host, E131_PORT))
         return s.getsockname()[0]
     except OSError:
         return None
     finally:
-        s.close()
+        if s is not None:
+            s.close()
 
 
 def multicast_addr(universe: int) -> str:
@@ -38,6 +40,10 @@ def multicast_addr(universe: int) -> str:
 def build_packet(universe: int, dmx: bytes, sequence: int,
                  cid: bytes, source_name: str = "glorb") -> bytes:
     """Build one E1.31 data packet. dmx is up to 512 channel bytes."""
+    if not 1 <= universe <= 63999:
+        raise ValueError("E1.31 universe must be in the range 1..63999")
+    if len(cid) != 16:
+        raise ValueError("E1.31 CID must be exactly 16 bytes")
     if len(dmx) > 512:
         raise ValueError("DMX data exceeds 512 channels")
     dmx = dmx.ljust(512, b"\x00")          # pad to a full universe
@@ -88,6 +94,9 @@ class Sender:
         self.cid = cid or uuid.uuid4().bytes
         self._seq: dict[int, int] = {}
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Never let a congested UDP socket stall animation/control threads.
+        # A skipped frame is preferable to replaying stale LED data.
+        self.sock.setblocking(False)
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 8)
         if iface:
             self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF,

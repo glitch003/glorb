@@ -42,6 +42,27 @@ def _mix(c1, c2, w):
             int(c1[2] + (c2[2] - c1[2]) * w))
 
 
+def _frame_steps(last_t, t):
+    """Elapsed time as 30 Hz simulation steps, capped after pauses."""
+    if last_t is None:
+        return 1.0
+    return max(0.0, min(3.0, (t - last_t) * 30.0))
+
+
+def _event_count(events_per_step, steps):
+    """Stochastically round an event rate while preserving its time basis."""
+    expected = events_per_step * steps
+    whole = int(expected)
+    fraction = expected - whole
+    return whole + (1 if fraction > 0.0 and random.random() < fraction else 0)
+
+
+def _event_probability(probability_per_step, steps):
+    """Probability of at least one event across fractional reference steps."""
+    probability_per_step = max(0.0, min(1.0, probability_per_step))
+    return 1.0 - (1.0 - probability_per_step) ** steps
+
+
 def _side_unroll(m):
     """Per-pixel side-local coords, cached on the model. Returns (sx, sid,
     fracs): sx[i] = 0..1 across the pixel's own side, sid[i] = side index,
@@ -209,16 +230,19 @@ class Sparkle(Pattern):
 
     def __init__(self):
         self.level = None
+        self.last_t = None
 
     def render(self, m, p, t, buf):
         n = m.total_pixels
         if self.level is None or len(self.level) != n:
             self.level = [0.0] * n
         lev = self.level
-        spawn = int(1 + p["density"] * 40)
+        steps = _frame_steps(self.last_t, t)
+        self.last_t = t
+        spawn = _event_count(1 + p["density"] * 40, steps)
         for _ in range(spawn):
             lev[random.randrange(n)] = 1.0
-        decay = 0.80 + p["speed"] * 0.18
+        decay = (0.80 + p["speed"] * 0.18) ** steps
         c = p["color1"]
         c2 = p["color2"]
         b0, b1, b2 = int(c2[0] * 0.10), int(c2[1] * 0.10), int(c2[2] * 0.10)
@@ -306,17 +330,15 @@ class Fire(Pattern):
 
     def __init__(self):
         self.heat = None
+        self.last_t = None
+        self._accumulator = 0.0
 
-    def render(self, m, p, t, buf):
-        nt = len(m.tubes)
-        ppt = m.px_per_tube
-        if self.heat is None or len(self.heat) != nt * ppt:
-            self.heat = [0.0] * (nt * ppt)
+    def _step(self, nt, ppt, p):
         heat = self.heat
+        assert heat is not None
         cool = (1.05 - p["density"]) * 0.09     # more density = taller flames
-        sparks = 0.35 + p["speed"] * 0.55       # ignition chance per tube/frame
+        sparks = 0.35 + p["speed"] * 0.55       # ignition chance per tube/step
         rnd = random.random
-        pal = self.PAL
         for ti in range(nt):
             base = ti * ppt
             # cool every cell a random amount
@@ -332,13 +354,31 @@ class Fire(Pattern):
                 j = base + ppt - 1 - int(rnd() * 4)
                 h = heat[j] + 0.5 + rnd() * 0.5
                 heat[j] = h if h < 1.0 else 1.0
-            # paint
-            for j in range(ppt):
-                r, g, b = pal[int(heat[base + j] * 255)]
-                idx = (base + j) * 3
-                buf[idx] = r
-                buf[idx + 1] = g
-                buf[idx + 2] = b
+
+    def render(self, m, p, t, buf):
+        nt = len(m.tubes)
+        ppt = m.px_per_tube
+        if self.heat is None or len(self.heat) != nt * ppt:
+            self.heat = [0.0] * (nt * ppt)
+        if self.last_t is None:
+            elapsed = 1.0 / 30.0
+        else:
+            elapsed = max(0.0, min(0.1, t - self.last_t))
+        self.last_t = t
+        self._accumulator += elapsed
+        steps = int(self._accumulator * 30.0 + 1e-9)
+        self._accumulator -= steps / 30.0
+        for _ in range(steps):
+            self._step(nt, ppt, p)
+
+        heat = self.heat
+        pal = self.PAL
+        for i, value in enumerate(heat):
+            r, g, b = pal[int(value * 255)]
+            idx = i * 3
+            buf[idx] = r
+            buf[idx + 1] = g
+            buf[idx + 2] = b
 
 
 class Rain(Pattern):
@@ -393,6 +433,7 @@ class Confetti(Pattern):
     def __init__(self):
         self.lev = None
         self.col = None
+        self.last_t = None
 
     def render(self, m, p, t, buf):
         n = m.total_pixels
@@ -400,11 +441,13 @@ class Confetti(Pattern):
             self.lev = [0.0] * n
             self.col = [(0, 0, 0)] * n
         lev, col = self.lev, self.col
-        for _ in range(1 + int(p["density"] * 30)):
+        steps = _frame_steps(self.last_t, t)
+        self.last_t = t
+        for _ in range(_event_count(1 + int(p["density"] * 30), steps)):
             idx = random.randrange(n)
             lev[idx] = 1.0
             col[idx] = hsv(random.random(), 1.0, 1.0)
-        decay = 0.80 + p["speed"] * 0.18
+        decay = (0.80 + p["speed"] * 0.18) ** steps
         for i in range(n):
             v = lev[i] * decay
             lev[i] = v
@@ -817,12 +860,12 @@ class Storm(Pattern):
         ppt = m.px_per_tube
         if self.flash is None or len(self.flash) != nt:
             self.flash = [0.0] * nt
-        dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
+        steps = _frame_steps(self.last_t, t)
         self.last_t = t
         flash = self.flash
         # strikes
-        expected = (0.4 + p["density"] * 4.0) * dt
-        if random.random() < expected:
+        strike_per_step = (0.4 + p["density"] * 4.0) / 30.0
+        if random.random() < _event_probability(strike_per_step, steps):
             c = random.randrange(nt)
             spread = 1 + int(random.random() * 3)
             for d in range(-spread, spread + 1):
@@ -830,13 +873,14 @@ class Storm(Pattern):
                 ti = (c + d) % nt
                 if lvl > flash[ti]:
                     flash[ti] = lvl
-        decay = 0.93 - p["speed"] * 0.12
+        decay = (0.93 - p["speed"] * 0.12) ** steps
+        redip = _event_probability(0.25, steps)
         c1 = p["color1"]
         sin = math.sin
         for ti in range(nt):
             fl = flash[ti]
             flash[ti] = fl * decay
-            if fl > 0.03 and random.random() < 0.25:
+            if fl > 0.03 and random.random() < redip:
                 fl *= 0.35                      # strobe-y re-dip
             amb = 0.5 + 0.5 * sin(t * 0.7 + ti * 0.37)
             a = 0.22 + 0.25 * amb

@@ -1,5 +1,7 @@
 .DS_Store
 .env
+__pycache__/
+*.py[cod]
 logistics/passwords.md
 
 # Bulk Drive export — kept locally, not tracked in git (too big, mostly binaries)

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+<style>
+        :root { color-scheme: light; }
+        * { vector-effect: non-scaling-stroke; }
+        .sheet { fill: #fffdfa; stroke: #1f2937; stroke-width: 2; }
+        .block { fill: #f8fafc; stroke: #172033; stroke-width: 2.2; }
+        .module { fill: #fff8e7; stroke: #8a5a00; stroke-width: 2.4; }
+        .shifter { fill: #edf5ff; stroke: #1d4f91; stroke-width: 2.4; }
+        .connector { fill: #fff; stroke: #374151; stroke-width: 2; }
+        .loopbox { fill: #fff4f2; stroke: #a62c20; stroke-width: 2.2; }
+        .note-box { fill: #fff9db; stroke: #9a7500; stroke-width: 1.8; }
+        .warn-box { fill: #fff0f0; stroke: #b42318; stroke-width: 2; }
+        .wire { fill: none; stroke: #111827; stroke-width: 3; stroke-linejoin: round; }
+        .wire5 { fill: none; stroke: #c62828; stroke-width: 3.5; stroke-linejoin: round; }
+        .wire3 { fill: none; stroke: #7b1fa2; stroke-width: 3.5; stroke-linejoin: round; }
+        .wiretx { fill: none; stroke: #1565c0; stroke-width: 3.5; stroke-linejoin: round; }
+        .wirerx { fill: none; stroke: #00876c; stroke-width: 3.5; stroke-linejoin: round; }
+        .wirefault { fill: none; stroke: #d97706; stroke-width: 3; stroke-dasharray: 8 6; }
+        .ground { fill: none; stroke: #111827; stroke-width: 3.5; stroke-linejoin: round; }
+        .pin { stroke: #111827; stroke-width: 2; }
+        .nc { stroke: #6b7280; stroke-width: 2; }
+        .junction { fill: #111827; stroke: none; }
+        .label { font: 18px Arial, Helvetica, sans-serif; fill: #111827; }
+        .small { font: 15px Arial, Helvetica, sans-serif; fill: #374151; }
+        .tiny { font: 13px Arial, Helvetica, sans-serif; fill: #4b5563; }
+        .title { font: bold 30px Arial, Helvetica, sans-serif; fill: #111827; }
+        .subtitle { font: 17px Arial, Helvetica, sans-serif; fill: #374151; }
+        .block-title { font: bold 20px Arial, Helvetica, sans-serif; fill: #111827; }
+        .pin-label { font: 15px 'Courier New', monospace; fill: #111827; }
+        .net { font: bold 15px 'Courier New', monospace; fill: #111827; }
+        .note { font: 16px Arial, Helvetica, sans-serif; fill: #332b00; }
+        .warning { font: bold 15px Arial, Helvetica, sans-serif; fill: #8a1c13; }
+        .footer { font: 13px Arial, Helvetica, sans-serif; fill: #4b5563; }
+        </style>
+
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#111827"/>
+          </marker>
+          <marker id="arrow-blue" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#1565c0"/>
+          </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#00876c"/>
+          </marker>
+        </defs>
+        
+<rect x="18" y="18" width="1564" height="1014" rx="0" class="sheet"/>
+<text x="55" y="65" class="title" text-anchor="start">Arduino Due to Tesla Model S/X module BMS</text>
+<text x="55" y="92" class="subtitle" text-anchor="start">Physical table order • one 6S module • EVTV two-module harness • BMB powered from Due +5 V</text>
+<rect x="60" y="185" width="280" height="440" rx="5" class="block"/>
+<text x="200.0" y="221" class="block-title" text-anchor="middle">U1  ARDUINO DUE</text>
+<text x="200.0" y="246" class="small" text-anchor="middle">SAM3X8E • 3.3 V I/O</text>
+<line x1="318" y1="295" x2="358" y2="295" class="pin"/>
+<circle cx="358" cy="295" r="3" class="junction"/>
+<text x="310" y="301" class="pin-label" text-anchor="end">3V3</text>
+<line x1="318" y1="355" x2="358" y2="355" class="pin"/>
+<circle cx="358" cy="355" r="3" class="junction"/>
+<text x="310" y="361" class="pin-label" text-anchor="end">+5V header</text>
+<line x1="318" y1="425" x2="358" y2="425" class="pin"/>
+<circle cx="358" cy="425" r="3" class="junction"/>
+<text x="310" y="431" class="pin-label" text-anchor="end">D18 / TX1</text>
+<line x1="318" y1="495" x2="358" y2="495" class="pin"/>
+<circle cx="358" cy="495" r="3" class="junction"/>
+<text x="310" y="501" class="pin-label" text-anchor="end">D19 / RX1</text>
+<line x1="318" y1="565" x2="358" y2="565" class="pin"/>
+<circle cx="358" cy="565" r="3" class="junction"/>
+<text x="310" y="571" class="pin-label" text-anchor="end">GND</text>
+<text x="80" y="605" class="small" text-anchor="start"><tspan x="80" dy="0">Native USB: firmware + console</tspan><tspan x="80" dy="18">Serial console: 115200 baud</tspan></text>
+<rect x="455" y="185" width="300" height="440" rx="5" class="shifter"/>
+<text x="605.0" y="221" class="block-title" text-anchor="middle">U2  LEVEL SHIFTER</text>
+<text x="605.0" y="246" class="small" text-anchor="middle">HiLetgo BSS138-style board</text>
+<line x1="437" y1="295" x2="473" y2="295" class="pin"/>
+<circle cx="437" cy="295" r="3" class="junction"/>
+<text x="482" y="301" class="pin-label" text-anchor="start">LV</text>
+<line x1="437" y1="425" x2="473" y2="425" class="pin"/>
+<circle cx="437" cy="425" r="3" class="junction"/>
+<text x="482" y="431" class="pin-label" text-anchor="start">LV1</text>
+<line x1="437" y1="495" x2="473" y2="495" class="pin"/>
+<circle cx="437" cy="495" r="3" class="junction"/>
+<text x="482" y="501" class="pin-label" text-anchor="start">LV2</text>
+<line x1="437" y1="565" x2="473" y2="565" class="pin"/>
+<circle cx="437" cy="565" r="3" class="junction"/>
+<text x="482" y="571" class="pin-label" text-anchor="start">GND</text>
+<line x1="737" y1="355" x2="773" y2="355" class="pin"/>
+<circle cx="773" cy="355" r="3" class="junction"/>
+<text x="728" y="361" class="pin-label" text-anchor="end">HV</text>
+<line x1="737" y1="425" x2="773" y2="425" class="pin"/>
+<circle cx="773" cy="425" r="3" class="junction"/>
+<text x="728" y="431" class="pin-label" text-anchor="end">HV1</text>
+<line x1="737" y1="495" x2="773" y2="495" class="pin"/>
+<circle cx="773" cy="495" r="3" class="junction"/>
+<text x="728" y="501" class="pin-label" text-anchor="end">HV2</text>
+<line x1="737" y1="565" x2="773" y2="565" class="pin"/>
+<circle cx="773" cy="565" r="3" class="junction"/>
+<text x="728" y="571" class="pin-label" text-anchor="end">GND</text>
+<line x1="520" y1="425" x2="690" y2="425" class="wiretx"/>
+<line x1="520" y1="495" x2="690" y2="495" class="wirerx"/>
+<text x="605.0" y="415" class="tiny" text-anchor="middle">CHANNEL 1</text>
+<text x="605.0" y="485" class="tiny" text-anchor="middle">CHANNEL 2</text>
+<text x="475" y="605" class="small" text-anchor="start"><tspan x="475" dy="0">Channels 3 and 4: unused</tspan><tspan x="475" dy="18">On-board pull-ups: nominally 10 kΩ</tspan></text>
+<polyline points="358,295 398,295 398,295 437,295" class="wire3"/>
+<polyline points="358,355 410,355 410,150 795,150 795,355 773,355" class="wire5"/>
+<polyline points="358,425 437,425" class="wiretx" marker-end="url(#arrow-blue)"/>
+<polyline points="437,495 358,495" class="wirerx" marker-end="url(#arrow-green)"/>
+<polyline points="358,565 405,565 405,565 437,565" class="ground"/>
+<rect x="855" y="185" width="245" height="440" rx="5" class="connector"/>
+<text x="977.5" y="221" class="block-title" text-anchor="middle">EVTV HARNESS</text>
+<text x="977.5" y="246" class="small" text-anchor="middle">large controller-end plug</text>
+<line x1="837" y1="355" x2="875" y2="355" class="pin"/>
+<circle cx="837" cy="355" r="3" class="junction"/>
+<text x="885" y="361" class="pin-label" text-anchor="start">+5V</text>
+<line x1="837" y1="425" x2="875" y2="425" class="pin"/>
+<circle cx="837" cy="425" r="3" class="junction"/>
+<text x="885" y="431" class="pin-label" text-anchor="start">BMS_TX</text>
+<line x1="837" y1="495" x2="875" y2="495" class="pin"/>
+<circle cx="837" cy="495" r="3" class="junction"/>
+<text x="885" y="501" class="pin-label" text-anchor="start">BMS_RX</text>
+<line x1="837" y1="565" x2="875" y2="565" class="pin"/>
+<circle cx="837" cy="565" r="3" class="junction"/>
+<text x="885" y="571" class="pin-label" text-anchor="start">GND</text>
+<polyline points="773,355 837,355" class="wire5"/>
+<polyline points="773,425 837,425" class="wiretx" marker-end="url(#arrow-blue)"/>
+<polyline points="837,495 773,495" class="wirerx" marker-end="url(#arrow-green)"/>
+<polyline points="773,565 837,565" class="ground"/>
+<line x1="1100" y1="300" x2="1170" y2="300" class="wire"/>
+<line x1="1100" y1="310" x2="1170" y2="310" class="wire"/>
+<line x1="1100" y1="320" x2="1170" y2="320" class="wire"/>
+<text x="1135" y="287" class="tiny" text-anchor="middle">factory-wired cable</text>
+<text x="875" y="265" class="small" text-anchor="start"><tspan x="875" dy="0">Internal signal path:</tspan><tspan x="875" dy="23">BMS_TX → J1/module → J2</tspan><tspan x="875" dy="23">loopback → BMS_RX</tspan><tspan x="875" dy="23">+5 V and GND feed the BMB</tspan></text>
+<rect x="875" y="690" width="360" height="190" rx="5" class="loopbox"/>
+<text x="1055.0" y="720" class="block-title" text-anchor="middle">J2  UNUSED END PLUG</text>
+<text x="1055.0" y="744" class="small" text-anchor="middle">LOOPBACK CAP — only these two jumpers</text>
+<circle cx="955" cy="790" r="7" class="junction"/>
+<circle cx="1155" cy="790" r="7" class="junction"/>
+<polyline points="955,790 1000,790 1000,775 1110,775 1110,790 1155,790" class="wirerx"/>
+<text x="933" y="796" class="pin-label" text-anchor="end">pin 2</text>
+<text x="1177" y="796" class="pin-label" text-anchor="start">pin 4</text>
+<text x="1055.0" y="767" class="net" text-anchor="middle">JP1</text>
+<circle cx="955" cy="832" r="7" class="junction"/>
+<circle cx="1155" cy="832" r="7" class="junction"/>
+<polyline points="955,832 1000,832 1000,817 1110,817 1110,832 1155,832" class="wirerx"/>
+<text x="933" y="838" class="pin-label" text-anchor="end">pin 7</text>
+<text x="1177" y="838" class="pin-label" text-anchor="start">pin 9</text>
+<text x="1055.0" y="809" class="net" text-anchor="middle">JP2</text>
+<polyline points="977.5,625 977.5,690" class="wire"/>
+<text x="1055.0" y="868" class="tiny" text-anchor="middle">Other J2 pins remain live — cap and insulate</text>
+<rect x="1320" y="190" width="225" height="480" rx="5" class="module"/>
+<text x="1432.5" y="228" class="block-title" text-anchor="middle">TESLA 6S MODULE</text>
+<text x="1432.5" y="254" class="small" text-anchor="middle">original BMB attached</text>
+<line x1="1390" y1="310" x2="1475" y2="310" class="wire"/>
+<line x1="1407" y1="303" x2="1407" y2="317" class="wire"/>
+<line x1="1425" y1="298" x2="1425" y2="322" class="wire"/>
+<text x="1490" y="315" class="tiny" text-anchor="start">cell group 1</text>
+<line x1="1390" y1="353" x2="1475" y2="353" class="wire"/>
+<line x1="1407" y1="346" x2="1407" y2="360" class="wire"/>
+<line x1="1425" y1="341" x2="1425" y2="365" class="wire"/>
+<text x="1490" y="358" class="tiny" text-anchor="start">cell group 2</text>
+<line x1="1390" y1="396" x2="1475" y2="396" class="wire"/>
+<line x1="1407" y1="389" x2="1407" y2="403" class="wire"/>
+<line x1="1425" y1="384" x2="1425" y2="408" class="wire"/>
+<text x="1490" y="401" class="tiny" text-anchor="start">cell group 3</text>
+<line x1="1390" y1="439" x2="1475" y2="439" class="wire"/>
+<line x1="1407" y1="432" x2="1407" y2="446" class="wire"/>
+<line x1="1425" y1="427" x2="1425" y2="451" class="wire"/>
+<text x="1490" y="444" class="tiny" text-anchor="start">cell group 4</text>
+<line x1="1390" y1="482" x2="1475" y2="482" class="wire"/>
+<line x1="1407" y1="475" x2="1407" y2="489" class="wire"/>
+<line x1="1425" y1="470" x2="1425" y2="494" class="wire"/>
+<text x="1490" y="487" class="tiny" text-anchor="start">cell group 5</text>
+<line x1="1390" y1="525" x2="1475" y2="525" class="wire"/>
+<line x1="1407" y1="518" x2="1407" y2="532" class="wire"/>
+<line x1="1425" y1="513" x2="1425" y2="537" class="wire"/>
+<text x="1490" y="530" class="tiny" text-anchor="start">cell group 6</text>
+<text x="1432.5" y="642" class="small" text-anchor="middle">18–25.2 V module</text>
+<rect x="1235" y="330" width="105" height="190" rx="3" class="connector"/>
+<text x="1287.5" y="362" class="block-title" text-anchor="middle">J1</text>
+<text x="1287.5" y="386" class="small" text-anchor="middle">MIDDLE</text>
+<text x="1287.5" y="408" class="small" text-anchor="middle">PLUG</text>
+<circle cx="1273" cy="432" r="3" class="junction"/>
+<circle cx="1302" cy="432" r="3" class="junction"/>
+<line x1="1273" y1="432" x2="1302" y2="432" class="pin"/>
+<circle cx="1273" cy="448" r="3" class="junction"/>
+<circle cx="1302" cy="448" r="3" class="junction"/>
+<line x1="1273" y1="448" x2="1302" y2="448" class="pin"/>
+<circle cx="1273" cy="464" r="3" class="junction"/>
+<circle cx="1302" cy="464" r="3" class="junction"/>
+<line x1="1273" y1="464" x2="1302" y2="464" class="pin"/>
+<circle cx="1273" cy="480" r="3" class="junction"/>
+<circle cx="1302" cy="480" r="3" class="junction"/>
+<line x1="1273" y1="480" x2="1302" y2="480" class="pin"/>
+<circle cx="1273" cy="496" r="3" class="junction"/>
+<circle cx="1302" cy="496" r="3" class="junction"/>
+<line x1="1273" y1="496" x2="1302" y2="496" class="pin"/>
+<line x1="1340" y1="425.0" x2="1320" y2="425.0" class="wire"/>
+<polyline points="1170,310 1195,310 1195,425.0 1235,425.0" class="wire"/>
+<text x="1288" y="560" class="note" text-anchor="middle"><tspan x="1288" dy="0">Plug J1 directly into</tspan><tspan x="1288" dy="22">the module BMB.</tspan><tspan x="1288" dy="22">No individual J1 wiring.</tspan></text>
+<polyline points="405,565 405,650" class="ground"/>
+<line x1="405" y1="630" x2="405" y2="650" class="ground"/>
+<line x1="387" y1="650" x2="423" y2="650" class="ground"/>
+<line x1="393" y1="657" x2="417" y2="657" class="ground"/>
+<line x1="399" y1="664" x2="411" y2="664" class="ground"/>
+<rect x="60" y="730" width="700" height="140" rx="5" class="warn-box"/>
+<text x="82" y="760" class="warning" text-anchor="start"><tspan x="82" dy="0">BENCH-TEST LIMITATION</tspan><tspan x="82" dy="25">U2 is an I²C MOSFET shifter with 10 kΩ pull-ups. At 612.5 kbaud it may</tspan><tspan x="82" dy="25">have slow rising edges, especially with the 24-inch harness. Do not rely</tspan><tspan x="82" dy="25">on this prototype interface as the only charge/discharge protection.</tspan></text>
+<rect x="60" y="895" width="1175" height="82" rx="5" class="note-box"/>
+<text x="80" y="922" class="note" text-anchor="start"><tspan x="80" dy="0">Power the Due normally through USB or VIN; use its +5 V header as an output here. This is UART-like serial, not CAN.</tspan><tspan x="80" dy="25">Before power-up, verify the harness revision and J2 cavity numbers with a continuity meter. No 120 Ω terminator is used.</tspan></text>
+<text x="55" y="1002" class="footer" text-anchor="start">Reference: collin80/TeslaBMS wiring.pdf • J1 is intentionally simplified because it is a complete mated harness connection.</text>
+<text x="1545" y="1002" class="footer" text-anchor="end">Rev B • 2026-08-01</text>
+</svg>

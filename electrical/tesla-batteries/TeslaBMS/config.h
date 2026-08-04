@@ -7,7 +7,7 @@
 // neither is required to communicate with the Tesla BMB over Serial1.
 #define ENABLE_CAN_GATEWAY       0
 #define ENABLE_EXTERNAL_EEPROM   0
-#define ENABLE_AUTO_BALANCING    0
+#define ENABLE_AUTO_BALANCING    1
 #define ENABLE_FAULT_INPUT       0
 
 //Set to the proper port for your USB connection - SerialUSB on Due (Native) or Serial for Due (Programming) or Teensy

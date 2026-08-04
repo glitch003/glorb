@@ -290,13 +290,39 @@ def load_log():
         return list(csv.DictReader(f))
 
 
-def cmd_report(_args):
+def expand_id_selection(spec):
+    """Expand 'B1-B6,B9' style selection into a set of IDs."""
+    import re
+    ids = set()
+    for part in spec.split(","):
+        part = part.strip()
+        m = re.fullmatch(r"([A-Za-z]+)(\d+)-(?:[A-Za-z]+)?(\d+)", part)
+        if m:
+            prefix, lo, hi = m.group(1), int(m.group(2)), int(m.group(3))
+            ids.update(f"{prefix}{n}" for n in range(lo, hi + 1))
+        elif part:
+            ids.add(part)
+    return ids
+
+
+def cmd_report(args):
     rows = load_log()
     latest = {}
     history = {}
     for r in rows:
         latest[r["battery_id"]] = r
         history.setdefault(r["battery_id"], []).append(r)
+
+    only = getattr(args, "only", None) if args else None
+    if only:
+        wanted = expand_id_selection(only)
+        missing = wanted - set(latest)
+        latest = {b: r for b, r in latest.items() if b in wanted}
+        history = {b: h for b, h in history.items() if b in wanted}
+        if missing:
+            print(f"Not in log (skipped): {', '.join(sorted(missing))}\n")
+        if not latest:
+            sys.exit("None of the selected batteries are in the log.")
 
     print(f"{'ID':<8}{'ModuleV':>9}{'Delta mV':>10}{'MinCell':>9}{'MaxCell':>9}"
           f"{'Temp C':>8}  {'Health':<7}{'Fingerprint':<14}{'Last logged'}")
@@ -353,6 +379,28 @@ def cmd_report(_args):
         else:
             print("  > 500mV: do NOT parallel yet — bring modules to matching "
                   "voltage first (charge low ones / let high ones rest).")
+
+        if spread > PARALLEL_OK_V:
+            # Equalization plan: target the median so the fewest batteries move
+            # the least. Outliers above get discharged, ones below get charged.
+            target_v = statistics.median(volts.values())
+            print(f"\nEqualization plan (target {target_v:.3f}V, the median of the set):")
+            for b in sorted(volts, key=volts.get, reverse=True):
+                diff_mv = (target_v - volts[b]) * 1000.0
+                per_cell = diff_mv / 6.0
+                if diff_mv < -PARALLEL_OK_V * 1000.0:
+                    action = (f"DISCHARGE {-diff_mv:.0f}mV ({-per_cell:.0f}mV/cell) — "
+                              "run a load (LED tubes work) until it reads "
+                              f"{target_v:.2f}V")
+                elif abs(diff_mv) <= PARALLEL_OK_V * 1000.0:
+                    action = "OK — within 100mV of target"
+                else:
+                    action = (f"CHARGE +{diff_mv:.0f}mV (+{per_cell:.0f}mV/cell) — "
+                              f"CV supply at {target_v:.2f}V, stop when current tapers")
+                print(f"  {b:<8}{volts[b]:>8.3f}V   {action}")
+            print("  Re-log each battery after equalizing, then re-run this report; "
+                  "parallel when spread is <= 100mV.")
+
     bad = [b for b, r in latest.items() if r["health"] == "BAD"]
     if bad:
         print(f"\nExcluded from parallel check (health=BAD): {', '.join(sorted(bad))}")
@@ -371,6 +419,7 @@ def main():
     p_log.set_defaults(func=cmd_log)
 
     p_rep = sub.add_parser("report", help="show all logged batteries + parallel compatibility")
+    p_rep.add_argument("--only", help="restrict to these batteries, e.g. 'B1-B6' or 'B1,B3,B5'")
     p_rep.set_defaults(func=cmd_report)
 
     args = parser.parse_args()

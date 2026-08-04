@@ -100,8 +100,8 @@ void SerialConsole::printMenu() {
     Logger::console("   VOLTLIMLO=%f - Low limit for cells in volts", settings.UnderVSetpoint);
     Logger::console("   TEMPLIMHI=%f - High limit for cell temperature in degrees C", settings.OverTSetpoint);
     Logger::console("   TEMPLIMLO=%f - Low limit for cell temperature in degrees C", settings.UnderTSetpoint);
-    Logger::console("   BALVOLT=%f - Voltage at which to begin cell balancing", settings.balanceVoltage);
-    Logger::console("   BALHYST=%f - How far voltage must dip before balancing is turned off", settings.balanceHyst);
+    Logger::console("   BALVOLT=%f - Floor voltage, never bleed a cell below this", settings.balanceVoltage);
+    Logger::console("   BALHYST=%f - Bleed cells more than this above the lowest cell", settings.balanceHyst);
 
     float OverVSetpoint;
     float UnderVSetpoint;

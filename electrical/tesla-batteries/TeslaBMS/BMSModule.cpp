@@ -296,11 +296,21 @@ void BMSModule::balanceCells()
     delay(2);
     BMSUtil::getReply(buff, 30);
 
+    // Delta balancing: bleed cells that sit more than balanceHyst above the
+    // lowest cell in this module, but never below the balanceVoltage floor.
+    // Stop at half the start threshold for hysteresis — readings sag slightly
+    // while a cell is bleeding (balance current shares the sense wires), so
+    // the early stop errs conservative rather than oscillating.
+    float lowCell = getLowCellV();
     for (int i = 0; i < 6; i++)
     {
-        if ( (balanceState[i] == 0) && (getCellVoltage(i) > settings.balanceVoltage) ) balanceState[i] = 1;
+        float delta = getCellVoltage(i) - lowCell;
 
-        if ( /*(balanceState[i] == 1) &&*/ (getCellVoltage(i) < (settings.balanceVoltage - settings.balanceHyst)) ) balanceState[i] = 0;
+        if ( (balanceState[i] == 0) && (getCellVoltage(i) > settings.balanceVoltage)
+             && (delta > settings.balanceHyst) ) balanceState[i] = 1;
+
+        if ( (delta < (settings.balanceHyst * 0.5f))
+             || (getCellVoltage(i) < settings.balanceVoltage) ) balanceState[i] = 0;
 
         if (balanceState[i] == 1) balance |= (1<<i);
     }

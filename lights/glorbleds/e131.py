@@ -32,6 +32,30 @@ def iface_for(host: str) -> str | None:
             s.close()
 
 
+def resolve_angio(angio: dict, timeout: float = 0.4) -> str | None:
+    """Best host string for reaching this Angio: prefer the mapped IP, fall
+    back to mDNS on `hostname` if the IP is unreachable (lease changed, board
+    moved networks, etc.). Returns None if nothing resolves."""
+    ip = angio.get("ip")
+    if ip and _reachable(ip, 80, timeout):
+        return ip
+    host = angio.get("hostname")
+    if host:
+        try:
+            return socket.gethostbyname(host)
+        except OSError:
+            pass
+    return ip  # last resort — may be offline, but at least routes correctly
+
+
+def _reachable(host: str, port: int, timeout: float) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
 def multicast_addr(universe: int) -> str:
     """239.255.<hi>.<lo> per E1.31 for universes 1..63999."""
     return f"239.255.{(universe >> 8) & 0xFF}.{universe & 0xFF}"

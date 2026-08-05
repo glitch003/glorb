@@ -24,6 +24,7 @@ Usage (from lights/):
 
 import argparse
 import json
+import socket
 import sys
 import time
 import urllib.request
@@ -148,6 +149,12 @@ def main(argv=None):
         sys.exit(f"error: no zone {zone!r} in map (have {names})")
 
     ip = args.ip or angio.get("ip")
+    if not ip and angio.get("hostname"):
+        try:
+            ip = socket.gethostbyname(angio["hostname"])
+            print(f"note: no IP in map, resolved {angio['hostname']} -> {ip}")
+        except OSError:
+            pass
     if not ip:
         sys.exit(f"error: zone {zone} has no IP in the map; pass --ip "
                  f"(and add it to ANGIO_IPS in tube_map.py + re-run it)")

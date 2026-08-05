@@ -48,9 +48,11 @@ ANGIO_COLORS = {
     "D": "#457B9D", "E": "#9D4EDD",
 }
 
-# Known controller IPs (DHCP reservations on the glorb router).
-ANGIO_IPS = {"C": "192.168.8.229", "D": "192.168.8.190",
-             "E": "192.168.8.156"}
+# Known controller IPs (DHCP reservations on the glorb router). Each board
+# also advertises glorb-wled-<lower>.local over mDNS as a fallback if the
+# lease changes (emitted as `hostname` on every angio).
+ANGIO_IPS = {"B": "192.168.8.169", "C": "192.168.8.229",
+             "D": "192.168.8.190", "E": "192.168.8.156"}
 
 # GPIO per data line (line 1, line 2), as physically plugged on each board.
 # C (the first install) is 13/12; D and E are 12/13, which looks like the
@@ -144,6 +146,7 @@ def build():
             "pixels": apx,
             "start_universe": ustart,
             "universes": n_univ,
+            "hostname": f"glorb-wled-{aname.lower()}.local",
             **({"ip": ANGIO_IPS[aname]} if aname in ANGIO_IPS else {}),
         })
         ustart += n_univ

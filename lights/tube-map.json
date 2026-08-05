@@ -55,7 +55,8 @@
       "tube_count": 28,
       "pixels": 1120,
       "start_universe": 1,
-      "universes": 7
+      "universes": 7,
+      "hostname": "glorb-wled-a.local"
     },
     {
       "name": "B",
@@ -100,7 +101,9 @@
       "tube_count": 28,
       "pixels": 1120,
       "start_universe": 8,
-      "universes": 7
+      "universes": 7,
+      "hostname": "glorb-wled-b.local",
+      "ip": "192.168.8.169"
     },
     {
       "name": "C",
@@ -144,6 +147,7 @@
       "pixels": 960,
       "start_universe": 15,
       "universes": 6,
+      "hostname": "glorb-wled-c.local",
       "ip": "192.168.8.229"
     },
     {
@@ -190,6 +194,7 @@
       "pixels": 1120,
       "start_universe": 21,
       "universes": 7,
+      "hostname": "glorb-wled-d.local",
       "ip": "192.168.8.190"
     },
     {
@@ -236,6 +241,7 @@
       "pixels": 1120,
       "start_universe": 28,
       "universes": 7,
+      "hostname": "glorb-wled-e.local",
       "ip": "192.168.8.156"
     }
   ],

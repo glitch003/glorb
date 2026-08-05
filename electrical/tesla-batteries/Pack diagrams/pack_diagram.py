@@ -6,7 +6,7 @@ center, master fuse + switch below, distribution busbar feeding charger
 and load.
 """
 
-W, H = 1500, 1200
+W, H = 1500, 1320
 RED = "#c62828"
 BLK = "#111"
 GRY = "#666"
@@ -107,13 +107,26 @@ def label_box(x, y, w, h, title, sub, fill="#e3f2fd"):
     out.append(text(x + w/2, y + 26, title, size=16, weight="bold"))
     out.append(text(x + w/2, y + 46, sub, size=12, fill=GRY))
 
-def cable_tag(cx, cy, gauge, lug_a, lug_b, above=True):
-    """Compact pill label showing wire gauge and lug sizes on each end."""
-    s = f'{gauge} · {lug_a}→{lug_b}'
+def cable_tag(cx, cy, gauge, lug_a, lug_b, cable_id="", above=True):
+    """Compact pill label showing cable ID, wire gauge, and lug sizes."""
+    prefix = f'#{cable_id}  ' if cable_id else ''
+    s = f'{prefix}{gauge} · {lug_a}→{lug_b}'
     w = len(s) * 6.2 + 10
     y = cy - 14 if above else cy + 14
     out.append(rect(cx - w/2, y - 9, w, 15, fill="white", stroke=GRY, sw=0.75, rx=7))
-    out.append(text(cx, y + 3, s, size=10, fill=BLK))
+    # draw ID in bold blue if present
+    if cable_id:
+        # measure the prefix so we can color-highlight it
+        id_str = f'#{cable_id}'
+        rest = f'  {gauge} · {lug_a}→{lug_b}'
+        # use a single text with tspan for the colored ID
+        out.append(
+            f'<text x="{cx}" y="{y+3}" font-family="Inter,Helvetica,sans-serif" '
+            f'font-size="10" text-anchor="middle" fill="{BLK}">'
+            f'<tspan fill="#1565c0" font-weight="bold">{id_str}</tspan>{rest}</text>'
+        )
+    else:
+        out.append(text(cx, y + 3, s, size=10, fill=BLK))
 
 # --- background ---
 out.append(rect(0, 0, W, H, fill=BG, stroke="none"))
@@ -138,20 +151,26 @@ out.append(text(NEG_BUS_X, BUS_TOP - 8, "− BUSBAR", size=12,
                fill=BLK, weight="bold"))
 
 # --- wire each module through its own fuse to the busbars ---
+# Assumption: right stack (B) has + terminal near the busbars, left stack (A)
+# has − terminal near. Flip stack orientation if you want it the other way.
 for idx, (px, py, nx, ny) in enumerate(positions):
     is_left = px < W/2
-    # positive: module + -> fuse -> + busbar
+    # positive circuit: near (1a) if right stack, far (1b) if left stack
+    pos_id = "1b" if is_left else "1a"
+    # negative circuit: near (3a) if left stack, far (3b) if right stack
+    neg_id = "3a" if is_left else "3b"
+
     fuse_cx = (px + POS_BUS_X) / 2
     seg_a_mid = (px + fuse_cx - FUSE_W/2) / 2
     seg_b_mid = (fuse_cx + FUSE_W/2 + POS_BUS_X) / 2
     out.append(line(px, py, fuse_cx - FUSE_W/2, py, stroke=RED, sw=4))
-    cable_tag(seg_a_mid, py, "4 AWG", '3/8"', '1/4"')
+    cable_tag(seg_a_mid, py, "4 AWG", '3/8"', '1/4"', cable_id=pos_id)
     fuse_symbol(fuse_cx, py, "50A", "MRBF / Class T")
     out.append(line(fuse_cx + FUSE_W/2, py, POS_BUS_X, py, stroke=RED, sw=4))
-    cable_tag(seg_b_mid, py, "4 AWG", '1/4"', '3/8"')
+    cable_tag(seg_b_mid, py, "4 AWG", '1/4"', '3/8"', cable_id="2")
     # negative: module - -> - busbar
     out.append(line(nx, ny, NEG_BUS_X, ny, stroke=BLK, sw=4))
-    cable_tag((nx + NEG_BUS_X)/2, ny, "4 AWG", '3/8"', '3/8"')
+    cable_tag((nx + NEG_BUS_X)/2, ny, "4 AWG", '3/8"', '3/8"', cable_id=neg_id)
 
 # --- master fuse + switch below busbars ---
 # tap off the + busbar
@@ -160,17 +179,17 @@ tap_y = BUS_BOT
 out.append(line(tap_x, tap_y, tap_x, tap_y + 40, stroke=RED, sw=5))
 out.append(line(tap_x, tap_y + 40, W/2 - 200, tap_y + 40, stroke=RED, sw=5))
 out.append(line(W/2 - 200, tap_y + 40, W/2 - 200, tap_y + 90, stroke=RED, sw=5))
-cable_tag((tap_x + W/2 - 200)/2, tap_y + 40, "2/0 AWG", '3/8"', '3/8"')
+cable_tag((tap_x + W/2 - 200)/2, tap_y + 40, "2/0 AWG", '3/8"', '3/8"', cable_id="4")
 
 fuse_symbol(W/2 - 200, tap_y + 120, "200A", "Class T (DC-rated)")
 out.append(line(W/2 - 200, tap_y + 133, W/2 - 200, tap_y + 180, stroke=RED, sw=5))
 out.append(line(W/2 - 200, tap_y + 180, W/2 - 80, tap_y + 180, stroke=RED, sw=5))
-cable_tag(W/2 - 140, tap_y + 180, "2/0 AWG", '3/8"', '3/8"')
+cable_tag(W/2 - 140, tap_y + 180, "2/0 AWG", '3/8"', '3/8"', cable_id="5")
 
 switch_symbol(W/2, tap_y + 180)
 
 out.append(line(W/2 + 50, tap_y + 180, W/2 + 200, tap_y + 180, stroke=RED, sw=5))
-cable_tag(W/2 + 125, tap_y + 180, "2/0 AWG", '3/8"', '3/8"')
+cable_tag(W/2 + 125, tap_y + 180, "2/0 AWG", '3/8"', '3/8"', cable_id="6")
 
 # --- distribution busbars ---
 dist_y_pos = tap_y + 260
@@ -186,10 +205,10 @@ out.append(text(W/2, dist_y_neg + 5, "− DISTRIBUTION BUSBAR",
 
 # drop from switch to + dist bus
 out.append(line(W/2 + 200, tap_y + 180, W/2 + 200, dist_y_pos - 10, stroke=RED, sw=5))
-cable_tag(W/2 + 200, (tap_y + 180 + dist_y_pos)/2, "2/0 AWG", '3/8"', '3/8"')
+cable_tag(W/2 + 200, (tap_y + 180 + dist_y_pos)/2, "2/0 AWG", '3/8"', '3/8"', cable_id="6")
 # drop from - pack bus to - dist bus (straight down)
 out.append(line(NEG_BUS_X, BUS_BOT, NEG_BUS_X, dist_y_neg - 10, stroke=BLK, sw=5))
-cable_tag(NEG_BUS_X + 90, (BUS_BOT + dist_y_neg)/2, "2/0 AWG", '3/8"', '3/8"')
+cable_tag(NEG_BUS_X + 90, (BUS_BOT + dist_y_neg)/2, "2/0 AWG", '3/8"', '3/8"', cable_id="7")
 
 # --- charger + load boxes ---
 charger_x = W/2 - 380
@@ -200,16 +219,16 @@ label_box(load_x, box_y, 280, 70, "LOAD (LED zones A–E)", "~150A peak, 24V", f
 
 # Charger + wire
 out.append(line(charger_x + 100, box_y, charger_x + 100, dist_y_pos + 10, stroke=RED, sw=4))
-cable_tag(charger_x + 100, (box_y + dist_y_pos)/2 - 10, "8 AWG", '3/8"', "charger")
+cable_tag(charger_x + 100, (box_y + dist_y_pos)/2 - 10, "8 AWG", '3/8"', "chgr", cable_id="8")
 # Charger - wire
 out.append(line(charger_x + 180, box_y, charger_x + 180, dist_y_neg + 10, stroke=BLK, sw=4))
-cable_tag(charger_x + 180, (box_y + dist_y_neg)/2 + 8, "8 AWG", '3/8"', "charger")
+cable_tag(charger_x + 180, (box_y + dist_y_neg)/2 + 8, "8 AWG", '3/8"', "chgr", cable_id="8")
 # Load + wire
 out.append(line(load_x + 100, box_y, load_x + 100, dist_y_pos + 10, stroke=RED, sw=4))
-cable_tag(load_x + 100, (box_y + dist_y_pos)/2 - 10, "2/0 AWG", '3/8"', "load")
+cable_tag(load_x + 100, (box_y + dist_y_pos)/2 - 10, "2/0 AWG", '3/8"', "load", cable_id="9")
 # Load - wire
 out.append(line(load_x + 180, box_y, load_x + 180, dist_y_neg + 10, stroke=BLK, sw=4))
-cable_tag(load_x + 180, (box_y + dist_y_neg)/2 + 8, "2/0 AWG", '3/8"', "load")
+cable_tag(load_x + 180, (box_y + dist_y_neg)/2 + 8, "2/0 AWG", '3/8"', "load", cable_id="9")
 
 # small + / - markers where wires meet the boxes
 out.append(text(charger_x + 100, box_y - 4, "+", size=14, fill=RED, weight="bold"))

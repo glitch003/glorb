@@ -6,7 +6,7 @@ import queue
 import threading
 import time
 
-from ..e131 import Sender, iface_for, send_span
+from ..e131 import Sender, iface_for, resolve_angio, send_span
 from .model import CarModel
 from .patterns import REGISTRY, NAMES
 
@@ -34,8 +34,8 @@ class Engine:
         self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
         # Pin multicast to the NIC that routes to the Angios (multi-homed
         # hosts otherwise send it out the default route).
-        probe = next((a.get("ip") for a in gmap.get("angios", [])
-                      if a.get("ip")), None)
+        probe = next(filter(None, (resolve_angio(a)
+                                   for a in gmap.get("angios", []))), None)
         self.hw = {"enabled": True, "host": None,
                    "iface": iface_for(probe) if probe else None,
                    "color_order": "RGB", "error": None}

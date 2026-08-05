@@ -370,14 +370,14 @@ def build_detailed_svg() -> str:
 
 
 def build_production_svg() -> str:
-    """Build the table-layout schematic with J1 shown as one mated connector."""
+    """Build the table-layout schematic for a fully-populated 6-port EVTV harness."""
     s = SVG()
     s.rect(18, 18, WIDTH - 36, HEIGHT - 36, cls="sheet", rx=0)
     s.text(55, 65, "Arduino Due to Tesla Model S/X module BMS", cls="title")
     s.text(
         55,
         92,
-        "Physical table order • one 6S module • EVTV two-module harness • BMB powered from Due +5 V",
+        "EVTV 6-port production harness • all six 6S modules pre-connected • BMB chain powered from Due +5 V",
         cls="subtitle",
     )
 
@@ -457,11 +457,12 @@ def build_production_svg() -> str:
     s.path([low["LV2"], due["RX1"]], cls="wirerx", marker="arrow-green")
     s.path([due["GND"], (405, due["GND"][1]), (405, low["GND"][1]), low["GND"]], cls="ground")
 
-    # EVTV harness controller-end breakout.
-    hx, hy, hw, hh = 855, 185, 245, 440
-    s.rect(hx, hy, hw, hh, cls="connector")
+    # EVTV harness controller-end plug — the single connector the user wires to.
+    hx, hy, hw, hh = 855, 185, 260, 440
+    s.rect(hx, hy, hw, hh, cls="loopbox")
     s.text(hx + hw / 2, hy + 36, "EVTV HARNESS", cls="block-title", anchor="middle")
-    s.text(hx + hw / 2, hy + 61, "large controller-end plug", cls="small", anchor="middle")
+    s.text(hx + hw / 2, hy + 61, "controller-end plug", cls="small", anchor="middle")
+    s.text(hx + hw / 2, hy + 82, "(the only user-wired connector)", cls="tiny", anchor="middle")
     harness_ports = {
         "+5V": (hx - 18, high["HV"][1]),
         "TX": (hx - 18, high["HV1"][1]),
@@ -477,107 +478,74 @@ def build_production_svg() -> str:
     s.path([high["HV1"], harness_ports["TX"]], cls="wiretx", marker="arrow-blue")
     s.path([harness_ports["RX"], high["HV2"]], cls="wirerx", marker="arrow-green")
     s.path([high["GND"], harness_ports["GND"]], cls="ground")
-
-    # Simplified factory-wired cable bundle leaving the harness.
-    cable_x = hx + hw
-    s.line(cable_x, hy + 115, cable_x + 70, hy + 115, cls="wire")
-    s.line(cable_x, hy + 125, cable_x + 70, hy + 125, cls="wire")
-    s.line(cable_x, hy + 135, cable_x + 70, hy + 135, cls="wire")
-    s.text(cable_x + 35, hy + 102, "factory-wired cable", cls="tiny", anchor="middle")
     s.multiline(
-        hx + 20,
-        hy + 80,
+        hx + 18,
+        hy + 200,
         [
-            "Internal signal path:",
-            "BMS_TX → J1/module → J2",
-            "loopback → BMS_RX",
-            "+5 V and GND feed the BMB",
+            "Factory-terminated harness:",
+            "carries +5V / TX / RX / GND",
+            "and daisy-chains all six",
+            "module BMBs internally.",
+            "No jumpers, no loopback cap.",
         ],
         cls="small",
-        line_height=23,
-    )
-
-    # J2 loopback is the only harness connector requiring user pin wiring.
-    jx, jy, jw, jh = 875, 690, 360, 190
-    s.rect(jx, jy, jw, jh, cls="loopbox")
-    s.text(jx + jw / 2, jy + 30, "J2  UNUSED END PLUG", cls="block-title", anchor="middle")
-    s.text(jx + jw / 2, jy + 54, "LOOPBACK CAP — only these two jumpers", cls="small", anchor="middle")
-    # Two jumper circuits, drawn as connector cavities.
-    for base_y, left_pin, right_pin, jp in (
-        (jy + 100, "2", "4", "JP1"),
-        (jy + 142, "7", "9", "JP2"),
-    ):
-        s.circle(jx + 80, base_y, 7, cls="junction")
-        s.circle(jx + 280, base_y, 7, cls="junction")
-        s.path([(jx + 80, base_y), (jx + 125, base_y), (jx + 125, base_y - 15),
-                (jx + 235, base_y - 15), (jx + 235, base_y), (jx + 280, base_y)], cls="wirerx")
-        s.text(jx + 58, base_y + 6, f"pin {left_pin}", cls="pin-label", anchor="end")
-        s.text(jx + 302, base_y + 6, f"pin {right_pin}", cls="pin-label")
-        s.text(jx + jw / 2, base_y - 23, jp, cls="net", anchor="middle")
-    s.path([(hx + hw / 2, hy + hh), (hx + hw / 2, jy)], cls="wire")
-    s.text(jx + jw / 2, jy + jh - 12, "Other J2 pins remain live — cap and insulate", cls="tiny", anchor="middle")
-
-    # J1 and the Tesla module at the far right, represented as one plug-in action.
-    mx, my, mw, mh = 1320, 190, 225, 480
-    s.rect(mx, my, mw, mh, cls="module")
-    s.text(mx + mw / 2, my + 38, "TESLA 6S MODULE", cls="block-title", anchor="middle")
-    s.text(mx + mw / 2, my + 64, "original BMB attached", cls="small", anchor="middle")
-    # Module cells as a conventional six-cell stack symbol.
-    cell_y = my + 120
-    for index in range(6):
-        cy = cell_y + index * 43
-        s.line(mx + 70, cy, mx + 155, cy, cls="wire")
-        s.line(mx + 87, cy - 7, mx + 87, cy + 7, cls="wire")
-        s.line(mx + 105, cy - 12, mx + 105, cy + 12, cls="wire")
-        s.text(mx + 170, cy + 5, f"cell group {index + 1}", cls="tiny")
-    s.text(mx + mw / 2, my + mh - 28, "18–25.2 V module", cls="small", anchor="middle")
-
-    # J1 is one mated connector, deliberately without pin-level wiring.
-    p_x, p_y, p_w, p_h = 1235, 330, 105, 190
-    s.rect(p_x, p_y, p_w, p_h, cls="connector", rx=3)
-    s.text(p_x + p_w / 2, p_y + 32, "J1", cls="block-title", anchor="middle")
-    s.text(p_x + p_w / 2, p_y + 56, "MIDDLE", cls="small", anchor="middle")
-    s.text(p_x + p_w / 2, p_y + 78, "PLUG", cls="small", anchor="middle")
-    for i in range(5):
-        py = p_y + 102 + i * 16
-        s.circle(p_x + 38, py, 3)
-        s.circle(p_x + 67, py, 3)
-        s.line(p_x + 38, py, p_x + 67, py, cls="pin")
-    s.line(p_x + p_w, p_y + p_h / 2, mx, p_y + p_h / 2, cls="wire")
-    s.path([(cable_x + 70, hy + 125), (1195, hy + 125), (1195, p_y + p_h / 2),
-            (p_x, p_y + p_h / 2)], cls="wire")
-    s.multiline(
-        1288,
-        560,
-        ["Plug J1 directly into", "the module BMB.", "No individual J1 wiring."],
-        cls="note",
         line_height=22,
-        anchor="middle",
     )
+
+    # Factory-terminated cable trunk leaving the harness toward the modules.
+    cable_x = hx + hw
+    trunk_y = hy + hh / 2
+    for dy in (-8, 0, 8):
+        s.line(cable_x, trunk_y + dy, cable_x + 90, trunk_y + dy, cls="wire")
+    s.text(cable_x + 45, trunk_y - 20, "factory trunk", cls="tiny", anchor="middle")
+
+    # Six modules stacked at the right, each hanging off the shared trunk.
+    mx, mw, mh = 1250, 300, 60
+    module_gap = 12
+    top_y = 155
+    trunk_top = top_y + mh / 2
+    trunk_bottom = top_y + 5 * (mh + module_gap) + mh / 2
+    tap_x = cable_x + 90
+    # Vertical trunk running past all six module taps.
+    s.line(tap_x, trunk_top, tap_x, trunk_bottom, cls="wire")
+    s.circle(tap_x, trunk_y)
+    for index in range(6):
+        my = top_y + index * (mh + module_gap)
+        s.rect(mx, my, mw, mh, cls="module")
+        s.text(mx + 18, my + 24, f"MODULE {index + 1}", cls="block-title")
+        s.text(mx + 18, my + 46, "6S • original BMB attached", cls="small")
+        # Connector puck between trunk tap and the module.
+        conn_x = mx - 60
+        conn_y = my + mh / 2
+        s.rect(conn_x - 22, conn_y - 14, 44, 28, cls="connector", rx=4)
+        s.text(conn_x, conn_y + 5, f"P{index + 1}", cls="pin-label", anchor="middle")
+        s.line(conn_x + 22, conn_y, mx, conn_y, cls="wire")
+        s.line(tap_x, conn_y, conn_x - 22, conn_y, cls="wire")
+        s.circle(tap_x, conn_y)
 
     # Ground symbol and notes.
     s.path([(405, due["GND"][1]), (405, 650)], cls="ground")
     ground_symbol(s, 405, 650)
-    s.rect(60, 730, 700, 140, cls="warn-box")
+    s.rect(60, 730, 780, 140, cls="warn-box")
     s.multiline(
         82,
         760,
         [
             "BENCH-TEST LIMITATION",
             "U2 is an I²C MOSFET shifter with 10 kΩ pull-ups. At 612.5 kbaud it may",
-            "have slow rising edges, especially with the 24-inch harness. Do not rely",
-            "on this prototype interface as the only charge/discharge protection.",
+            "have slow rising edges over the harness run. Do not rely on this prototype",
+            "interface as the only charge/discharge protection.",
         ],
         cls="warning",
         line_height=25,
     )
-    s.rect(60, 895, 1175, 82, cls="note-box")
+    s.rect(60, 895, 1485, 82, cls="note-box")
     s.multiline(
         80,
         922,
         [
             "Power the Due normally through USB or VIN; use its +5 V header as an output here. This is UART-like serial, not CAN.",
-            "Before power-up, verify the harness revision and J2 cavity numbers with a continuity meter. No 120 Ω terminator is used.",
+            "The 6-port EVTV harness terminates the BMB daisy chain internally — only the four controller-end wires (+5V / TX / RX / GND) need attention.",
         ],
         cls="note",
         line_height=25,
@@ -585,10 +553,10 @@ def build_production_svg() -> str:
     s.text(
         55,
         1002,
-        "Reference: collin80/TeslaBMS wiring.pdf • J1 is intentionally simplified because it is a complete mated harness connection.",
+        "Reference: collin80/TeslaBMS wiring.pdf • Fully-populated harness — no loopback cap, no J1/J2 breakout, no user pin-level splices.",
         cls="footer",
     )
-    s.text(1545, 1002, "Rev B • 2026-08-01", cls="footer", anchor="end")
+    s.text(1545, 1002, "Rev C • 2026-08-04", cls="footer", anchor="end")
     return s.finish()
 
 
@@ -910,6 +878,145 @@ def build_connector_svg() -> str:
     return s.finish()
 
 
+def build_harness_plug_svg() -> str:
+    """Pin map for the 12-position Molex controller-end plug of the EVTV harness."""
+    s = SVG()
+    s.rect(18, 18, WIDTH - 36, HEIGHT - 36, cls="sheet", rx=0)
+    s.text(55, 62, "EVTV Tesla BMS harness — controller-end plug pinout", cls="title")
+    s.text(
+        55,
+        90,
+        "Molex 12-position housing • signals derived from EVTV ESP32 BMS Controller Manual v2.18 (pp. 39, 42)",
+        cls="subtitle",
+    )
+
+    # (pin, signal, wire color from EVTV two-module + extension diagrams,
+    #  fill for the swatch, text color, whether the pin is used).
+    pin_info = {
+        1:  ("FAULT",  "GRAY",         "#9ca3af", "#111827", True),
+        2:  ("N.C.",   "—",            "#f3f4f6", "#6b7280", False),
+        3:  ("RX",     "YELLOW",       "#facc15", "#111827", True),
+        4:  ("N.C.",   "—",            "#f3f4f6", "#6b7280", False),
+        5:  ("TX",     "BLUE",         "#2563eb", "#ffffff", True),
+        6:  ("N.C.",   "—",            "#f3f4f6", "#6b7280", False),
+        7:  ("N.C.",   "—",            "#f3f4f6", "#6b7280", False),
+        8:  ("GND",    "GREEN (bank 2)","#16a34a","#ffffff", True),
+        9:  ("GND",    "GREEN",        "#16a34a", "#ffffff", True),
+        10: ("+5 V",   "RED",          "#ef4444", "#ffffff", True),
+        11: ("+5 V",   "RED (bank 2)", "#ef4444", "#ffffff", True),
+        12: ("N.C.",   "—",            "#f3f4f6", "#6b7280", False),
+    }
+
+    # Plug drawing — 2 rows × 6 columns, viewed from the wire-entry side.
+    plug_x, plug_y, plug_w, plug_h = 120, 165, 900, 320
+    s.rect(plug_x, plug_y, plug_w, plug_h, cls="connector", rx=14)
+    s.text(plug_x + plug_w / 2, plug_y - 12, "12-position Molex plug — view LOOKING INTO the harness plug (battery-side end)", cls="small", anchor="middle")
+    # Latch cue on top edge (indicative only).
+    s.add(
+        f'<path d="M{plug_x + plug_w/2 - 60},{plug_y} L{plug_x + plug_w/2 - 40},{plug_y - 22} '
+        f'L{plug_x + plug_w/2 + 40},{plug_y - 22} L{plug_x + plug_w/2 + 60},{plug_y} Z" '
+        'fill="#e5e7eb" stroke="#374151" stroke-width="2"/>'
+    )
+    s.text(plug_x + plug_w / 2, plug_y - 30, "LATCH", cls="tiny", anchor="middle")
+
+    # Pin cavity layout: row 1 = pins 1..6, row 2 = pins 7..12.
+    col_x = [plug_x + 95 + i * 142 for i in range(6)]
+    row_y = [plug_y + 100, plug_y + 225]
+    for row_i, pin_start in enumerate((1, 7)):
+        for col_i in range(6):
+            pin = pin_start + col_i
+            cx = col_x[col_i]
+            cy = row_y[row_i]
+            signal, color_name, fill, text_fill, used = pin_info[pin]
+            border = "#111827" if used else "#9ca3af"
+            width = "3" if used else "1.8"
+            s.add(
+                f'<circle cx="{cx}" cy="{cy}" r="44" fill="{fill}" '
+                f'stroke="{border}" stroke-width="{width}"/>'
+            )
+            s.add(
+                f'<text x="{cx}" y="{cy + 10}" text-anchor="middle" '
+                f'style="font:bold 30px Arial;fill:{text_fill}">{pin}</text>'
+            )
+            label_cls = "net" if used else "tiny"
+            s.text(cx, cy + 68, signal, cls=label_cls, anchor="middle")
+            s.text(cx, cy + 88, color_name, cls="tiny", anchor="middle")
+
+    # Orientation note.
+    s.rect(120, 510, 900, 80, cls="warn-box")
+    s.multiline(
+        140,
+        538,
+        [
+            "VIEW: LOOKING INTO the harness plug — the end that connects to the batteries.",
+            "Verified with a continuity meter against a real EVTV harness.",
+            "The mating controller-side plug is the horizontal mirror of this view.",
+        ],
+        cls="warning",
+        line_height=22,
+    )
+
+    # Wiring table for the Due + level shifter.
+    s.rect(120, 605, 700, 335, cls="block")
+    s.text(140, 640, "HOW TO WIRE THE ARDUINO DUE", cls="block-title")
+    columns_x = [140, 260, 440, 640]
+    headers = ["PIN", "SIGNAL", "CONNECT TO", "WIRE"]
+    for x, header in zip(columns_x, headers):
+        s.text(x, 673, header, cls="net")
+    rows = [
+        ("10", "+5 V",  "Due +5V header",        "RED"),
+        ("11", "+5 V",  "same +5V rail (jumper to pin 10)", "RED"),
+        ("9",  "GND",   "Due GND",               "GREEN"),
+        ("8",  "GND",   "same GND rail (jumper to pin 9)",  "GREEN"),
+        ("5",  "TX",    "U2 shifter HV1 (from Due TX1)", "BLUE"),
+        ("3",  "RX",    "U2 shifter HV2 (to Due RX1)",   "YELLOW"),
+        ("1",  "FAULT", "leave unconnected (or to a Due input, optional)", "GRAY"),
+    ]
+    for index, values in enumerate(rows):
+        y = 705 + index * 33
+        s.line(130, y + 11, 810, y + 11, cls="nc")
+        for x, value in zip(columns_x, values):
+            s.text(x, y, value, cls="small")
+
+    # Signal note box.
+    s.rect(840, 605, 705, 335, cls="note-box")
+    s.multiline(
+        862,
+        640,
+        [
+            "SIGNAL NOTES",
+            "• TX (pin 5) is data OUT of the controller — drives the BMB chain input.",
+            "• RX (pin 3) is data IN to the controller — response from the BMB chain.",
+            "• Pins 10/11 are both +5 V and pins 8/9 are both GND; tie them together at",
+            "  the Due end. Bank 2 is only populated on ≥4-port harnesses, but bridging",
+            "  is harmless on a 2-port harness (pins 8 and 11 are simply unused there).",
+            "• FAULT (pin 1) is a loop that opens if any BMB trips. Optional to monitor.",
+            "• NC pins (2, 4, 6, 7, 12) carry no signal in EVTV's harness wiring.",
+            "• This is a 6-port fully-connected harness build — no J2 loopback needed.",
+            "• The harness plug itself is a Molex 12-position housing. Verify the exact",
+            "  Molex family (Mini-Fit Jr style) against your parts before ordering mating",
+            "  pins or a spare housing.",
+        ],
+        cls="note",
+        line_height=25,
+    )
+
+    s.text(
+        55,
+        988,
+        "Sources: EVTV ESP32 BMS Controller Assembly v2.18 (Aug 2021), pp. 37–42 • Two-Module and Four-Module Extension wiring diagrams.",
+        cls="footer",
+    )
+    s.text(1545, 988, "Harness pinout Rev B • 2026-08-04", cls="footer", anchor="end")
+    s.text(
+        55,
+        1013,
+        "Battery module terminals remain live even when the communications harness is unpowered. Keep tools away from the module power studs.",
+        cls="warning",
+    )
+    return s.finish()
+
+
 def find_chrome() -> Path | None:
     candidates = [
         Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
@@ -973,7 +1080,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--variant",
-        choices=("all", "bench", "production", "connector"),
+        choices=("all", "bench", "production", "connector", "harness-plug"),
         default="all",
         help="diagram variant to generate (default: all)",
     )
@@ -984,6 +1091,7 @@ def main() -> None:
         "bench": ("tesla-bms-bench-stock-pigtail.svg", build_bench_svg),
         "production": ("tesla-bms-production-evtv-harness.svg", build_production_svg),
         "connector": ("tesla-bms-stock-connector-cavity-map.svg", build_connector_svg),
+        "harness-plug": ("tesla-bms-evtv-harness-plug-pinout.svg", build_harness_plug_svg),
     }
     selected = variants.items() if args.variant == "all" else [(args.variant, variants[args.variant])]
     args.output_dir.mkdir(parents=True, exist_ok=True)

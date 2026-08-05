@@ -51,8 +51,9 @@ ANGIO_COLORS = {
 # Known controller IPs (DHCP reservations on the glorb router). Each board
 # also advertises glorb-wled-<lower>.local over mDNS as a fallback if the
 # lease changes (emitted as `hostname` on every angio).
-ANGIO_IPS = {"B": "192.168.8.169", "C": "192.168.8.229",
-             "D": "192.168.8.190", "E": "192.168.8.156"}
+ANGIO_IPS = {"A": "192.168.8.201", "B": "192.168.8.169",
+             "C": "192.168.8.229", "D": "192.168.8.190",
+             "E": "192.168.8.156"}
 
 # GPIO per data line (line 1, line 2), as physically plugged on each board.
 # C (the first install) is 13/12; D and E are 12/13, which looks like the

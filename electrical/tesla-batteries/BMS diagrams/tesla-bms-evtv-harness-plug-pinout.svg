@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+<style>
+        :root { color-scheme: light; }
+        * { vector-effect: non-scaling-stroke; }
+        .sheet { fill: #fffdfa; stroke: #1f2937; stroke-width: 2; }
+        .block { fill: #f8fafc; stroke: #172033; stroke-width: 2.2; }
+        .module { fill: #fff8e7; stroke: #8a5a00; stroke-width: 2.4; }
+        .shifter { fill: #edf5ff; stroke: #1d4f91; stroke-width: 2.4; }
+        .connector { fill: #fff; stroke: #374151; stroke-width: 2; }
+        .loopbox { fill: #fff4f2; stroke: #a62c20; stroke-width: 2.2; }
+        .note-box { fill: #fff9db; stroke: #9a7500; stroke-width: 1.8; }
+        .warn-box { fill: #fff0f0; stroke: #b42318; stroke-width: 2; }
+        .wire { fill: none; stroke: #111827; stroke-width: 3; stroke-linejoin: round; }
+        .wire5 { fill: none; stroke: #c62828; stroke-width: 3.5; stroke-linejoin: round; }
+        .wire3 { fill: none; stroke: #7b1fa2; stroke-width: 3.5; stroke-linejoin: round; }
+        .wiretx { fill: none; stroke: #1565c0; stroke-width: 3.5; stroke-linejoin: round; }
+        .wirerx { fill: none; stroke: #00876c; stroke-width: 3.5; stroke-linejoin: round; }
+        .wirefault { fill: none; stroke: #d97706; stroke-width: 3; stroke-dasharray: 8 6; }
+        .ground { fill: none; stroke: #111827; stroke-width: 3.5; stroke-linejoin: round; }
+        .pin { stroke: #111827; stroke-width: 2; }
+        .nc { stroke: #6b7280; stroke-width: 2; }
+        .junction { fill: #111827; stroke: none; }
+        .label { font: 18px Arial, Helvetica, sans-serif; fill: #111827; }
+        .small { font: 15px Arial, Helvetica, sans-serif; fill: #374151; }
+        .tiny { font: 13px Arial, Helvetica, sans-serif; fill: #4b5563; }
+        .title { font: bold 30px Arial, Helvetica, sans-serif; fill: #111827; }
+        .subtitle { font: 17px Arial, Helvetica, sans-serif; fill: #374151; }
+        .block-title { font: bold 20px Arial, Helvetica, sans-serif; fill: #111827; }
+        .pin-label { font: 15px 'Courier New', monospace; fill: #111827; }
+        .net { font: bold 15px 'Courier New', monospace; fill: #111827; }
+        .note { font: 16px Arial, Helvetica, sans-serif; fill: #332b00; }
+        .warning { font: bold 15px Arial, Helvetica, sans-serif; fill: #8a1c13; }
+        .footer { font: 13px Arial, Helvetica, sans-serif; fill: #4b5563; }
+        </style>
+
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#111827"/>
+          </marker>
+          <marker id="arrow-blue" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#1565c0"/>
+          </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="8" refX="9" refY="4"
+                  orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,4 L0,8 z" fill="#00876c"/>
+          </marker>
+        </defs>
+        
+<rect x="18" y="18" width="1564" height="1014" rx="0" class="sheet"/>
+<text x="55" y="62" class="title" text-anchor="start">EVTV Tesla BMS harness — controller-end plug pinout</text>
+<text x="55" y="90" class="subtitle" text-anchor="start">Molex 12-position housing • signals derived from EVTV ESP32 BMS Controller Manual v2.18 (pp. 39, 42)</text>
+<rect x="120" y="165" width="900" height="320" rx="14" class="connector"/>
+<text x="570.0" y="153" class="small" text-anchor="middle">12-position Molex plug — view LOOKING INTO the harness plug (battery-side end)</text>
+<path d="M510.0,165 L530.0,143 L610.0,143 L630.0,165 Z" fill="#e5e7eb" stroke="#374151" stroke-width="2"/>
+<text x="570.0" y="135" class="tiny" text-anchor="middle">LATCH</text>
+<circle cx="215" cy="265" r="44" fill="#9ca3af" stroke="#111827" stroke-width="3"/>
+<text x="215" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#111827">1</text>
+<text x="215" y="333" class="net" text-anchor="middle">FAULT</text>
+<text x="215" y="353" class="tiny" text-anchor="middle">GRAY</text>
+<circle cx="357" cy="265" r="44" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.8"/>
+<text x="357" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#6b7280">2</text>
+<text x="357" y="333" class="tiny" text-anchor="middle">N.C.</text>
+<text x="357" y="353" class="tiny" text-anchor="middle">—</text>
+<circle cx="499" cy="265" r="44" fill="#facc15" stroke="#111827" stroke-width="3"/>
+<text x="499" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#111827">3</text>
+<text x="499" y="333" class="net" text-anchor="middle">RX</text>
+<text x="499" y="353" class="tiny" text-anchor="middle">YELLOW</text>
+<circle cx="641" cy="265" r="44" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.8"/>
+<text x="641" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#6b7280">4</text>
+<text x="641" y="333" class="tiny" text-anchor="middle">N.C.</text>
+<text x="641" y="353" class="tiny" text-anchor="middle">—</text>
+<circle cx="783" cy="265" r="44" fill="#2563eb" stroke="#111827" stroke-width="3"/>
+<text x="783" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#ffffff">5</text>
+<text x="783" y="333" class="net" text-anchor="middle">TX</text>
+<text x="783" y="353" class="tiny" text-anchor="middle">BLUE</text>
+<circle cx="925" cy="265" r="44" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.8"/>
+<text x="925" y="275" text-anchor="middle" style="font:bold 30px Arial;fill:#6b7280">6</text>
+<text x="925" y="333" class="tiny" text-anchor="middle">N.C.</text>
+<text x="925" y="353" class="tiny" text-anchor="middle">—</text>
+<circle cx="215" cy="390" r="44" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.8"/>
+<text x="215" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#6b7280">7</text>
+<text x="215" y="458" class="tiny" text-anchor="middle">N.C.</text>
+<text x="215" y="478" class="tiny" text-anchor="middle">—</text>
+<circle cx="357" cy="390" r="44" fill="#16a34a" stroke="#111827" stroke-width="3"/>
+<text x="357" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#ffffff">8</text>
+<text x="357" y="458" class="net" text-anchor="middle">GND</text>
+<text x="357" y="478" class="tiny" text-anchor="middle">GREEN (bank 2)</text>
+<circle cx="499" cy="390" r="44" fill="#16a34a" stroke="#111827" stroke-width="3"/>
+<text x="499" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#ffffff">9</text>
+<text x="499" y="458" class="net" text-anchor="middle">GND</text>
+<text x="499" y="478" class="tiny" text-anchor="middle">GREEN</text>
+<circle cx="641" cy="390" r="44" fill="#ef4444" stroke="#111827" stroke-width="3"/>
+<text x="641" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#ffffff">10</text>
+<text x="641" y="458" class="net" text-anchor="middle">+5 V</text>
+<text x="641" y="478" class="tiny" text-anchor="middle">RED</text>
+<circle cx="783" cy="390" r="44" fill="#ef4444" stroke="#111827" stroke-width="3"/>
+<text x="783" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#ffffff">11</text>
+<text x="783" y="458" class="net" text-anchor="middle">+5 V</text>
+<text x="783" y="478" class="tiny" text-anchor="middle">RED (bank 2)</text>
+<circle cx="925" cy="390" r="44" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.8"/>
+<text x="925" y="400" text-anchor="middle" style="font:bold 30px Arial;fill:#6b7280">12</text>
+<text x="925" y="458" class="tiny" text-anchor="middle">N.C.</text>
+<text x="925" y="478" class="tiny" text-anchor="middle">—</text>
+<rect x="120" y="510" width="900" height="80" rx="5" class="warn-box"/>
+<text x="140" y="538" class="warning" text-anchor="start"><tspan x="140" dy="0">VIEW: LOOKING INTO the harness plug — the end that connects to the batteries.</tspan><tspan x="140" dy="22">Verified with a continuity meter against a real EVTV harness.</tspan><tspan x="140" dy="22">The mating controller-side plug is the horizontal mirror of this view.</tspan></text>
+<rect x="120" y="605" width="700" height="335" rx="5" class="block"/>
+<text x="140" y="640" class="block-title" text-anchor="start">HOW TO WIRE THE ARDUINO DUE</text>
+<text x="140" y="673" class="net" text-anchor="start">PIN</text>
+<text x="260" y="673" class="net" text-anchor="start">SIGNAL</text>
+<text x="440" y="673" class="net" text-anchor="start">CONNECT TO</text>
+<text x="640" y="673" class="net" text-anchor="start">WIRE</text>
+<line x1="130" y1="716" x2="810" y2="716" class="nc"/>
+<text x="140" y="705" class="small" text-anchor="start">10</text>
+<text x="260" y="705" class="small" text-anchor="start">+5 V</text>
+<text x="440" y="705" class="small" text-anchor="start">Due +5V header</text>
+<text x="640" y="705" class="small" text-anchor="start">RED</text>
+<line x1="130" y1="749" x2="810" y2="749" class="nc"/>
+<text x="140" y="738" class="small" text-anchor="start">11</text>
+<text x="260" y="738" class="small" text-anchor="start">+5 V</text>
+<text x="440" y="738" class="small" text-anchor="start">same +5V rail (jumper to pin 10)</text>
+<text x="640" y="738" class="small" text-anchor="start">RED</text>
+<line x1="130" y1="782" x2="810" y2="782" class="nc"/>
+<text x="140" y="771" class="small" text-anchor="start">9</text>
+<text x="260" y="771" class="small" text-anchor="start">GND</text>
+<text x="440" y="771" class="small" text-anchor="start">Due GND</text>
+<text x="640" y="771" class="small" text-anchor="start">GREEN</text>
+<line x1="130" y1="815" x2="810" y2="815" class="nc"/>
+<text x="140" y="804" class="small" text-anchor="start">8</text>
+<text x="260" y="804" class="small" text-anchor="start">GND</text>
+<text x="440" y="804" class="small" text-anchor="start">same GND rail (jumper to pin 9)</text>
+<text x="640" y="804" class="small" text-anchor="start">GREEN</text>
+<line x1="130" y1="848" x2="810" y2="848" class="nc"/>
+<text x="140" y="837" class="small" text-anchor="start">5</text>
+<text x="260" y="837" class="small" text-anchor="start">TX</text>
+<text x="440" y="837" class="small" text-anchor="start">U2 shifter HV1 (from Due TX1)</text>
+<text x="640" y="837" class="small" text-anchor="start">BLUE</text>
+<line x1="130" y1="881" x2="810" y2="881" class="nc"/>
+<text x="140" y="870" class="small" text-anchor="start">3</text>
+<text x="260" y="870" class="small" text-anchor="start">RX</text>
+<text x="440" y="870" class="small" text-anchor="start">U2 shifter HV2 (to Due RX1)</text>
+<text x="640" y="870" class="small" text-anchor="start">YELLOW</text>
+<line x1="130" y1="914" x2="810" y2="914" class="nc"/>
+<text x="140" y="903" class="small" text-anchor="start">1</text>
+<text x="260" y="903" class="small" text-anchor="start">FAULT</text>
+<text x="440" y="903" class="small" text-anchor="start">leave unconnected (or to a Due input, optional)</text>
+<text x="640" y="903" class="small" text-anchor="start">GRAY</text>
+<rect x="840" y="605" width="705" height="335" rx="5" class="note-box"/>
+<text x="862" y="640" class="note" text-anchor="start"><tspan x="862" dy="0">SIGNAL NOTES</tspan><tspan x="862" dy="25">• TX (pin 5) is data OUT of the controller — drives the BMB chain input.</tspan><tspan x="862" dy="25">• RX (pin 3) is data IN to the controller — response from the BMB chain.</tspan><tspan x="862" dy="25">• Pins 10/11 are both +5 V and pins 8/9 are both GND; tie them together at</tspan><tspan x="862" dy="25">  the Due end. Bank 2 is only populated on ≥4-port harnesses, but bridging</tspan><tspan x="862" dy="25">  is harmless on a 2-port harness (pins 8 and 11 are simply unused there).</tspan><tspan x="862" dy="25">• FAULT (pin 1) is a loop that opens if any BMB trips. Optional to monitor.</tspan><tspan x="862" dy="25">• NC pins (2, 4, 6, 7, 12) carry no signal in EVTV&#x27;s harness wiring.</tspan><tspan x="862" dy="25">• This is a 6-port fully-connected harness build — no J2 loopback needed.</tspan><tspan x="862" dy="25">• The harness plug itself is a Molex 12-position housing. Verify the exact</tspan><tspan x="862" dy="25">  Molex family (Mini-Fit Jr style) against your parts before ordering mating</tspan><tspan x="862" dy="25">  pins or a spare housing.</tspan></text>
+<text x="55" y="988" class="footer" text-anchor="start">Sources: EVTV ESP32 BMS Controller Assembly v2.18 (Aug 2021), pp. 37–42 • Two-Module and Four-Module Extension wiring diagrams.</text>
+<text x="1545" y="988" class="footer" text-anchor="end">Harness pinout Rev B • 2026-08-04</text>
+<text x="55" y="1013" class="warning" text-anchor="start">Battery module terminals remain live even when the communications harness is unpowered. Keep tools away from the module power studs.</text>
+</svg>

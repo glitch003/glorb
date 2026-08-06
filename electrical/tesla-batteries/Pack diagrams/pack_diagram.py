@@ -305,10 +305,77 @@ for i, s in enumerate(notes):
     out.append(text(nt_x + 12, nt_y + 46 + i*18, s, size=11, anchor="start"))
 
 # --- write file ---
+import os, shutil, subprocess, sys, tempfile
+
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
        f'viewBox="0 0 {W} {H}">\n' + "\n".join(out) + "\n</svg>\n")
 
-with open("pack_diagram.svg", "w") as f:
-    f.write(svg)
+here = os.path.dirname(os.path.abspath(__file__))
+svg_path = os.path.join(here, "pack_diagram.svg")
+pdf_path = os.path.join(here, "pack_diagram.pdf")
+png_path = os.path.join(here, "pack_diagram.png")
 
-print(f"wrote pack_diagram.svg ({W}x{H})")
+with open(svg_path, "w") as f:
+    f.write(svg)
+print(f"wrote {svg_path} ({W}x{H})")
+
+# --- render PDF + PNG via headless Chrome ---
+CHROME_CANDIDATES = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    shutil.which("google-chrome") or "",
+    shutil.which("chromium") or "",
+]
+chrome = next((c for c in CHROME_CANDIDATES if c and os.path.exists(c)), None)
+if not chrome:
+    print("no Chrome/Chromium found — skipping PDF/PNG", file=sys.stderr)
+    sys.exit(0)
+
+# Wrap SVG in HTML sized exactly to the diagram so Chrome renders it 1:1.
+html = f"""<!doctype html><html><head><meta charset="utf-8"><style>
+@page {{ size: {W}px {H}px; margin: 0; }}
+html,body {{ margin:0; padding:0; background:{BG}; }}
+svg {{ display:block; }}
+</style></head><body>{svg}</body></html>"""
+
+with tempfile.TemporaryDirectory() as td:
+    html_path = os.path.join(td, "pack.html")
+    with open(html_path, "w") as f:
+        f.write(html)
+    url = "file://" + html_path
+
+    def run_chrome(out_path, extra):
+        # --headless=new produces the output file but sometimes doesn't
+        # exit cleanly; give it a short window and then kill it.
+        cmd = [chrome, "--headless=new", "--disable-gpu", "--no-sandbox",
+               "--hide-scrollbars", "--no-first-run",
+               "--no-default-browser-check",
+               "--disable-features=Translate,MediaRouter",
+               "--virtual-time-budget=3000",
+               f"--user-data-dir={td}/profile-{out_path[-3:]}"] + extra + [url]
+        if os.path.exists(out_path):
+            os.remove(out_path)
+        p = subprocess.Popen(cmd, stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL)
+        # Poll for the file to appear, then give Chrome a moment to finalize.
+        import time
+        deadline = time.time() + 30
+        while time.time() < deadline:
+            if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
+                time.sleep(0.4)
+                break
+            if p.poll() is not None:
+                break
+            time.sleep(0.2)
+        if p.poll() is None:
+            p.terminate()
+            try: p.wait(timeout=3)
+            except subprocess.TimeoutExpired: p.kill()
+        if not os.path.exists(out_path):
+            raise RuntimeError(f"chrome failed to produce {out_path}")
+
+    run_chrome(pdf_path, [f"--print-to-pdf={pdf_path}", "--no-pdf-header-footer"])
+    print(f"wrote {pdf_path}")
+
+    run_chrome(png_path, [f"--screenshot={png_path}", f"--window-size={W},{H}"])
+    print(f"wrote {png_path}")

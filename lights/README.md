@@ -3,6 +3,19 @@
 LED lighting for Glorb — the giant glowing broom. This folder holds the
 software that drives the LEDs, the physical tube map, and hardware notes.
 
+## Running patterns
+
+Run **[./start.sh](start.sh)** from this folder to send patterns to the LEDs.
+Before running:
+
+1. Connect your laptop to the **glorb** wifi network.
+2. Make sure the Angios ("shlomo boxes") and LED tubes have power.
+3. Open <http://127.0.0.1:8080> in a browser to pick the pattern.
+
+> **Router note:** the glorb wifi router currently lives next to the aux battery
+> box, plugged into a wall outlet. For the burn it needs to be plugged into the
+> inverter in the belly of the car.
+
 ## Software
 
 - **[glorbleds/](glorbleds/)** — pure-Python (stdlib only) LED control:
@@ -15,6 +28,49 @@ software that drives the LEDs, the physical tube map, and hardware notes.
   python3 -m glorbleds serve      # http://127.0.0.1:8080  (UI + mock viz)
   python3 -m glorbleds list       # print the group map
   ```
+
+## Install status
+
+### Done
+- Zones **C, D, E** — tubes hung, powered, and controllable. Use these as the
+  reference for how zones A and B should look when finished.
+
+### To do
+
+**Zones A and B — Angio install + tube hang**
+
+The Angios for zones A and B are currently dangling from magnets on the
+second-floor railings where they need to be installed. Each zone has one Angio
+box.
+
+- **Mount the Angios** on the second-floor railings (they're already positioned
+  on magnets — just secure them).
+- **Power:** wire each Angio into the **same busbar as the LED power** for that
+  zone.
+- **Data lines:** each Angio has two data outputs.
+  - The **long** data line runs toward the **front of the car**.
+  - The **short** data line connects to the **next segment of the chain**,
+    which sits right next to the Angio (since the busbar is in the middle of
+    the zone).
+- **Chain layout:** **24 tubes per zone**, **14 per chain**. **Every other
+  tube must be flipped** so the tubes chain end-to-end cleanly.
+- All connections use **Wago connectors**, so wires can be shortened or
+  lengthened easily — don't be afraid to redo runs.
+
+**Tube hang — power injection**
+
+Every other tube needs power injected at the top:
+
+1. Start with tube #1: inject power at the top.
+2. Skip tube #2.
+3. Inject power on tube #3.
+4. …and so on.
+
+Crimp fork terminals (red + black, in little bags in the "electrical" milk
+crate) onto the injection leads and screw them into the busbar. Look at the
+already-hung tubes in zones C, D, and E for reference on how it should look.
+
+See **[tube-map.png](tube-map.png)** for the full wiring diagram.
 
 ## Tube map (source of truth)
 

@@ -227,8 +227,12 @@ def build():
             "total_pixels": total_px,
             "total_channels": total_ch,
             "chip": "SM16703",
-            "protocol": "sACN / E1.31",
-            "color_order": "RGB",
+            "protocol": "DDP (E1.31 fallback)",
+            # Measured on the real tubes 2026-08-21: sent red showed blue,
+            # sent blue showed green -> the strips are wired BRG, despite
+            # SM16703 datasheets claiming RGB. FPP reorders on output, so
+            # everything upstream (patterns, preview, CLI) stays RGB.
+            "color_order": "BRG",
             # every tube has its own data line now: no chaining, so no
             # serpentine flip and nothing to reverse in software
             "serpentine": False,

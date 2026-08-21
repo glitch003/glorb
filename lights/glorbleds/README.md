@@ -1,10 +1,10 @@
 # glorbleds
 
 Pure-Python (stdlib only, no pip deps) LED control for Glorb — the giant
-glowing broom. Drives 136 vertical LED tubes over sACN / E1.31, with a
-browser-based control UI and a 3D mock visualizer so you can design patterns
-without the car plugged in. Runs the same on Mac, Windows, and the
-BeagleBone itself.
+glowing broom. Drives 136 vertical LED tubes over DDP (preferred) or
+sACN / E1.31, with a browser-based control UI and a 3D mock visualizer so you
+can design patterns without the car plugged in. Runs the same on Mac,
+Windows, and the BeagleBone itself.
 
 ## The car
 
@@ -30,7 +30,9 @@ truth for which tube is on which port, receiver, output and channel range.
 glorbleds/
   __main__.py      CLI: list / solid / tubes / colorcheck / chase / off / serve
   controller.py    tube-map.json -> receivers; install-time test patterns (Show)
-  e131.py          minimal sACN / E1.31 packet builder + UDP Sender
+  ddp.py           DDP sender (default transport; PUSH latches each frame)
+  e131.py          sACN / E1.31 packet builder + Sender (multicast fallback,
+                   sync-packet latch per frame)
   benchmark.py     repeatable per-pattern + E1.31 bandwidth benchmark
   PERFORMANCE_AUDIT.md  measured architecture, wire, FPS, and visual audit
   webui/
@@ -69,9 +71,14 @@ python3 -m glorbleds.benchmark --frames 120 --fps 30 --udp-host 127.0.0.1 --udp-
 python3 -m unittest discover -s tests -v
 ```
 
-`--dry-run` builds and prints packets instead of transmitting. Multicast is
-the default (no device IP needed); pass `--host` to unicast, `--iface` to pick
-the NIC on a multi-homed host.
+`--dry-run` builds and prints packets instead of transmitting. The default
+transport is **DDP unicast** to the controller from the map (`--host` to
+override); if the controller doesn't resolve it falls back to E1.31 multicast
+(`--iface` picks the NIC on a multi-homed host, `--protocol` forces one).
+Both transports end every frame with a latch (DDP PUSH / E1.31 sync) so fppd
+outputs whole frames at *our* pace instead of free-running at 20 fps — the
+fix for the post-WLED flicker; see
+[../k128/README.md](../k128/README.md#frame-pacing--why-the-first-bring-up-flickered-fixed-2026-08-21).
 
 **`--brightness` defaults to `0.05` (5%) and multiplies with FPP's own
 per-string brightness.** Set both to 5% and you get 0.25% — near black. FPP's
@@ -98,7 +105,8 @@ K128D hardware acceptance checks.
 3. **`Engine`** ([webui/engine.py](webui/engine.py)) runs the loop at `fps`:
    render → scale by brightness via a 256-entry LUT (`buf.translate(lut)`, one
    C call) → broadcast to browsers (SSE, base64) and, if hardware is enabled,
-   split into 510-channel universes and send over E1.31 to FPP's bridge input.
+   send to FPP's bridge input (DDP unicast, or E1.31 multicast fallback),
+   ending each frame with a latch so fppd outputs it immediately and whole.
 4. **`server.py`** serves the static UI, streams frames over Server-Sent
    Events (`/stream`), and takes control updates via `POST /control`.
 5. **`app.js`** in the browser draws the frame two ways: a **3D car** (drag to

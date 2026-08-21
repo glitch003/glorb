@@ -4,7 +4,7 @@
 
 **136 tubes**, each on its **own data line**, driven by **34 differential receivers** (4 outputs each) off **10 of 32 RJ45 ports** on one **Kulp K128D-B**.
 
-Chip **SM16703**, color order **RGB**, **40 px/tube** → **5,440 px / 16,320 channels**. The whole car is one flat pixel space on one controller: FPP E1.31 bridge input, universes **1–32** of 510 channels, starting at FPP channel 1.
+Chip **SM16703**, color order **BRG**, **40 px/tube** → **5,440 px / 16,320 channels**. The whole car is one flat pixel space on one controller: FPP E1.31 bridge input, universes **1–32** of 510 channels, starting at FPP channel 1.
 
 **No chaining, no serpentine.** Every tube takes data at its **top** end from one receiver output, so every string is *Forward* in FPP and nothing is reversed in software. A tube is exactly 120 contiguous channels; tube *n* (0-based) starts at channel `n × 120 + 1`.
 

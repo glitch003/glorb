@@ -96,7 +96,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def run(gmap=None, host="127.0.0.1", port=8080, fps=30.0,
-        fpp_brightness=10.0, dither=True):
+        fpp_brightness=10.0, dither=False):
     gmap = gmap or load_map()
     engine = Engine(gmap, fps=fps, fpp_brightness=fpp_brightness,
                     dither=dither)

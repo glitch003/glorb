@@ -17,8 +17,15 @@ def load_map():
 
 def make_engine(fps=30.0):
     with patch("glorbleds.webui.engine.iface_for", return_value=None), \
+         patch("glorbleds.webui.engine.resolve_controller",
+               return_value=None), \
          patch("glorbleds.webui.engine.Sender"):
-        return Engine(load_map(), fps=fps)
+        engine = Engine(load_map(), fps=fps)
+    # Keep every later sender refresh offline too: an empty controller dict
+    # makes resolve_controller return None without touching the network, so
+    # the engine falls back to the (mockable) E1.31 Sender.
+    engine._controller = {}
+    return engine
 
 
 class ObservableLock:
@@ -94,7 +101,7 @@ class EngineSenderConcurrencyTests(unittest.TestCase):
             self.release = threading.Event()
             self.closed = False
 
-        def send(self, universe, dmx):
+        def send_pixels(self, start_universe, data):
             self.entered.set()
             self.release.wait()
             if self.closed:
@@ -148,7 +155,7 @@ class EngineSenderConcurrencyTests(unittest.TestCase):
         engine = make_engine(fps=30.0)
 
         class FailingSender(self.BlockingSender):
-            def send(self, universe, dmx):
+            def send_pixels(self, start_universe, data):
                 self.entered.set()
                 self.release.wait()
                 raise OSError("old sender failed")
@@ -228,8 +235,8 @@ class EngineSenderConcurrencyTests(unittest.TestCase):
             def __init__(self):
                 self.calls = []
 
-            def send(self, universe, dmx):
-                self.calls.append((universe, dmx))
+            def send_pixels(self, start_universe, data):
+                self.calls.append((start_universe, data))
 
             def close(self):
                 pass

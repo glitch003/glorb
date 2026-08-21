@@ -157,3 +157,36 @@ class FppInputConfigTests(unittest.TestCase):
         # last universe must reach the last channel of the map
         last = e["startChannel"] + e["universeCount"] * e["channelCount"] - 1
         self.assertGreaterEqual(last, self.gmap["meta"]["total_channels"])
+
+
+class SyncPacketTests(unittest.TestCase):
+    """fppd only latches bridge data to the LEDs on its own 50 ms free-run
+    timer UNLESS a sync packet arrives, which forces an immediate latch
+    (Bridge_StoreData -> ForceChannelOutputNow). It matches on byte 21
+    (root vector, extended = 0x08) and byte 43 (framing vector, sync = 0x01).
+    """
+
+    def test_sync_packet_matches_fppd_expectations(self):
+        from glorbleds.e131 import build_sync_packet
+
+        pkt = build_sync_packet(1, 9, CID)
+        self.assertEqual(len(pkt), 49)
+        self.assertEqual(pkt[21], 0x08)     # VECTOR_ROOT_E131_EXTENDED
+        self.assertEqual(pkt[43], 0x01)     # VECTOR_E131_EXTENDED_SYNC
+        self.assertEqual(pkt[22:38], CID)
+        self.assertEqual(pkt[44], 9)                        # sequence
+        self.assertEqual(struct.unpack("!H", pkt[45:47])[0], 1)  # sync addr
+
+    def test_send_pixels_ends_the_frame_with_a_sync(self):
+        with patch("glorbleds.e131.socket.socket"):
+            sender = Sender(host="192.0.2.1")
+        sent = []
+        sender.sock.sendto = lambda pkt, dest: sent.append(pkt)
+
+        sender.send_pixels(1, bytes(510 * 2 + 30))   # 2.06 universes
+
+        self.assertEqual(len(sent), 4)               # 3 data + 1 sync
+        for pkt in sent[:3]:
+            self.assertEqual(pkt[21], 0x04)          # data packets
+        self.assertEqual(sent[3][21], 0x08)          # trailing sync
+        self.assertEqual(sent[3][43], 0x01)

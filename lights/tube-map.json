@@ -10,8 +10,8 @@
     "total_pixels": 5440,
     "total_channels": 16320,
     "chip": "SM16703",
-    "protocol": "sACN / E1.31",
-    "color_order": "RGB",
+    "protocol": "DDP (E1.31 fallback)",
+    "color_order": "BRG",
     "serpentine": false
   },
   "controller": {

@@ -20,7 +20,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- knobs -----------------------------------------------------------------
-PIX_PER_TUBE = 40            # 16 px/m * 2.5 m
+PIX_PER_TUBE = 41            # measured 2026-08-21: probe with only pixel 39
+                             # lit showed one more unlit pixel group below it
+                             # on every tube — the strips are 41 groups, not
+                             # the nominal 40 (16 px/m * 2.5 m)
 CHAN_PER_PIX = 3             # RGB
 TUBES_PER_RECEIVER = 4       # a differential receiver board has 4 pixel outputs
 MAX_RECEIVERS_PER_PORT = 6   # FPP v2 SmartReceiver chain limit (MAX_SMART_RECEIVERS)

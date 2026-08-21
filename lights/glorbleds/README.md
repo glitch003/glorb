@@ -11,14 +11,16 @@ Windows, and the BeagleBone itself.
 - Rectangular box: **1800 mm wide (X) × 4000 mm long (Y)**.
 - **136 tubes** hang vertically down 3 sides: 56 left + 24 rear + 56 right.
   The front-left corner is left open for the driver.
-- Each tube is 2.5 m, **40 px/tube** → **5440 pixels / 16,320 channels** total.
+- Each tube is 2.5 m, **41 px/tube** (measured — one more group than the
+  nominal 40) → **5576 pixels / 16,728 channels** total.
 - **Every tube has its own data line.** Tubes are grouped **4 per receiver →
   34 receivers** on 10 RJ45 ports of a single [Kulp K128D-B](../k128/README.md)
   (BeagleBone + FPP). Nothing is chained, so nothing is reversed in software.
-- The whole car is **one flat pixel space**: universes **1–32 × 510 ch** into
-  FPP's E1.31 bridge, landing on FPP channel 1. Tube *n* owns channels
-  `n × 120 + 1 … n × 120 + 120`.
-- Chip **SM16703**, color order **RGB** (see [../led-tubes.md](../led-tubes.md)).
+- The whole car is **one flat pixel space**: universes **1–33 × 510 ch** into
+  FPP's bridge, landing on FPP channel 1. Tube *n* owns channels
+  `n × 123 + 1 … n × 123 + 123`.
+- Chip **SM16703**, color order **BRG** (measured; datasheets claim RGB —
+  FPP reorders on output, everything upstream stays RGB).
 
 Physical wiring, power, and the tube layout map live one level up in
 [../](../): `tube-map.json` / `tube-map.md` / `tube-map.pdf` are the source of
@@ -93,7 +95,7 @@ K128D hardware acceptance checks.
 
 1. **`CarModel`** ([webui/model.py](webui/model.py)) flattens `tube-map.json`
    into a per-pixel model in **canonical order**: tubes in map order, each
-   tube's pixels 0..39. That is exactly the channel order FPP is configured
+   tube's pixels 0..40. That is exactly the channel order FPP is configured
    against, so hardware output is one flat span of the frame buffer. For each
    pixel it precomputes attributes patterns read:
    - `side` — `'L'`/`'B'`/`'R'`

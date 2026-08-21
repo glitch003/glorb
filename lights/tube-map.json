@@ -1,14 +1,14 @@
 {
   "meta": {
     "tubes_per_receiver": 4,
-    "pixels_per_tube": 40,
+    "pixels_per_tube": 41,
     "channels_per_pixel": 3,
     "px_per_universe": 170,
     "universe_size": 510,
     "total_tubes": 136,
     "total_receivers": 34,
-    "total_pixels": 5440,
-    "total_channels": 16320,
+    "total_pixels": 5576,
+    "total_channels": 16728,
     "chip": "SM16703",
     "protocol": "DDP (E1.31 fallback)",
     "color_order": "BRG",
@@ -24,7 +24,7 @@
     "rj45_ports_used": 10,
     "receivers": 34,
     "start_universe": 1,
-    "universe_count": 32,
+    "universe_count": 33,
     "universe_size": 510,
     "universes": [
       1,
@@ -58,10 +58,11 @@
       29,
       30,
       31,
-      32
+      32,
+      33
     ],
     "start_channel": 1,
-    "channel_count": 16320
+    "channel_count": 16728
   },
   "zones": [
     {
@@ -107,7 +108,7 @@
             "L16"
           ],
           "tube_count": 16,
-          "pixels": 640,
+          "pixels": 656,
           "differential_type": "v2 smart x4"
         },
         {
@@ -134,11 +135,11 @@
             "L28"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         }
       ],
-      "pixels": 1120
+      "pixels": 1148
     },
     {
       "name": "B",
@@ -183,7 +184,7 @@
             "L44"
           ],
           "tube_count": 16,
-          "pixels": 640,
+          "pixels": 656,
           "differential_type": "v2 smart x4"
         },
         {
@@ -210,11 +211,11 @@
             "L56"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         }
       ],
-      "pixels": 1120
+      "pixels": 1148
     },
     {
       "name": "C",
@@ -253,7 +254,7 @@
             "B12"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         },
         {
@@ -280,11 +281,11 @@
             "B24"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         }
       ],
-      "pixels": 960
+      "pixels": 984
     },
     {
       "name": "D",
@@ -329,7 +330,7 @@
             "R16"
           ],
           "tube_count": 16,
-          "pixels": 640,
+          "pixels": 656,
           "differential_type": "v2 smart x4"
         },
         {
@@ -356,11 +357,11 @@
             "R28"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         }
       ],
-      "pixels": 1120
+      "pixels": 1148
     },
     {
       "name": "E",
@@ -405,7 +406,7 @@
             "R44"
           ],
           "tube_count": 16,
-          "pixels": 640,
+          "pixels": 656,
           "differential_type": "v2 smart x4"
         },
         {
@@ -432,11 +433,11 @@
             "R56"
           ],
           "tube_count": 12,
-          "pixels": 480,
+          "pixels": 492,
           "differential_type": "v2 smart x3"
         }
       ],
-      "pixels": 1120
+      "pixels": 1148
     }
   ],
   "receivers": [
@@ -453,37 +454,37 @@
         "L04"
       ],
       "tube_count": 4,
-      "pixels": 160,
+      "pixels": 164,
       "start_channel": 1,
-      "end_channel": 480,
+      "end_channel": 492,
       "outputs": [
         {
           "output": 1,
           "tube": "L01",
-          "pixels": 40,
+          "pixels": 41,
           "start_channel": 1,
-          "end_channel": 120
+          "end_channel": 123
         },
         {
           "output": 2,
           "tube": "L02",
-          "pixels": 40,
-          "start_channel": 121,
-          "end_channel": 240
+          "pixels": 41,
+          "start_channel": 124,
+          "end_channel": 246
         },
         {
           "output": 3,
           "tube": "L03",
-          "pixels": 40,
-          "start_channel": 241,
-          "end_channel": 360
+          "pixels": 41,
+          "start_channel": 247,
+          "end_channel": 369
         },
         {
           "output": 4,
           "tube": "L04",
-          "pixels": 40,
-          "start_channel": 361,
-          "end_channel": 480
+          "pixels": 41,
+          "start_channel": 370,
+          "end_channel": 492
         }
       ],
       "power_in": [
@@ -504,37 +505,37 @@
         "L08"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 481,
-      "end_channel": 960,
+      "pixels": 164,
+      "start_channel": 493,
+      "end_channel": 984,
       "outputs": [
         {
           "output": 1,
           "tube": "L05",
-          "pixels": 40,
-          "start_channel": 481,
-          "end_channel": 600
+          "pixels": 41,
+          "start_channel": 493,
+          "end_channel": 615
         },
         {
           "output": 2,
           "tube": "L06",
-          "pixels": 40,
-          "start_channel": 601,
-          "end_channel": 720
+          "pixels": 41,
+          "start_channel": 616,
+          "end_channel": 738
         },
         {
           "output": 3,
           "tube": "L07",
-          "pixels": 40,
-          "start_channel": 721,
-          "end_channel": 840
+          "pixels": 41,
+          "start_channel": 739,
+          "end_channel": 861
         },
         {
           "output": 4,
           "tube": "L08",
-          "pixels": 40,
-          "start_channel": 841,
-          "end_channel": 960
+          "pixels": 41,
+          "start_channel": 862,
+          "end_channel": 984
         }
       ],
       "power_in": [
@@ -555,37 +556,37 @@
         "L12"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 961,
-      "end_channel": 1440,
+      "pixels": 164,
+      "start_channel": 985,
+      "end_channel": 1476,
       "outputs": [
         {
           "output": 1,
           "tube": "L09",
-          "pixels": 40,
-          "start_channel": 961,
-          "end_channel": 1080
+          "pixels": 41,
+          "start_channel": 985,
+          "end_channel": 1107
         },
         {
           "output": 2,
           "tube": "L10",
-          "pixels": 40,
-          "start_channel": 1081,
-          "end_channel": 1200
+          "pixels": 41,
+          "start_channel": 1108,
+          "end_channel": 1230
         },
         {
           "output": 3,
           "tube": "L11",
-          "pixels": 40,
-          "start_channel": 1201,
-          "end_channel": 1320
+          "pixels": 41,
+          "start_channel": 1231,
+          "end_channel": 1353
         },
         {
           "output": 4,
           "tube": "L12",
-          "pixels": 40,
-          "start_channel": 1321,
-          "end_channel": 1440
+          "pixels": 41,
+          "start_channel": 1354,
+          "end_channel": 1476
         }
       ],
       "power_in": [
@@ -606,37 +607,37 @@
         "L16"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 1441,
-      "end_channel": 1920,
+      "pixels": 164,
+      "start_channel": 1477,
+      "end_channel": 1968,
       "outputs": [
         {
           "output": 1,
           "tube": "L13",
-          "pixels": 40,
-          "start_channel": 1441,
-          "end_channel": 1560
+          "pixels": 41,
+          "start_channel": 1477,
+          "end_channel": 1599
         },
         {
           "output": 2,
           "tube": "L14",
-          "pixels": 40,
-          "start_channel": 1561,
-          "end_channel": 1680
+          "pixels": 41,
+          "start_channel": 1600,
+          "end_channel": 1722
         },
         {
           "output": 3,
           "tube": "L15",
-          "pixels": 40,
-          "start_channel": 1681,
-          "end_channel": 1800
+          "pixels": 41,
+          "start_channel": 1723,
+          "end_channel": 1845
         },
         {
           "output": 4,
           "tube": "L16",
-          "pixels": 40,
-          "start_channel": 1801,
-          "end_channel": 1920
+          "pixels": 41,
+          "start_channel": 1846,
+          "end_channel": 1968
         }
       ],
       "power_in": [
@@ -657,37 +658,37 @@
         "L20"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 1921,
-      "end_channel": 2400,
+      "pixels": 164,
+      "start_channel": 1969,
+      "end_channel": 2460,
       "outputs": [
         {
           "output": 1,
           "tube": "L17",
-          "pixels": 40,
-          "start_channel": 1921,
-          "end_channel": 2040
+          "pixels": 41,
+          "start_channel": 1969,
+          "end_channel": 2091
         },
         {
           "output": 2,
           "tube": "L18",
-          "pixels": 40,
-          "start_channel": 2041,
-          "end_channel": 2160
+          "pixels": 41,
+          "start_channel": 2092,
+          "end_channel": 2214
         },
         {
           "output": 3,
           "tube": "L19",
-          "pixels": 40,
-          "start_channel": 2161,
-          "end_channel": 2280
+          "pixels": 41,
+          "start_channel": 2215,
+          "end_channel": 2337
         },
         {
           "output": 4,
           "tube": "L20",
-          "pixels": 40,
-          "start_channel": 2281,
-          "end_channel": 2400
+          "pixels": 41,
+          "start_channel": 2338,
+          "end_channel": 2460
         }
       ],
       "power_in": [
@@ -708,37 +709,37 @@
         "L24"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 2401,
-      "end_channel": 2880,
+      "pixels": 164,
+      "start_channel": 2461,
+      "end_channel": 2952,
       "outputs": [
         {
           "output": 1,
           "tube": "L21",
-          "pixels": 40,
-          "start_channel": 2401,
-          "end_channel": 2520
+          "pixels": 41,
+          "start_channel": 2461,
+          "end_channel": 2583
         },
         {
           "output": 2,
           "tube": "L22",
-          "pixels": 40,
-          "start_channel": 2521,
-          "end_channel": 2640
+          "pixels": 41,
+          "start_channel": 2584,
+          "end_channel": 2706
         },
         {
           "output": 3,
           "tube": "L23",
-          "pixels": 40,
-          "start_channel": 2641,
-          "end_channel": 2760
+          "pixels": 41,
+          "start_channel": 2707,
+          "end_channel": 2829
         },
         {
           "output": 4,
           "tube": "L24",
-          "pixels": 40,
-          "start_channel": 2761,
-          "end_channel": 2880
+          "pixels": 41,
+          "start_channel": 2830,
+          "end_channel": 2952
         }
       ],
       "power_in": [
@@ -759,37 +760,37 @@
         "L28"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 2881,
-      "end_channel": 3360,
+      "pixels": 164,
+      "start_channel": 2953,
+      "end_channel": 3444,
       "outputs": [
         {
           "output": 1,
           "tube": "L25",
-          "pixels": 40,
-          "start_channel": 2881,
-          "end_channel": 3000
+          "pixels": 41,
+          "start_channel": 2953,
+          "end_channel": 3075
         },
         {
           "output": 2,
           "tube": "L26",
-          "pixels": 40,
-          "start_channel": 3001,
-          "end_channel": 3120
+          "pixels": 41,
+          "start_channel": 3076,
+          "end_channel": 3198
         },
         {
           "output": 3,
           "tube": "L27",
-          "pixels": 40,
-          "start_channel": 3121,
-          "end_channel": 3240
+          "pixels": 41,
+          "start_channel": 3199,
+          "end_channel": 3321
         },
         {
           "output": 4,
           "tube": "L28",
-          "pixels": 40,
-          "start_channel": 3241,
-          "end_channel": 3360
+          "pixels": 41,
+          "start_channel": 3322,
+          "end_channel": 3444
         }
       ],
       "power_in": [
@@ -810,37 +811,37 @@
         "L32"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 3361,
-      "end_channel": 3840,
+      "pixels": 164,
+      "start_channel": 3445,
+      "end_channel": 3936,
       "outputs": [
         {
           "output": 1,
           "tube": "L29",
-          "pixels": 40,
-          "start_channel": 3361,
-          "end_channel": 3480
+          "pixels": 41,
+          "start_channel": 3445,
+          "end_channel": 3567
         },
         {
           "output": 2,
           "tube": "L30",
-          "pixels": 40,
-          "start_channel": 3481,
-          "end_channel": 3600
+          "pixels": 41,
+          "start_channel": 3568,
+          "end_channel": 3690
         },
         {
           "output": 3,
           "tube": "L31",
-          "pixels": 40,
-          "start_channel": 3601,
-          "end_channel": 3720
+          "pixels": 41,
+          "start_channel": 3691,
+          "end_channel": 3813
         },
         {
           "output": 4,
           "tube": "L32",
-          "pixels": 40,
-          "start_channel": 3721,
-          "end_channel": 3840
+          "pixels": 41,
+          "start_channel": 3814,
+          "end_channel": 3936
         }
       ],
       "power_in": [
@@ -861,37 +862,37 @@
         "L36"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 3841,
-      "end_channel": 4320,
+      "pixels": 164,
+      "start_channel": 3937,
+      "end_channel": 4428,
       "outputs": [
         {
           "output": 1,
           "tube": "L33",
-          "pixels": 40,
-          "start_channel": 3841,
-          "end_channel": 3960
+          "pixels": 41,
+          "start_channel": 3937,
+          "end_channel": 4059
         },
         {
           "output": 2,
           "tube": "L34",
-          "pixels": 40,
-          "start_channel": 3961,
-          "end_channel": 4080
+          "pixels": 41,
+          "start_channel": 4060,
+          "end_channel": 4182
         },
         {
           "output": 3,
           "tube": "L35",
-          "pixels": 40,
-          "start_channel": 4081,
-          "end_channel": 4200
+          "pixels": 41,
+          "start_channel": 4183,
+          "end_channel": 4305
         },
         {
           "output": 4,
           "tube": "L36",
-          "pixels": 40,
-          "start_channel": 4201,
-          "end_channel": 4320
+          "pixels": 41,
+          "start_channel": 4306,
+          "end_channel": 4428
         }
       ],
       "power_in": [
@@ -912,37 +913,37 @@
         "L40"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 4321,
-      "end_channel": 4800,
+      "pixels": 164,
+      "start_channel": 4429,
+      "end_channel": 4920,
       "outputs": [
         {
           "output": 1,
           "tube": "L37",
-          "pixels": 40,
-          "start_channel": 4321,
-          "end_channel": 4440
+          "pixels": 41,
+          "start_channel": 4429,
+          "end_channel": 4551
         },
         {
           "output": 2,
           "tube": "L38",
-          "pixels": 40,
-          "start_channel": 4441,
-          "end_channel": 4560
+          "pixels": 41,
+          "start_channel": 4552,
+          "end_channel": 4674
         },
         {
           "output": 3,
           "tube": "L39",
-          "pixels": 40,
-          "start_channel": 4561,
-          "end_channel": 4680
+          "pixels": 41,
+          "start_channel": 4675,
+          "end_channel": 4797
         },
         {
           "output": 4,
           "tube": "L40",
-          "pixels": 40,
-          "start_channel": 4681,
-          "end_channel": 4800
+          "pixels": 41,
+          "start_channel": 4798,
+          "end_channel": 4920
         }
       ],
       "power_in": [
@@ -963,37 +964,37 @@
         "L44"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 4801,
-      "end_channel": 5280,
+      "pixels": 164,
+      "start_channel": 4921,
+      "end_channel": 5412,
       "outputs": [
         {
           "output": 1,
           "tube": "L41",
-          "pixels": 40,
-          "start_channel": 4801,
-          "end_channel": 4920
+          "pixels": 41,
+          "start_channel": 4921,
+          "end_channel": 5043
         },
         {
           "output": 2,
           "tube": "L42",
-          "pixels": 40,
-          "start_channel": 4921,
-          "end_channel": 5040
+          "pixels": 41,
+          "start_channel": 5044,
+          "end_channel": 5166
         },
         {
           "output": 3,
           "tube": "L43",
-          "pixels": 40,
-          "start_channel": 5041,
-          "end_channel": 5160
+          "pixels": 41,
+          "start_channel": 5167,
+          "end_channel": 5289
         },
         {
           "output": 4,
           "tube": "L44",
-          "pixels": 40,
-          "start_channel": 5161,
-          "end_channel": 5280
+          "pixels": 41,
+          "start_channel": 5290,
+          "end_channel": 5412
         }
       ],
       "power_in": [
@@ -1014,37 +1015,37 @@
         "L48"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 5281,
-      "end_channel": 5760,
+      "pixels": 164,
+      "start_channel": 5413,
+      "end_channel": 5904,
       "outputs": [
         {
           "output": 1,
           "tube": "L45",
-          "pixels": 40,
-          "start_channel": 5281,
-          "end_channel": 5400
+          "pixels": 41,
+          "start_channel": 5413,
+          "end_channel": 5535
         },
         {
           "output": 2,
           "tube": "L46",
-          "pixels": 40,
-          "start_channel": 5401,
-          "end_channel": 5520
+          "pixels": 41,
+          "start_channel": 5536,
+          "end_channel": 5658
         },
         {
           "output": 3,
           "tube": "L47",
-          "pixels": 40,
-          "start_channel": 5521,
-          "end_channel": 5640
+          "pixels": 41,
+          "start_channel": 5659,
+          "end_channel": 5781
         },
         {
           "output": 4,
           "tube": "L48",
-          "pixels": 40,
-          "start_channel": 5641,
-          "end_channel": 5760
+          "pixels": 41,
+          "start_channel": 5782,
+          "end_channel": 5904
         }
       ],
       "power_in": [
@@ -1065,37 +1066,37 @@
         "L52"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 5761,
-      "end_channel": 6240,
+      "pixels": 164,
+      "start_channel": 5905,
+      "end_channel": 6396,
       "outputs": [
         {
           "output": 1,
           "tube": "L49",
-          "pixels": 40,
-          "start_channel": 5761,
-          "end_channel": 5880
+          "pixels": 41,
+          "start_channel": 5905,
+          "end_channel": 6027
         },
         {
           "output": 2,
           "tube": "L50",
-          "pixels": 40,
-          "start_channel": 5881,
-          "end_channel": 6000
+          "pixels": 41,
+          "start_channel": 6028,
+          "end_channel": 6150
         },
         {
           "output": 3,
           "tube": "L51",
-          "pixels": 40,
-          "start_channel": 6001,
-          "end_channel": 6120
+          "pixels": 41,
+          "start_channel": 6151,
+          "end_channel": 6273
         },
         {
           "output": 4,
           "tube": "L52",
-          "pixels": 40,
-          "start_channel": 6121,
-          "end_channel": 6240
+          "pixels": 41,
+          "start_channel": 6274,
+          "end_channel": 6396
         }
       ],
       "power_in": [
@@ -1116,37 +1117,37 @@
         "L56"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 6241,
-      "end_channel": 6720,
+      "pixels": 164,
+      "start_channel": 6397,
+      "end_channel": 6888,
       "outputs": [
         {
           "output": 1,
           "tube": "L53",
-          "pixels": 40,
-          "start_channel": 6241,
-          "end_channel": 6360
+          "pixels": 41,
+          "start_channel": 6397,
+          "end_channel": 6519
         },
         {
           "output": 2,
           "tube": "L54",
-          "pixels": 40,
-          "start_channel": 6361,
-          "end_channel": 6480
+          "pixels": 41,
+          "start_channel": 6520,
+          "end_channel": 6642
         },
         {
           "output": 3,
           "tube": "L55",
-          "pixels": 40,
-          "start_channel": 6481,
-          "end_channel": 6600
+          "pixels": 41,
+          "start_channel": 6643,
+          "end_channel": 6765
         },
         {
           "output": 4,
           "tube": "L56",
-          "pixels": 40,
-          "start_channel": 6601,
-          "end_channel": 6720
+          "pixels": 41,
+          "start_channel": 6766,
+          "end_channel": 6888
         }
       ],
       "power_in": [
@@ -1167,37 +1168,37 @@
         "B04"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 6721,
-      "end_channel": 7200,
+      "pixels": 164,
+      "start_channel": 6889,
+      "end_channel": 7380,
       "outputs": [
         {
           "output": 1,
           "tube": "B01",
-          "pixels": 40,
-          "start_channel": 6721,
-          "end_channel": 6840
+          "pixels": 41,
+          "start_channel": 6889,
+          "end_channel": 7011
         },
         {
           "output": 2,
           "tube": "B02",
-          "pixels": 40,
-          "start_channel": 6841,
-          "end_channel": 6960
+          "pixels": 41,
+          "start_channel": 7012,
+          "end_channel": 7134
         },
         {
           "output": 3,
           "tube": "B03",
-          "pixels": 40,
-          "start_channel": 6961,
-          "end_channel": 7080
+          "pixels": 41,
+          "start_channel": 7135,
+          "end_channel": 7257
         },
         {
           "output": 4,
           "tube": "B04",
-          "pixels": 40,
-          "start_channel": 7081,
-          "end_channel": 7200
+          "pixels": 41,
+          "start_channel": 7258,
+          "end_channel": 7380
         }
       ],
       "power_in": [
@@ -1218,37 +1219,37 @@
         "B08"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 7201,
-      "end_channel": 7680,
+      "pixels": 164,
+      "start_channel": 7381,
+      "end_channel": 7872,
       "outputs": [
         {
           "output": 1,
           "tube": "B05",
-          "pixels": 40,
-          "start_channel": 7201,
-          "end_channel": 7320
+          "pixels": 41,
+          "start_channel": 7381,
+          "end_channel": 7503
         },
         {
           "output": 2,
           "tube": "B06",
-          "pixels": 40,
-          "start_channel": 7321,
-          "end_channel": 7440
+          "pixels": 41,
+          "start_channel": 7504,
+          "end_channel": 7626
         },
         {
           "output": 3,
           "tube": "B07",
-          "pixels": 40,
-          "start_channel": 7441,
-          "end_channel": 7560
+          "pixels": 41,
+          "start_channel": 7627,
+          "end_channel": 7749
         },
         {
           "output": 4,
           "tube": "B08",
-          "pixels": 40,
-          "start_channel": 7561,
-          "end_channel": 7680
+          "pixels": 41,
+          "start_channel": 7750,
+          "end_channel": 7872
         }
       ],
       "power_in": [
@@ -1269,37 +1270,37 @@
         "B12"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 7681,
-      "end_channel": 8160,
+      "pixels": 164,
+      "start_channel": 7873,
+      "end_channel": 8364,
       "outputs": [
         {
           "output": 1,
           "tube": "B09",
-          "pixels": 40,
-          "start_channel": 7681,
-          "end_channel": 7800
+          "pixels": 41,
+          "start_channel": 7873,
+          "end_channel": 7995
         },
         {
           "output": 2,
           "tube": "B10",
-          "pixels": 40,
-          "start_channel": 7801,
-          "end_channel": 7920
+          "pixels": 41,
+          "start_channel": 7996,
+          "end_channel": 8118
         },
         {
           "output": 3,
           "tube": "B11",
-          "pixels": 40,
-          "start_channel": 7921,
-          "end_channel": 8040
+          "pixels": 41,
+          "start_channel": 8119,
+          "end_channel": 8241
         },
         {
           "output": 4,
           "tube": "B12",
-          "pixels": 40,
-          "start_channel": 8041,
-          "end_channel": 8160
+          "pixels": 41,
+          "start_channel": 8242,
+          "end_channel": 8364
         }
       ],
       "power_in": [
@@ -1320,37 +1321,37 @@
         "B16"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 8161,
-      "end_channel": 8640,
+      "pixels": 164,
+      "start_channel": 8365,
+      "end_channel": 8856,
       "outputs": [
         {
           "output": 1,
           "tube": "B13",
-          "pixels": 40,
-          "start_channel": 8161,
-          "end_channel": 8280
+          "pixels": 41,
+          "start_channel": 8365,
+          "end_channel": 8487
         },
         {
           "output": 2,
           "tube": "B14",
-          "pixels": 40,
-          "start_channel": 8281,
-          "end_channel": 8400
+          "pixels": 41,
+          "start_channel": 8488,
+          "end_channel": 8610
         },
         {
           "output": 3,
           "tube": "B15",
-          "pixels": 40,
-          "start_channel": 8401,
-          "end_channel": 8520
+          "pixels": 41,
+          "start_channel": 8611,
+          "end_channel": 8733
         },
         {
           "output": 4,
           "tube": "B16",
-          "pixels": 40,
-          "start_channel": 8521,
-          "end_channel": 8640
+          "pixels": 41,
+          "start_channel": 8734,
+          "end_channel": 8856
         }
       ],
       "power_in": [
@@ -1371,37 +1372,37 @@
         "B20"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 8641,
-      "end_channel": 9120,
+      "pixels": 164,
+      "start_channel": 8857,
+      "end_channel": 9348,
       "outputs": [
         {
           "output": 1,
           "tube": "B17",
-          "pixels": 40,
-          "start_channel": 8641,
-          "end_channel": 8760
+          "pixels": 41,
+          "start_channel": 8857,
+          "end_channel": 8979
         },
         {
           "output": 2,
           "tube": "B18",
-          "pixels": 40,
-          "start_channel": 8761,
-          "end_channel": 8880
+          "pixels": 41,
+          "start_channel": 8980,
+          "end_channel": 9102
         },
         {
           "output": 3,
           "tube": "B19",
-          "pixels": 40,
-          "start_channel": 8881,
-          "end_channel": 9000
+          "pixels": 41,
+          "start_channel": 9103,
+          "end_channel": 9225
         },
         {
           "output": 4,
           "tube": "B20",
-          "pixels": 40,
-          "start_channel": 9001,
-          "end_channel": 9120
+          "pixels": 41,
+          "start_channel": 9226,
+          "end_channel": 9348
         }
       ],
       "power_in": [
@@ -1422,37 +1423,37 @@
         "B24"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 9121,
-      "end_channel": 9600,
+      "pixels": 164,
+      "start_channel": 9349,
+      "end_channel": 9840,
       "outputs": [
         {
           "output": 1,
           "tube": "B21",
-          "pixels": 40,
-          "start_channel": 9121,
-          "end_channel": 9240
+          "pixels": 41,
+          "start_channel": 9349,
+          "end_channel": 9471
         },
         {
           "output": 2,
           "tube": "B22",
-          "pixels": 40,
-          "start_channel": 9241,
-          "end_channel": 9360
+          "pixels": 41,
+          "start_channel": 9472,
+          "end_channel": 9594
         },
         {
           "output": 3,
           "tube": "B23",
-          "pixels": 40,
-          "start_channel": 9361,
-          "end_channel": 9480
+          "pixels": 41,
+          "start_channel": 9595,
+          "end_channel": 9717
         },
         {
           "output": 4,
           "tube": "B24",
-          "pixels": 40,
-          "start_channel": 9481,
-          "end_channel": 9600
+          "pixels": 41,
+          "start_channel": 9718,
+          "end_channel": 9840
         }
       ],
       "power_in": [
@@ -1473,37 +1474,37 @@
         "R04"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 9601,
-      "end_channel": 10080,
+      "pixels": 164,
+      "start_channel": 9841,
+      "end_channel": 10332,
       "outputs": [
         {
           "output": 1,
           "tube": "R01",
-          "pixels": 40,
-          "start_channel": 9601,
-          "end_channel": 9720
+          "pixels": 41,
+          "start_channel": 9841,
+          "end_channel": 9963
         },
         {
           "output": 2,
           "tube": "R02",
-          "pixels": 40,
-          "start_channel": 9721,
-          "end_channel": 9840
+          "pixels": 41,
+          "start_channel": 9964,
+          "end_channel": 10086
         },
         {
           "output": 3,
           "tube": "R03",
-          "pixels": 40,
-          "start_channel": 9841,
-          "end_channel": 9960
+          "pixels": 41,
+          "start_channel": 10087,
+          "end_channel": 10209
         },
         {
           "output": 4,
           "tube": "R04",
-          "pixels": 40,
-          "start_channel": 9961,
-          "end_channel": 10080
+          "pixels": 41,
+          "start_channel": 10210,
+          "end_channel": 10332
         }
       ],
       "power_in": [
@@ -1524,37 +1525,37 @@
         "R08"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 10081,
-      "end_channel": 10560,
+      "pixels": 164,
+      "start_channel": 10333,
+      "end_channel": 10824,
       "outputs": [
         {
           "output": 1,
           "tube": "R05",
-          "pixels": 40,
-          "start_channel": 10081,
-          "end_channel": 10200
+          "pixels": 41,
+          "start_channel": 10333,
+          "end_channel": 10455
         },
         {
           "output": 2,
           "tube": "R06",
-          "pixels": 40,
-          "start_channel": 10201,
-          "end_channel": 10320
+          "pixels": 41,
+          "start_channel": 10456,
+          "end_channel": 10578
         },
         {
           "output": 3,
           "tube": "R07",
-          "pixels": 40,
-          "start_channel": 10321,
-          "end_channel": 10440
+          "pixels": 41,
+          "start_channel": 10579,
+          "end_channel": 10701
         },
         {
           "output": 4,
           "tube": "R08",
-          "pixels": 40,
-          "start_channel": 10441,
-          "end_channel": 10560
+          "pixels": 41,
+          "start_channel": 10702,
+          "end_channel": 10824
         }
       ],
       "power_in": [
@@ -1575,37 +1576,37 @@
         "R12"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 10561,
-      "end_channel": 11040,
+      "pixels": 164,
+      "start_channel": 10825,
+      "end_channel": 11316,
       "outputs": [
         {
           "output": 1,
           "tube": "R09",
-          "pixels": 40,
-          "start_channel": 10561,
-          "end_channel": 10680
+          "pixels": 41,
+          "start_channel": 10825,
+          "end_channel": 10947
         },
         {
           "output": 2,
           "tube": "R10",
-          "pixels": 40,
-          "start_channel": 10681,
-          "end_channel": 10800
+          "pixels": 41,
+          "start_channel": 10948,
+          "end_channel": 11070
         },
         {
           "output": 3,
           "tube": "R11",
-          "pixels": 40,
-          "start_channel": 10801,
-          "end_channel": 10920
+          "pixels": 41,
+          "start_channel": 11071,
+          "end_channel": 11193
         },
         {
           "output": 4,
           "tube": "R12",
-          "pixels": 40,
-          "start_channel": 10921,
-          "end_channel": 11040
+          "pixels": 41,
+          "start_channel": 11194,
+          "end_channel": 11316
         }
       ],
       "power_in": [
@@ -1626,37 +1627,37 @@
         "R16"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 11041,
-      "end_channel": 11520,
+      "pixels": 164,
+      "start_channel": 11317,
+      "end_channel": 11808,
       "outputs": [
         {
           "output": 1,
           "tube": "R13",
-          "pixels": 40,
-          "start_channel": 11041,
-          "end_channel": 11160
+          "pixels": 41,
+          "start_channel": 11317,
+          "end_channel": 11439
         },
         {
           "output": 2,
           "tube": "R14",
-          "pixels": 40,
-          "start_channel": 11161,
-          "end_channel": 11280
+          "pixels": 41,
+          "start_channel": 11440,
+          "end_channel": 11562
         },
         {
           "output": 3,
           "tube": "R15",
-          "pixels": 40,
-          "start_channel": 11281,
-          "end_channel": 11400
+          "pixels": 41,
+          "start_channel": 11563,
+          "end_channel": 11685
         },
         {
           "output": 4,
           "tube": "R16",
-          "pixels": 40,
-          "start_channel": 11401,
-          "end_channel": 11520
+          "pixels": 41,
+          "start_channel": 11686,
+          "end_channel": 11808
         }
       ],
       "power_in": [
@@ -1677,37 +1678,37 @@
         "R20"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 11521,
-      "end_channel": 12000,
+      "pixels": 164,
+      "start_channel": 11809,
+      "end_channel": 12300,
       "outputs": [
         {
           "output": 1,
           "tube": "R17",
-          "pixels": 40,
-          "start_channel": 11521,
-          "end_channel": 11640
+          "pixels": 41,
+          "start_channel": 11809,
+          "end_channel": 11931
         },
         {
           "output": 2,
           "tube": "R18",
-          "pixels": 40,
-          "start_channel": 11641,
-          "end_channel": 11760
+          "pixels": 41,
+          "start_channel": 11932,
+          "end_channel": 12054
         },
         {
           "output": 3,
           "tube": "R19",
-          "pixels": 40,
-          "start_channel": 11761,
-          "end_channel": 11880
+          "pixels": 41,
+          "start_channel": 12055,
+          "end_channel": 12177
         },
         {
           "output": 4,
           "tube": "R20",
-          "pixels": 40,
-          "start_channel": 11881,
-          "end_channel": 12000
+          "pixels": 41,
+          "start_channel": 12178,
+          "end_channel": 12300
         }
       ],
       "power_in": [
@@ -1728,37 +1729,37 @@
         "R24"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 12001,
-      "end_channel": 12480,
+      "pixels": 164,
+      "start_channel": 12301,
+      "end_channel": 12792,
       "outputs": [
         {
           "output": 1,
           "tube": "R21",
-          "pixels": 40,
-          "start_channel": 12001,
-          "end_channel": 12120
+          "pixels": 41,
+          "start_channel": 12301,
+          "end_channel": 12423
         },
         {
           "output": 2,
           "tube": "R22",
-          "pixels": 40,
-          "start_channel": 12121,
-          "end_channel": 12240
+          "pixels": 41,
+          "start_channel": 12424,
+          "end_channel": 12546
         },
         {
           "output": 3,
           "tube": "R23",
-          "pixels": 40,
-          "start_channel": 12241,
-          "end_channel": 12360
+          "pixels": 41,
+          "start_channel": 12547,
+          "end_channel": 12669
         },
         {
           "output": 4,
           "tube": "R24",
-          "pixels": 40,
-          "start_channel": 12361,
-          "end_channel": 12480
+          "pixels": 41,
+          "start_channel": 12670,
+          "end_channel": 12792
         }
       ],
       "power_in": [
@@ -1779,37 +1780,37 @@
         "R28"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 12481,
-      "end_channel": 12960,
+      "pixels": 164,
+      "start_channel": 12793,
+      "end_channel": 13284,
       "outputs": [
         {
           "output": 1,
           "tube": "R25",
-          "pixels": 40,
-          "start_channel": 12481,
-          "end_channel": 12600
+          "pixels": 41,
+          "start_channel": 12793,
+          "end_channel": 12915
         },
         {
           "output": 2,
           "tube": "R26",
-          "pixels": 40,
-          "start_channel": 12601,
-          "end_channel": 12720
+          "pixels": 41,
+          "start_channel": 12916,
+          "end_channel": 13038
         },
         {
           "output": 3,
           "tube": "R27",
-          "pixels": 40,
-          "start_channel": 12721,
-          "end_channel": 12840
+          "pixels": 41,
+          "start_channel": 13039,
+          "end_channel": 13161
         },
         {
           "output": 4,
           "tube": "R28",
-          "pixels": 40,
-          "start_channel": 12841,
-          "end_channel": 12960
+          "pixels": 41,
+          "start_channel": 13162,
+          "end_channel": 13284
         }
       ],
       "power_in": [
@@ -1830,37 +1831,37 @@
         "R32"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 12961,
-      "end_channel": 13440,
+      "pixels": 164,
+      "start_channel": 13285,
+      "end_channel": 13776,
       "outputs": [
         {
           "output": 1,
           "tube": "R29",
-          "pixels": 40,
-          "start_channel": 12961,
-          "end_channel": 13080
+          "pixels": 41,
+          "start_channel": 13285,
+          "end_channel": 13407
         },
         {
           "output": 2,
           "tube": "R30",
-          "pixels": 40,
-          "start_channel": 13081,
-          "end_channel": 13200
+          "pixels": 41,
+          "start_channel": 13408,
+          "end_channel": 13530
         },
         {
           "output": 3,
           "tube": "R31",
-          "pixels": 40,
-          "start_channel": 13201,
-          "end_channel": 13320
+          "pixels": 41,
+          "start_channel": 13531,
+          "end_channel": 13653
         },
         {
           "output": 4,
           "tube": "R32",
-          "pixels": 40,
-          "start_channel": 13321,
-          "end_channel": 13440
+          "pixels": 41,
+          "start_channel": 13654,
+          "end_channel": 13776
         }
       ],
       "power_in": [
@@ -1881,37 +1882,37 @@
         "R36"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 13441,
-      "end_channel": 13920,
+      "pixels": 164,
+      "start_channel": 13777,
+      "end_channel": 14268,
       "outputs": [
         {
           "output": 1,
           "tube": "R33",
-          "pixels": 40,
-          "start_channel": 13441,
-          "end_channel": 13560
+          "pixels": 41,
+          "start_channel": 13777,
+          "end_channel": 13899
         },
         {
           "output": 2,
           "tube": "R34",
-          "pixels": 40,
-          "start_channel": 13561,
-          "end_channel": 13680
+          "pixels": 41,
+          "start_channel": 13900,
+          "end_channel": 14022
         },
         {
           "output": 3,
           "tube": "R35",
-          "pixels": 40,
-          "start_channel": 13681,
-          "end_channel": 13800
+          "pixels": 41,
+          "start_channel": 14023,
+          "end_channel": 14145
         },
         {
           "output": 4,
           "tube": "R36",
-          "pixels": 40,
-          "start_channel": 13801,
-          "end_channel": 13920
+          "pixels": 41,
+          "start_channel": 14146,
+          "end_channel": 14268
         }
       ],
       "power_in": [
@@ -1932,37 +1933,37 @@
         "R40"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 13921,
-      "end_channel": 14400,
+      "pixels": 164,
+      "start_channel": 14269,
+      "end_channel": 14760,
       "outputs": [
         {
           "output": 1,
           "tube": "R37",
-          "pixels": 40,
-          "start_channel": 13921,
-          "end_channel": 14040
+          "pixels": 41,
+          "start_channel": 14269,
+          "end_channel": 14391
         },
         {
           "output": 2,
           "tube": "R38",
-          "pixels": 40,
-          "start_channel": 14041,
-          "end_channel": 14160
+          "pixels": 41,
+          "start_channel": 14392,
+          "end_channel": 14514
         },
         {
           "output": 3,
           "tube": "R39",
-          "pixels": 40,
-          "start_channel": 14161,
-          "end_channel": 14280
+          "pixels": 41,
+          "start_channel": 14515,
+          "end_channel": 14637
         },
         {
           "output": 4,
           "tube": "R40",
-          "pixels": 40,
-          "start_channel": 14281,
-          "end_channel": 14400
+          "pixels": 41,
+          "start_channel": 14638,
+          "end_channel": 14760
         }
       ],
       "power_in": [
@@ -1983,37 +1984,37 @@
         "R44"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 14401,
-      "end_channel": 14880,
+      "pixels": 164,
+      "start_channel": 14761,
+      "end_channel": 15252,
       "outputs": [
         {
           "output": 1,
           "tube": "R41",
-          "pixels": 40,
-          "start_channel": 14401,
-          "end_channel": 14520
+          "pixels": 41,
+          "start_channel": 14761,
+          "end_channel": 14883
         },
         {
           "output": 2,
           "tube": "R42",
-          "pixels": 40,
-          "start_channel": 14521,
-          "end_channel": 14640
+          "pixels": 41,
+          "start_channel": 14884,
+          "end_channel": 15006
         },
         {
           "output": 3,
           "tube": "R43",
-          "pixels": 40,
-          "start_channel": 14641,
-          "end_channel": 14760
+          "pixels": 41,
+          "start_channel": 15007,
+          "end_channel": 15129
         },
         {
           "output": 4,
           "tube": "R44",
-          "pixels": 40,
-          "start_channel": 14761,
-          "end_channel": 14880
+          "pixels": 41,
+          "start_channel": 15130,
+          "end_channel": 15252
         }
       ],
       "power_in": [
@@ -2034,37 +2035,37 @@
         "R48"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 14881,
-      "end_channel": 15360,
+      "pixels": 164,
+      "start_channel": 15253,
+      "end_channel": 15744,
       "outputs": [
         {
           "output": 1,
           "tube": "R45",
-          "pixels": 40,
-          "start_channel": 14881,
-          "end_channel": 15000
+          "pixels": 41,
+          "start_channel": 15253,
+          "end_channel": 15375
         },
         {
           "output": 2,
           "tube": "R46",
-          "pixels": 40,
-          "start_channel": 15001,
-          "end_channel": 15120
+          "pixels": 41,
+          "start_channel": 15376,
+          "end_channel": 15498
         },
         {
           "output": 3,
           "tube": "R47",
-          "pixels": 40,
-          "start_channel": 15121,
-          "end_channel": 15240
+          "pixels": 41,
+          "start_channel": 15499,
+          "end_channel": 15621
         },
         {
           "output": 4,
           "tube": "R48",
-          "pixels": 40,
-          "start_channel": 15241,
-          "end_channel": 15360
+          "pixels": 41,
+          "start_channel": 15622,
+          "end_channel": 15744
         }
       ],
       "power_in": [
@@ -2085,37 +2086,37 @@
         "R52"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 15361,
-      "end_channel": 15840,
+      "pixels": 164,
+      "start_channel": 15745,
+      "end_channel": 16236,
       "outputs": [
         {
           "output": 1,
           "tube": "R49",
-          "pixels": 40,
-          "start_channel": 15361,
-          "end_channel": 15480
+          "pixels": 41,
+          "start_channel": 15745,
+          "end_channel": 15867
         },
         {
           "output": 2,
           "tube": "R50",
-          "pixels": 40,
-          "start_channel": 15481,
-          "end_channel": 15600
+          "pixels": 41,
+          "start_channel": 15868,
+          "end_channel": 15990
         },
         {
           "output": 3,
           "tube": "R51",
-          "pixels": 40,
-          "start_channel": 15601,
-          "end_channel": 15720
+          "pixels": 41,
+          "start_channel": 15991,
+          "end_channel": 16113
         },
         {
           "output": 4,
           "tube": "R52",
-          "pixels": 40,
-          "start_channel": 15721,
-          "end_channel": 15840
+          "pixels": 41,
+          "start_channel": 16114,
+          "end_channel": 16236
         }
       ],
       "power_in": [
@@ -2136,37 +2137,37 @@
         "R56"
       ],
       "tube_count": 4,
-      "pixels": 160,
-      "start_channel": 15841,
-      "end_channel": 16320,
+      "pixels": 164,
+      "start_channel": 16237,
+      "end_channel": 16728,
       "outputs": [
         {
           "output": 1,
           "tube": "R53",
-          "pixels": 40,
-          "start_channel": 15841,
-          "end_channel": 15960
+          "pixels": 41,
+          "start_channel": 16237,
+          "end_channel": 16359
         },
         {
           "output": 2,
           "tube": "R54",
-          "pixels": 40,
-          "start_channel": 15961,
-          "end_channel": 16080
+          "pixels": 41,
+          "start_channel": 16360,
+          "end_channel": 16482
         },
         {
           "output": 3,
           "tube": "R55",
-          "pixels": 40,
-          "start_channel": 16081,
-          "end_channel": 16200
+          "pixels": 41,
+          "start_channel": 16483,
+          "end_channel": 16605
         },
         {
           "output": 4,
           "tube": "R56",
-          "pixels": 40,
-          "start_channel": 16201,
-          "end_channel": 16320
+          "pixels": 41,
+          "start_channel": 16606,
+          "end_channel": 16728
         }
       ],
       "power_in": [
@@ -2188,10 +2189,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 1,
-      "pixels": 40,
+      "pixels": 41,
       "px_offset": 0,
       "start_channel": 1,
-      "end_channel": 120,
+      "end_channel": 123,
       "universes": [
         1
       ],
@@ -2210,10 +2211,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 40,
-      "start_channel": 121,
-      "end_channel": 240,
+      "pixels": 41,
+      "px_offset": 41,
+      "start_channel": 124,
+      "end_channel": 246,
       "universes": [
         1
       ],
@@ -2232,10 +2233,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 80,
-      "start_channel": 241,
-      "end_channel": 360,
+      "pixels": 41,
+      "px_offset": 82,
+      "start_channel": 247,
+      "end_channel": 369,
       "universes": [
         1
       ],
@@ -2254,10 +2255,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 120,
-      "start_channel": 361,
-      "end_channel": 480,
+      "pixels": 41,
+      "px_offset": 123,
+      "start_channel": 370,
+      "end_channel": 492,
       "universes": [
         1
       ],
@@ -2276,10 +2277,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 160,
-      "start_channel": 481,
-      "end_channel": 600,
+      "pixels": 41,
+      "px_offset": 164,
+      "start_channel": 493,
+      "end_channel": 615,
       "universes": [
         1,
         2
@@ -2299,10 +2300,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 200,
-      "start_channel": 601,
-      "end_channel": 720,
+      "pixels": 41,
+      "px_offset": 205,
+      "start_channel": 616,
+      "end_channel": 738,
       "universes": [
         2
       ],
@@ -2321,10 +2322,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 240,
-      "start_channel": 721,
-      "end_channel": 840,
+      "pixels": 41,
+      "px_offset": 246,
+      "start_channel": 739,
+      "end_channel": 861,
       "universes": [
         2
       ],
@@ -2343,10 +2344,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 280,
-      "start_channel": 841,
-      "end_channel": 960,
+      "pixels": 41,
+      "px_offset": 287,
+      "start_channel": 862,
+      "end_channel": 984,
       "universes": [
         2
       ],
@@ -2365,10 +2366,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 320,
-      "start_channel": 961,
-      "end_channel": 1080,
+      "pixels": 41,
+      "px_offset": 328,
+      "start_channel": 985,
+      "end_channel": 1107,
       "universes": [
         2,
         3
@@ -2388,10 +2389,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 360,
-      "start_channel": 1081,
-      "end_channel": 1200,
+      "pixels": 41,
+      "px_offset": 369,
+      "start_channel": 1108,
+      "end_channel": 1230,
       "universes": [
         3
       ],
@@ -2410,10 +2411,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 400,
-      "start_channel": 1201,
-      "end_channel": 1320,
+      "pixels": 41,
+      "px_offset": 410,
+      "start_channel": 1231,
+      "end_channel": 1353,
       "universes": [
         3
       ],
@@ -2432,10 +2433,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 440,
-      "start_channel": 1321,
-      "end_channel": 1440,
+      "pixels": 41,
+      "px_offset": 451,
+      "start_channel": 1354,
+      "end_channel": 1476,
       "universes": [
         3
       ],
@@ -2454,10 +2455,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 480,
-      "start_channel": 1441,
-      "end_channel": 1560,
+      "pixels": 41,
+      "px_offset": 492,
+      "start_channel": 1477,
+      "end_channel": 1599,
       "universes": [
         3,
         4
@@ -2477,10 +2478,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 520,
-      "start_channel": 1561,
-      "end_channel": 1680,
+      "pixels": 41,
+      "px_offset": 533,
+      "start_channel": 1600,
+      "end_channel": 1722,
       "universes": [
         4
       ],
@@ -2499,10 +2500,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 560,
-      "start_channel": 1681,
-      "end_channel": 1800,
+      "pixels": 41,
+      "px_offset": 574,
+      "start_channel": 1723,
+      "end_channel": 1845,
       "universes": [
         4
       ],
@@ -2521,10 +2522,10 @@
       "port": 1,
       "port_silkscreen": "1-4",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 600,
-      "start_channel": 1801,
-      "end_channel": 1920,
+      "pixels": 41,
+      "px_offset": 615,
+      "start_channel": 1846,
+      "end_channel": 1968,
       "universes": [
         4
       ],
@@ -2543,12 +2544,13 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 640,
-      "start_channel": 1921,
-      "end_channel": 2040,
+      "pixels": 41,
+      "px_offset": 656,
+      "start_channel": 1969,
+      "end_channel": 2091,
       "universes": [
-        4
+        4,
+        5
       ],
       "direction": "forward",
       "power_in": true
@@ -2565,10 +2567,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 680,
-      "start_channel": 2041,
-      "end_channel": 2160,
+      "pixels": 41,
+      "px_offset": 697,
+      "start_channel": 2092,
+      "end_channel": 2214,
       "universes": [
         5
       ],
@@ -2587,10 +2589,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 720,
-      "start_channel": 2161,
-      "end_channel": 2280,
+      "pixels": 41,
+      "px_offset": 738,
+      "start_channel": 2215,
+      "end_channel": 2337,
       "universes": [
         5
       ],
@@ -2609,10 +2611,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 760,
-      "start_channel": 2281,
-      "end_channel": 2400,
+      "pixels": 41,
+      "px_offset": 779,
+      "start_channel": 2338,
+      "end_channel": 2460,
       "universes": [
         5
       ],
@@ -2631,12 +2633,13 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 800,
-      "start_channel": 2401,
-      "end_channel": 2520,
+      "pixels": 41,
+      "px_offset": 820,
+      "start_channel": 2461,
+      "end_channel": 2583,
       "universes": [
-        5
+        5,
+        6
       ],
       "direction": "forward",
       "power_in": true
@@ -2653,12 +2656,11 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 840,
-      "start_channel": 2521,
-      "end_channel": 2640,
+      "pixels": 41,
+      "px_offset": 861,
+      "start_channel": 2584,
+      "end_channel": 2706,
       "universes": [
-        5,
         6
       ],
       "direction": "forward",
@@ -2676,10 +2678,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 880,
-      "start_channel": 2641,
-      "end_channel": 2760,
+      "pixels": 41,
+      "px_offset": 902,
+      "start_channel": 2707,
+      "end_channel": 2829,
       "universes": [
         6
       ],
@@ -2698,10 +2700,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 920,
-      "start_channel": 2761,
-      "end_channel": 2880,
+      "pixels": 41,
+      "px_offset": 943,
+      "start_channel": 2830,
+      "end_channel": 2952,
       "universes": [
         6
       ],
@@ -2720,12 +2722,13 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 960,
-      "start_channel": 2881,
-      "end_channel": 3000,
+      "pixels": 41,
+      "px_offset": 984,
+      "start_channel": 2953,
+      "end_channel": 3075,
       "universes": [
-        6
+        6,
+        7
       ],
       "direction": "forward",
       "power_in": true
@@ -2742,12 +2745,11 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1000,
-      "start_channel": 3001,
-      "end_channel": 3120,
+      "pixels": 41,
+      "px_offset": 1025,
+      "start_channel": 3076,
+      "end_channel": 3198,
       "universes": [
-        6,
         7
       ],
       "direction": "forward",
@@ -2765,10 +2767,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1040,
-      "start_channel": 3121,
-      "end_channel": 3240,
+      "pixels": 41,
+      "px_offset": 1066,
+      "start_channel": 3199,
+      "end_channel": 3321,
       "universes": [
         7
       ],
@@ -2787,10 +2789,10 @@
       "port": 2,
       "port_silkscreen": "5-8",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1080,
-      "start_channel": 3241,
-      "end_channel": 3360,
+      "pixels": 41,
+      "px_offset": 1107,
+      "start_channel": 3322,
+      "end_channel": 3444,
       "universes": [
         7
       ],
@@ -2809,10 +2811,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1120,
-      "start_channel": 3361,
-      "end_channel": 3480,
+      "pixels": 41,
+      "px_offset": 1148,
+      "start_channel": 3445,
+      "end_channel": 3567,
       "universes": [
         7
       ],
@@ -2831,10 +2833,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1160,
-      "start_channel": 3481,
-      "end_channel": 3600,
+      "pixels": 41,
+      "px_offset": 1189,
+      "start_channel": 3568,
+      "end_channel": 3690,
       "universes": [
         7,
         8
@@ -2854,10 +2856,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1200,
-      "start_channel": 3601,
-      "end_channel": 3720,
+      "pixels": 41,
+      "px_offset": 1230,
+      "start_channel": 3691,
+      "end_channel": 3813,
       "universes": [
         8
       ],
@@ -2876,10 +2878,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1240,
-      "start_channel": 3721,
-      "end_channel": 3840,
+      "pixels": 41,
+      "px_offset": 1271,
+      "start_channel": 3814,
+      "end_channel": 3936,
       "universes": [
         8
       ],
@@ -2898,10 +2900,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1280,
-      "start_channel": 3841,
-      "end_channel": 3960,
+      "pixels": 41,
+      "px_offset": 1312,
+      "start_channel": 3937,
+      "end_channel": 4059,
       "universes": [
         8
       ],
@@ -2920,12 +2922,13 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1320,
-      "start_channel": 3961,
-      "end_channel": 4080,
+      "pixels": 41,
+      "px_offset": 1353,
+      "start_channel": 4060,
+      "end_channel": 4182,
       "universes": [
-        8
+        8,
+        9
       ],
       "direction": "forward",
       "power_in": false
@@ -2942,10 +2945,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1360,
-      "start_channel": 4081,
-      "end_channel": 4200,
+      "pixels": 41,
+      "px_offset": 1394,
+      "start_channel": 4183,
+      "end_channel": 4305,
       "universes": [
         9
       ],
@@ -2964,10 +2967,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1400,
-      "start_channel": 4201,
-      "end_channel": 4320,
+      "pixels": 41,
+      "px_offset": 1435,
+      "start_channel": 4306,
+      "end_channel": 4428,
       "universes": [
         9
       ],
@@ -2986,10 +2989,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1440,
-      "start_channel": 4321,
-      "end_channel": 4440,
+      "pixels": 41,
+      "px_offset": 1476,
+      "start_channel": 4429,
+      "end_channel": 4551,
       "universes": [
         9
       ],
@@ -3008,12 +3011,13 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1480,
-      "start_channel": 4441,
-      "end_channel": 4560,
+      "pixels": 41,
+      "px_offset": 1517,
+      "start_channel": 4552,
+      "end_channel": 4674,
       "universes": [
-        9
+        9,
+        10
       ],
       "direction": "forward",
       "power_in": false
@@ -3030,12 +3034,11 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1520,
-      "start_channel": 4561,
-      "end_channel": 4680,
+      "pixels": 41,
+      "px_offset": 1558,
+      "start_channel": 4675,
+      "end_channel": 4797,
       "universes": [
-        9,
         10
       ],
       "direction": "forward",
@@ -3053,10 +3056,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1560,
-      "start_channel": 4681,
-      "end_channel": 4800,
+      "pixels": 41,
+      "px_offset": 1599,
+      "start_channel": 4798,
+      "end_channel": 4920,
       "universes": [
         10
       ],
@@ -3075,10 +3078,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1600,
-      "start_channel": 4801,
-      "end_channel": 4920,
+      "pixels": 41,
+      "px_offset": 1640,
+      "start_channel": 4921,
+      "end_channel": 5043,
       "universes": [
         10
       ],
@@ -3097,12 +3100,13 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1640,
-      "start_channel": 4921,
-      "end_channel": 5040,
+      "pixels": 41,
+      "px_offset": 1681,
+      "start_channel": 5044,
+      "end_channel": 5166,
       "universes": [
-        10
+        10,
+        11
       ],
       "direction": "forward",
       "power_in": false
@@ -3119,12 +3123,11 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1680,
-      "start_channel": 5041,
-      "end_channel": 5160,
+      "pixels": 41,
+      "px_offset": 1722,
+      "start_channel": 5167,
+      "end_channel": 5289,
       "universes": [
-        10,
         11
       ],
       "direction": "forward",
@@ -3142,10 +3145,10 @@
       "port": 3,
       "port_silkscreen": "9-12",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1720,
-      "start_channel": 5161,
-      "end_channel": 5280,
+      "pixels": 41,
+      "px_offset": 1763,
+      "start_channel": 5290,
+      "end_channel": 5412,
       "universes": [
         11
       ],
@@ -3164,10 +3167,10 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1760,
-      "start_channel": 5281,
-      "end_channel": 5400,
+      "pixels": 41,
+      "px_offset": 1804,
+      "start_channel": 5413,
+      "end_channel": 5535,
       "universes": [
         11
       ],
@@ -3186,12 +3189,13 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1800,
-      "start_channel": 5401,
-      "end_channel": 5520,
+      "pixels": 41,
+      "px_offset": 1845,
+      "start_channel": 5536,
+      "end_channel": 5658,
       "universes": [
-        11
+        11,
+        12
       ],
       "direction": "forward",
       "power_in": false
@@ -3208,12 +3212,11 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 1840,
-      "start_channel": 5521,
-      "end_channel": 5640,
+      "pixels": 41,
+      "px_offset": 1886,
+      "start_channel": 5659,
+      "end_channel": 5781,
       "universes": [
-        11,
         12
       ],
       "direction": "forward",
@@ -3231,10 +3234,10 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 1880,
-      "start_channel": 5641,
-      "end_channel": 5760,
+      "pixels": 41,
+      "px_offset": 1927,
+      "start_channel": 5782,
+      "end_channel": 5904,
       "universes": [
         12
       ],
@@ -3253,10 +3256,10 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 1920,
-      "start_channel": 5761,
-      "end_channel": 5880,
+      "pixels": 41,
+      "px_offset": 1968,
+      "start_channel": 5905,
+      "end_channel": 6027,
       "universes": [
         12
       ],
@@ -3275,12 +3278,13 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 1960,
-      "start_channel": 5881,
-      "end_channel": 6000,
+      "pixels": 41,
+      "px_offset": 2009,
+      "start_channel": 6028,
+      "end_channel": 6150,
       "universes": [
-        12
+        12,
+        13
       ],
       "direction": "forward",
       "power_in": false
@@ -3297,12 +3301,12 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2000,
-      "start_channel": 6001,
-      "end_channel": 6120,
+      "pixels": 41,
+      "px_offset": 2050,
+      "start_channel": 6151,
+      "end_channel": 6273,
       "universes": [
-        12
+        13
       ],
       "direction": "forward",
       "power_in": true
@@ -3319,10 +3323,10 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2040,
-      "start_channel": 6121,
-      "end_channel": 6240,
+      "pixels": 41,
+      "px_offset": 2091,
+      "start_channel": 6274,
+      "end_channel": 6396,
       "universes": [
         13
       ],
@@ -3341,10 +3345,10 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2080,
-      "start_channel": 6241,
-      "end_channel": 6360,
+      "pixels": 41,
+      "px_offset": 2132,
+      "start_channel": 6397,
+      "end_channel": 6519,
       "universes": [
         13
       ],
@@ -3363,12 +3367,13 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2120,
-      "start_channel": 6361,
-      "end_channel": 6480,
+      "pixels": 41,
+      "px_offset": 2173,
+      "start_channel": 6520,
+      "end_channel": 6642,
       "universes": [
-        13
+        13,
+        14
       ],
       "direction": "forward",
       "power_in": false
@@ -3385,12 +3390,12 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2160,
-      "start_channel": 6481,
-      "end_channel": 6600,
+      "pixels": 41,
+      "px_offset": 2214,
+      "start_channel": 6643,
+      "end_channel": 6765,
       "universes": [
-        13
+        14
       ],
       "direction": "forward",
       "power_in": true
@@ -3407,12 +3412,11 @@
       "port": 4,
       "port_silkscreen": "13-16",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2200,
-      "start_channel": 6601,
-      "end_channel": 6720,
+      "pixels": 41,
+      "px_offset": 2255,
+      "start_channel": 6766,
+      "end_channel": 6888,
       "universes": [
-        13,
         14
       ],
       "direction": "forward",
@@ -3430,10 +3434,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2240,
-      "start_channel": 6721,
-      "end_channel": 6840,
+      "pixels": 41,
+      "px_offset": 2296,
+      "start_channel": 6889,
+      "end_channel": 7011,
       "universes": [
         14
       ],
@@ -3452,10 +3456,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2280,
-      "start_channel": 6841,
-      "end_channel": 6960,
+      "pixels": 41,
+      "px_offset": 2337,
+      "start_channel": 7012,
+      "end_channel": 7134,
       "universes": [
         14
       ],
@@ -3474,12 +3478,13 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2320,
-      "start_channel": 6961,
-      "end_channel": 7080,
+      "pixels": 41,
+      "px_offset": 2378,
+      "start_channel": 7135,
+      "end_channel": 7257,
       "universes": [
-        14
+        14,
+        15
       ],
       "direction": "forward",
       "power_in": true
@@ -3496,12 +3501,11 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2360,
-      "start_channel": 7081,
-      "end_channel": 7200,
+      "pixels": 41,
+      "px_offset": 2419,
+      "start_channel": 7258,
+      "end_channel": 7380,
       "universes": [
-        14,
         15
       ],
       "direction": "forward",
@@ -3519,10 +3523,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2400,
-      "start_channel": 7201,
-      "end_channel": 7320,
+      "pixels": 41,
+      "px_offset": 2460,
+      "start_channel": 7381,
+      "end_channel": 7503,
       "universes": [
         15
       ],
@@ -3541,10 +3545,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2440,
-      "start_channel": 7321,
-      "end_channel": 7440,
+      "pixels": 41,
+      "px_offset": 2501,
+      "start_channel": 7504,
+      "end_channel": 7626,
       "universes": [
         15
       ],
@@ -3563,12 +3567,13 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2480,
-      "start_channel": 7441,
-      "end_channel": 7560,
+      "pixels": 41,
+      "px_offset": 2542,
+      "start_channel": 7627,
+      "end_channel": 7749,
       "universes": [
-        15
+        15,
+        16
       ],
       "direction": "forward",
       "power_in": true
@@ -3585,12 +3590,11 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2520,
-      "start_channel": 7561,
-      "end_channel": 7680,
+      "pixels": 41,
+      "px_offset": 2583,
+      "start_channel": 7750,
+      "end_channel": 7872,
       "universes": [
-        15,
         16
       ],
       "direction": "forward",
@@ -3608,10 +3612,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2560,
-      "start_channel": 7681,
-      "end_channel": 7800,
+      "pixels": 41,
+      "px_offset": 2624,
+      "start_channel": 7873,
+      "end_channel": 7995,
       "universes": [
         16
       ],
@@ -3630,10 +3634,10 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2600,
-      "start_channel": 7801,
-      "end_channel": 7920,
+      "pixels": 41,
+      "px_offset": 2665,
+      "start_channel": 7996,
+      "end_channel": 8118,
       "universes": [
         16
       ],
@@ -3652,12 +3656,13 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2640,
-      "start_channel": 7921,
-      "end_channel": 8040,
+      "pixels": 41,
+      "px_offset": 2706,
+      "start_channel": 8119,
+      "end_channel": 8241,
       "universes": [
-        16
+        16,
+        17
       ],
       "direction": "forward",
       "power_in": true
@@ -3674,12 +3679,12 @@
       "port": 5,
       "port_silkscreen": "17-20",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2680,
-      "start_channel": 8041,
-      "end_channel": 8160,
+      "pixels": 41,
+      "px_offset": 2747,
+      "start_channel": 8242,
+      "end_channel": 8364,
       "universes": [
-        16
+        17
       ],
       "direction": "forward",
       "power_in": false
@@ -3696,10 +3701,10 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2720,
-      "start_channel": 8161,
-      "end_channel": 8280,
+      "pixels": 41,
+      "px_offset": 2788,
+      "start_channel": 8365,
+      "end_channel": 8487,
       "universes": [
         17
       ],
@@ -3718,10 +3723,10 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2760,
-      "start_channel": 8281,
-      "end_channel": 8400,
+      "pixels": 41,
+      "px_offset": 2829,
+      "start_channel": 8488,
+      "end_channel": 8610,
       "universes": [
         17
       ],
@@ -3740,12 +3745,13 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2800,
-      "start_channel": 8401,
-      "end_channel": 8520,
+      "pixels": 41,
+      "px_offset": 2870,
+      "start_channel": 8611,
+      "end_channel": 8733,
       "universes": [
-        17
+        17,
+        18
       ],
       "direction": "forward",
       "power_in": true
@@ -3762,12 +3768,12 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 2840,
-      "start_channel": 8521,
-      "end_channel": 8640,
+      "pixels": 41,
+      "px_offset": 2911,
+      "start_channel": 8734,
+      "end_channel": 8856,
       "universes": [
-        17
+        18
       ],
       "direction": "forward",
       "power_in": false
@@ -3784,12 +3790,11 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 2880,
-      "start_channel": 8641,
-      "end_channel": 8760,
+      "pixels": 41,
+      "px_offset": 2952,
+      "start_channel": 8857,
+      "end_channel": 8979,
       "universes": [
-        17,
         18
       ],
       "direction": "forward",
@@ -3807,10 +3812,10 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 2920,
-      "start_channel": 8761,
-      "end_channel": 8880,
+      "pixels": 41,
+      "px_offset": 2993,
+      "start_channel": 8980,
+      "end_channel": 9102,
       "universes": [
         18
       ],
@@ -3829,12 +3834,13 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 2960,
-      "start_channel": 8881,
-      "end_channel": 9000,
+      "pixels": 41,
+      "px_offset": 3034,
+      "start_channel": 9103,
+      "end_channel": 9225,
       "universes": [
-        18
+        18,
+        19
       ],
       "direction": "forward",
       "power_in": true
@@ -3851,12 +3857,12 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3000,
-      "start_channel": 9001,
-      "end_channel": 9120,
+      "pixels": 41,
+      "px_offset": 3075,
+      "start_channel": 9226,
+      "end_channel": 9348,
       "universes": [
-        18
+        19
       ],
       "direction": "forward",
       "power_in": false
@@ -3873,12 +3879,11 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3040,
-      "start_channel": 9121,
-      "end_channel": 9240,
+      "pixels": 41,
+      "px_offset": 3116,
+      "start_channel": 9349,
+      "end_channel": 9471,
       "universes": [
-        18,
         19
       ],
       "direction": "forward",
@@ -3896,10 +3901,10 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3080,
-      "start_channel": 9241,
-      "end_channel": 9360,
+      "pixels": 41,
+      "px_offset": 3157,
+      "start_channel": 9472,
+      "end_channel": 9594,
       "universes": [
         19
       ],
@@ -3918,12 +3923,13 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3120,
-      "start_channel": 9361,
-      "end_channel": 9480,
+      "pixels": 41,
+      "px_offset": 3198,
+      "start_channel": 9595,
+      "end_channel": 9717,
       "universes": [
-        19
+        19,
+        20
       ],
       "direction": "forward",
       "power_in": true
@@ -3940,12 +3946,12 @@
       "port": 6,
       "port_silkscreen": "21-24",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3160,
-      "start_channel": 9481,
-      "end_channel": 9600,
+      "pixels": 41,
+      "px_offset": 3239,
+      "start_channel": 9718,
+      "end_channel": 9840,
       "universes": [
-        19
+        20
       ],
       "direction": "forward",
       "power_in": false
@@ -3962,12 +3968,11 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3200,
-      "start_channel": 9601,
-      "end_channel": 9720,
+      "pixels": 41,
+      "px_offset": 3280,
+      "start_channel": 9841,
+      "end_channel": 9963,
       "universes": [
-        19,
         20
       ],
       "direction": "forward",
@@ -3985,10 +3990,10 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3240,
-      "start_channel": 9721,
-      "end_channel": 9840,
+      "pixels": 41,
+      "px_offset": 3321,
+      "start_channel": 9964,
+      "end_channel": 10086,
       "universes": [
         20
       ],
@@ -4007,12 +4012,13 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3280,
-      "start_channel": 9841,
-      "end_channel": 9960,
+      "pixels": 41,
+      "px_offset": 3362,
+      "start_channel": 10087,
+      "end_channel": 10209,
       "universes": [
-        20
+        20,
+        21
       ],
       "direction": "forward",
       "power_in": true
@@ -4029,12 +4035,12 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3320,
-      "start_channel": 9961,
-      "end_channel": 10080,
+      "pixels": 41,
+      "px_offset": 3403,
+      "start_channel": 10210,
+      "end_channel": 10332,
       "universes": [
-        20
+        21
       ],
       "direction": "forward",
       "power_in": false
@@ -4051,12 +4057,12 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3360,
-      "start_channel": 10081,
-      "end_channel": 10200,
+      "pixels": 41,
+      "px_offset": 3444,
+      "start_channel": 10333,
+      "end_channel": 10455,
       "universes": [
-        20
+        21
       ],
       "direction": "forward",
       "power_in": true
@@ -4073,10 +4079,10 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3400,
-      "start_channel": 10201,
-      "end_channel": 10320,
+      "pixels": 41,
+      "px_offset": 3485,
+      "start_channel": 10456,
+      "end_channel": 10578,
       "universes": [
         21
       ],
@@ -4095,10 +4101,10 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3440,
-      "start_channel": 10321,
-      "end_channel": 10440,
+      "pixels": 41,
+      "px_offset": 3526,
+      "start_channel": 10579,
+      "end_channel": 10701,
       "universes": [
         21
       ],
@@ -4117,12 +4123,13 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3480,
-      "start_channel": 10441,
-      "end_channel": 10560,
+      "pixels": 41,
+      "px_offset": 3567,
+      "start_channel": 10702,
+      "end_channel": 10824,
       "universes": [
-        21
+        21,
+        22
       ],
       "direction": "forward",
       "power_in": false
@@ -4139,12 +4146,12 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3520,
-      "start_channel": 10561,
-      "end_channel": 10680,
+      "pixels": 41,
+      "px_offset": 3608,
+      "start_channel": 10825,
+      "end_channel": 10947,
       "universes": [
-        21
+        22
       ],
       "direction": "forward",
       "power_in": true
@@ -4161,12 +4168,11 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3560,
-      "start_channel": 10681,
-      "end_channel": 10800,
+      "pixels": 41,
+      "px_offset": 3649,
+      "start_channel": 10948,
+      "end_channel": 11070,
       "universes": [
-        21,
         22
       ],
       "direction": "forward",
@@ -4184,10 +4190,10 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3600,
-      "start_channel": 10801,
-      "end_channel": 10920,
+      "pixels": 41,
+      "px_offset": 3690,
+      "start_channel": 11071,
+      "end_channel": 11193,
       "universes": [
         22
       ],
@@ -4206,12 +4212,13 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3640,
-      "start_channel": 10921,
-      "end_channel": 11040,
+      "pixels": 41,
+      "px_offset": 3731,
+      "start_channel": 11194,
+      "end_channel": 11316,
       "universes": [
-        22
+        22,
+        23
       ],
       "direction": "forward",
       "power_in": false
@@ -4228,12 +4235,12 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3680,
-      "start_channel": 11041,
-      "end_channel": 11160,
+      "pixels": 41,
+      "px_offset": 3772,
+      "start_channel": 11317,
+      "end_channel": 11439,
       "universes": [
-        22
+        23
       ],
       "direction": "forward",
       "power_in": true
@@ -4250,12 +4257,11 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3720,
-      "start_channel": 11161,
-      "end_channel": 11280,
+      "pixels": 41,
+      "px_offset": 3813,
+      "start_channel": 11440,
+      "end_channel": 11562,
       "universes": [
-        22,
         23
       ],
       "direction": "forward",
@@ -4273,10 +4279,10 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3760,
-      "start_channel": 11281,
-      "end_channel": 11400,
+      "pixels": 41,
+      "px_offset": 3854,
+      "start_channel": 11563,
+      "end_channel": 11685,
       "universes": [
         23
       ],
@@ -4295,12 +4301,13 @@
       "port": 7,
       "port_silkscreen": "25-28",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3800,
-      "start_channel": 11401,
-      "end_channel": 11520,
+      "pixels": 41,
+      "px_offset": 3895,
+      "start_channel": 11686,
+      "end_channel": 11808,
       "universes": [
-        23
+        23,
+        24
       ],
       "direction": "forward",
       "power_in": false
@@ -4317,12 +4324,12 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 3840,
-      "start_channel": 11521,
-      "end_channel": 11640,
+      "pixels": 41,
+      "px_offset": 3936,
+      "start_channel": 11809,
+      "end_channel": 11931,
       "universes": [
-        23
+        24
       ],
       "direction": "forward",
       "power_in": true
@@ -4339,12 +4346,11 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 3880,
-      "start_channel": 11641,
-      "end_channel": 11760,
+      "pixels": 41,
+      "px_offset": 3977,
+      "start_channel": 11932,
+      "end_channel": 12054,
       "universes": [
-        23,
         24
       ],
       "direction": "forward",
@@ -4362,10 +4368,10 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 3920,
-      "start_channel": 11761,
-      "end_channel": 11880,
+      "pixels": 41,
+      "px_offset": 4018,
+      "start_channel": 12055,
+      "end_channel": 12177,
       "universes": [
         24
       ],
@@ -4384,12 +4390,13 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 3960,
-      "start_channel": 11881,
-      "end_channel": 12000,
+      "pixels": 41,
+      "px_offset": 4059,
+      "start_channel": 12178,
+      "end_channel": 12300,
       "universes": [
-        24
+        24,
+        25
       ],
       "direction": "forward",
       "power_in": false
@@ -4406,12 +4413,12 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4000,
-      "start_channel": 12001,
-      "end_channel": 12120,
+      "pixels": 41,
+      "px_offset": 4100,
+      "start_channel": 12301,
+      "end_channel": 12423,
       "universes": [
-        24
+        25
       ],
       "direction": "forward",
       "power_in": true
@@ -4428,12 +4435,12 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4040,
-      "start_channel": 12121,
-      "end_channel": 12240,
+      "pixels": 41,
+      "px_offset": 4141,
+      "start_channel": 12424,
+      "end_channel": 12546,
       "universes": [
-        24
+        25
       ],
       "direction": "forward",
       "power_in": false
@@ -4450,10 +4457,10 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4080,
-      "start_channel": 12241,
-      "end_channel": 12360,
+      "pixels": 41,
+      "px_offset": 4182,
+      "start_channel": 12547,
+      "end_channel": 12669,
       "universes": [
         25
       ],
@@ -4472,12 +4479,13 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4120,
-      "start_channel": 12361,
-      "end_channel": 12480,
+      "pixels": 41,
+      "px_offset": 4223,
+      "start_channel": 12670,
+      "end_channel": 12792,
       "universes": [
-        25
+        25,
+        26
       ],
       "direction": "forward",
       "power_in": false
@@ -4494,12 +4502,12 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4160,
-      "start_channel": 12481,
-      "end_channel": 12600,
+      "pixels": 41,
+      "px_offset": 4264,
+      "start_channel": 12793,
+      "end_channel": 12915,
       "universes": [
-        25
+        26
       ],
       "direction": "forward",
       "power_in": true
@@ -4516,12 +4524,12 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4200,
-      "start_channel": 12601,
-      "end_channel": 12720,
+      "pixels": 41,
+      "px_offset": 4305,
+      "start_channel": 12916,
+      "end_channel": 13038,
       "universes": [
-        25
+        26
       ],
       "direction": "forward",
       "power_in": false
@@ -4538,12 +4546,11 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4240,
-      "start_channel": 12721,
-      "end_channel": 12840,
+      "pixels": 41,
+      "px_offset": 4346,
+      "start_channel": 13039,
+      "end_channel": 13161,
       "universes": [
-        25,
         26
       ],
       "direction": "forward",
@@ -4561,12 +4568,13 @@
       "port": 8,
       "port_silkscreen": "29-32",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4280,
-      "start_channel": 12841,
-      "end_channel": 12960,
+      "pixels": 41,
+      "px_offset": 4387,
+      "start_channel": 13162,
+      "end_channel": 13284,
       "universes": [
-        26
+        26,
+        27
       ],
       "direction": "forward",
       "power_in": false
@@ -4583,12 +4591,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4320,
-      "start_channel": 12961,
-      "end_channel": 13080,
+      "pixels": 41,
+      "px_offset": 4428,
+      "start_channel": 13285,
+      "end_channel": 13407,
       "universes": [
-        26
+        27
       ],
       "direction": "forward",
       "power_in": true
@@ -4605,12 +4613,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4360,
-      "start_channel": 13081,
-      "end_channel": 13200,
+      "pixels": 41,
+      "px_offset": 4469,
+      "start_channel": 13408,
+      "end_channel": 13530,
       "universes": [
-        26
+        27
       ],
       "direction": "forward",
       "power_in": false
@@ -4627,12 +4635,11 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4400,
-      "start_channel": 13201,
-      "end_channel": 13320,
+      "pixels": 41,
+      "px_offset": 4510,
+      "start_channel": 13531,
+      "end_channel": 13653,
       "universes": [
-        26,
         27
       ],
       "direction": "forward",
@@ -4650,12 +4657,13 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4440,
-      "start_channel": 13321,
-      "end_channel": 13440,
+      "pixels": 41,
+      "px_offset": 4551,
+      "start_channel": 13654,
+      "end_channel": 13776,
       "universes": [
-        27
+        27,
+        28
       ],
       "direction": "forward",
       "power_in": false
@@ -4672,12 +4680,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4480,
-      "start_channel": 13441,
-      "end_channel": 13560,
+      "pixels": 41,
+      "px_offset": 4592,
+      "start_channel": 13777,
+      "end_channel": 13899,
       "universes": [
-        27
+        28
       ],
       "direction": "forward",
       "power_in": true
@@ -4694,12 +4702,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4520,
-      "start_channel": 13561,
-      "end_channel": 13680,
+      "pixels": 41,
+      "px_offset": 4633,
+      "start_channel": 13900,
+      "end_channel": 14022,
       "universes": [
-        27
+        28
       ],
       "direction": "forward",
       "power_in": false
@@ -4716,12 +4724,11 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4560,
-      "start_channel": 13681,
-      "end_channel": 13800,
+      "pixels": 41,
+      "px_offset": 4674,
+      "start_channel": 14023,
+      "end_channel": 14145,
       "universes": [
-        27,
         28
       ],
       "direction": "forward",
@@ -4739,10 +4746,10 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4600,
-      "start_channel": 13801,
-      "end_channel": 13920,
+      "pixels": 41,
+      "px_offset": 4715,
+      "start_channel": 14146,
+      "end_channel": 14268,
       "universes": [
         28
       ],
@@ -4761,12 +4768,13 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4640,
-      "start_channel": 13921,
-      "end_channel": 14040,
+      "pixels": 41,
+      "px_offset": 4756,
+      "start_channel": 14269,
+      "end_channel": 14391,
       "universes": [
-        28
+        28,
+        29
       ],
       "direction": "forward",
       "power_in": true
@@ -4783,12 +4791,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4680,
-      "start_channel": 14041,
-      "end_channel": 14160,
+      "pixels": 41,
+      "px_offset": 4797,
+      "start_channel": 14392,
+      "end_channel": 14514,
       "universes": [
-        28
+        29
       ],
       "direction": "forward",
       "power_in": false
@@ -4805,12 +4813,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4720,
-      "start_channel": 14161,
-      "end_channel": 14280,
+      "pixels": 41,
+      "px_offset": 4838,
+      "start_channel": 14515,
+      "end_channel": 14637,
       "universes": [
-        28
+        29
       ],
       "direction": "forward",
       "power_in": true
@@ -4827,10 +4835,10 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4760,
-      "start_channel": 14281,
-      "end_channel": 14400,
+      "pixels": 41,
+      "px_offset": 4879,
+      "start_channel": 14638,
+      "end_channel": 14760,
       "universes": [
         29
       ],
@@ -4849,12 +4857,13 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4800,
-      "start_channel": 14401,
-      "end_channel": 14520,
+      "pixels": 41,
+      "px_offset": 4920,
+      "start_channel": 14761,
+      "end_channel": 14883,
       "universes": [
-        29
+        29,
+        30
       ],
       "direction": "forward",
       "power_in": true
@@ -4871,12 +4880,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 4840,
-      "start_channel": 14521,
-      "end_channel": 14640,
+      "pixels": 41,
+      "px_offset": 4961,
+      "start_channel": 14884,
+      "end_channel": 15006,
       "universes": [
-        29
+        30
       ],
       "direction": "forward",
       "power_in": false
@@ -4893,12 +4902,12 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 4880,
-      "start_channel": 14641,
-      "end_channel": 14760,
+      "pixels": 41,
+      "px_offset": 5002,
+      "start_channel": 15007,
+      "end_channel": 15129,
       "universes": [
-        29
+        30
       ],
       "direction": "forward",
       "power_in": true
@@ -4915,12 +4924,11 @@
       "port": 9,
       "port_silkscreen": "33-36",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 4920,
-      "start_channel": 14761,
-      "end_channel": 14880,
+      "pixels": 41,
+      "px_offset": 5043,
+      "start_channel": 15130,
+      "end_channel": 15252,
       "universes": [
-        29,
         30
       ],
       "direction": "forward",
@@ -4938,12 +4946,13 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 4960,
-      "start_channel": 14881,
-      "end_channel": 15000,
+      "pixels": 41,
+      "px_offset": 5084,
+      "start_channel": 15253,
+      "end_channel": 15375,
       "universes": [
-        30
+        30,
+        31
       ],
       "direction": "forward",
       "power_in": true
@@ -4960,12 +4969,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 5000,
-      "start_channel": 15001,
-      "end_channel": 15120,
+      "pixels": 41,
+      "px_offset": 5125,
+      "start_channel": 15376,
+      "end_channel": 15498,
       "universes": [
-        30
+        31
       ],
       "direction": "forward",
       "power_in": false
@@ -4982,12 +4991,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 5040,
-      "start_channel": 15121,
-      "end_channel": 15240,
+      "pixels": 41,
+      "px_offset": 5166,
+      "start_channel": 15499,
+      "end_channel": 15621,
       "universes": [
-        30
+        31
       ],
       "direction": "forward",
       "power_in": true
@@ -5004,12 +5013,11 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 5080,
-      "start_channel": 15241,
-      "end_channel": 15360,
+      "pixels": 41,
+      "px_offset": 5207,
+      "start_channel": 15622,
+      "end_channel": 15744,
       "universes": [
-        30,
         31
       ],
       "direction": "forward",
@@ -5027,12 +5035,13 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 5120,
-      "start_channel": 15361,
-      "end_channel": 15480,
+      "pixels": 41,
+      "px_offset": 5248,
+      "start_channel": 15745,
+      "end_channel": 15867,
       "universes": [
-        31
+        31,
+        32
       ],
       "direction": "forward",
       "power_in": true
@@ -5049,12 +5058,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 5160,
-      "start_channel": 15481,
-      "end_channel": 15600,
+      "pixels": 41,
+      "px_offset": 5289,
+      "start_channel": 15868,
+      "end_channel": 15990,
       "universes": [
-        31
+        32
       ],
       "direction": "forward",
       "power_in": false
@@ -5071,12 +5080,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 5200,
-      "start_channel": 15601,
-      "end_channel": 15720,
+      "pixels": 41,
+      "px_offset": 5330,
+      "start_channel": 15991,
+      "end_channel": 16113,
       "universes": [
-        31
+        32
       ],
       "direction": "forward",
       "power_in": true
@@ -5093,12 +5102,11 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 5240,
-      "start_channel": 15721,
-      "end_channel": 15840,
+      "pixels": 41,
+      "px_offset": 5371,
+      "start_channel": 16114,
+      "end_channel": 16236,
       "universes": [
-        31,
         32
       ],
       "direction": "forward",
@@ -5116,12 +5124,13 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 1,
-      "pixels": 40,
-      "px_offset": 5280,
-      "start_channel": 15841,
-      "end_channel": 15960,
+      "pixels": 41,
+      "px_offset": 5412,
+      "start_channel": 16237,
+      "end_channel": 16359,
       "universes": [
-        32
+        32,
+        33
       ],
       "direction": "forward",
       "power_in": true
@@ -5138,12 +5147,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 2,
-      "pixels": 40,
-      "px_offset": 5320,
-      "start_channel": 15961,
-      "end_channel": 16080,
+      "pixels": 41,
+      "px_offset": 5453,
+      "start_channel": 16360,
+      "end_channel": 16482,
       "universes": [
-        32
+        33
       ],
       "direction": "forward",
       "power_in": false
@@ -5160,12 +5169,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 3,
-      "pixels": 40,
-      "px_offset": 5360,
-      "start_channel": 16081,
-      "end_channel": 16200,
+      "pixels": 41,
+      "px_offset": 5494,
+      "start_channel": 16483,
+      "end_channel": 16605,
       "universes": [
-        32
+        33
       ],
       "direction": "forward",
       "power_in": true
@@ -5182,12 +5191,12 @@
       "port": 10,
       "port_silkscreen": "37-40",
       "output": 4,
-      "pixels": 40,
-      "px_offset": 5400,
-      "start_channel": 16201,
-      "end_channel": 16320,
+      "pixels": 41,
+      "px_offset": 5535,
+      "start_channel": 16606,
+      "end_channel": 16728,
       "universes": [
-        32
+        33
       ],
       "direction": "forward",
       "power_in": false

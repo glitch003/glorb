@@ -25,7 +25,7 @@ It replaces the five WLED Angio-8 boards and the chained-tube topology.
 
 We use **10 of the 32 ports** — two per zone A–E, 3–4 receivers chained on
 each. That is 34 receivers × 4 outputs = 136 tubes, and the busiest port
-carries 640 px, well inside the 800 px budget.
+carries 656 px, well inside the 800 px budget.
 
 ## Step 1 — Wi-Fi needs a USB adapter
 
@@ -113,10 +113,10 @@ python3 k128/fpp_setup.py --host glorb-k128.local              # write + restart
 
 [fpp_setup.py](fpp_setup.py) reads [../tube-map.json](../tube-map.json) and writes:
 
-- **`ci-universes.json`** — E1.31 bridge input, universes **1–32 × 510 ch**
+- **`ci-universes.json`** — E1.31 bridge input, universes **1–33 × 510 ch**
   landing on FPP channel 1, multicast, which is exactly what glorbleds sends.
-- **`co-bbbStrings.json`** — 136 pixel strings: 40 px, **Forward**, **RGB**,
-  start channel `n × 120 + 1`, on the port/receiver/output from the map, with
+- **`co-bbbStrings.json`** — 136 pixel strings: 41 px, **Forward**, **BRG**,
+  start channel `n × 123 + 1`, on the port/receiver/output from the map, with
   `differentialType` set per port for the smart-receiver chain length.
 
 It is read-modify-write: it preserves whatever the cape reports for `type`,
@@ -140,7 +140,7 @@ proves the whole path independently of wiring:
 ```bash
 curl -s -X DELETE http://<ip>/api/channel/input/stats     # zero the counters
 python3 -m glorbleds --brightness 1.0 solid C --color 0,0,255
-curl -s http://<ip>/api/channel/input/stats               # expect 32 universes, 0 errors
+curl -s http://<ip>/api/channel/input/stats               # expect 33 universes, 0 errors
 ```
 
 Each entry's `id` is the universe number and `startChannel` is where FPP maps
@@ -282,7 +282,7 @@ touch the engine.
 python3 -m glorbleds list                     # confirm R15 = B01-B04
 python3 -m glorbleds --brightness 1.0 colorcheck R15   # R/G/B/W - verify RGB order
 python3 -m glorbleds --brightness 1.0 tubes R15        # out1=red out2=green out3=blue out4=white
-python3 -m glorbleds --brightness 1.0 chase R15        # comet: confirms 40 px and top-to-bottom
+python3 -m glorbleds --brightness 1.0 chase R15        # comet: confirms 41 px and top-to-bottom
 python3 -m glorbleds off all
 ```
 

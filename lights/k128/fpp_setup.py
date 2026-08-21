@@ -159,10 +159,10 @@ def bench_relocate(data: dict, port: int, first_label: str,
     """Put a contiguous run of `count` tubes starting at `first_label` onto ONE
     RJ45 port's receiver chain, for bench testing.
 
-    The map's real layout can split a physical run across two ports (zone B's
-    as-built 14/14 line split puts L43-L44 on port 3 and L45-L56 on port 4),
-    which can't be driven off a single cable. This packs them A/B/C/... x4
-    outputs on one port instead.
+    The as-built map already puts each 2x4 board's whole run on its own port,
+    so this is only for driving an arbitrary run from a different jack on the
+    bench (e.g. 5:L43:14 put board B2's tubes on port 5 during the 2026-08
+    bench) -- it packs them A/B/C/... x4 outputs on the given port.
 
     Each tube KEEPS its real start_channel, so glorbleds patterns address them
     exactly as they will on the car -- only the physical port/receiver/output

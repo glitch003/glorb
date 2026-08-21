@@ -10,34 +10,34 @@ How to run data to **136 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md),
 
 SM16703 groups **6 physical LEDs per IC → 16 addressable pixels/m per side** ([led-tubes.md](led-tubes.md)). At 2.5 m:
 
-- **40 pixels per tube** (16 px/m × 2.5 m).
-- **136 tubes → 5,440 pixels / 16,320 channels total.**
+- **41 pixels per tube** (measured; nominal 40 = 16 px/m × 2.5 m).
+- **136 tubes → 5,576 pixels / 16,728 channels total.**
 
-That is a *small* pixel count for a modern pixel controller. At WS2811-family timing (800 kHz, ~30 µs/pixel) a 40-px tube refreshes in **~1.2 ms** — about 830 fps if it were the only thing on the wire. Bandwidth was never the design driver; **cable management for 136 physical tubes** is.
+That is a *small* pixel count for a modern pixel controller. At WS2811-family timing (800 kHz, ~30 µs/pixel) a 41-px tube refreshes in **~1.2 ms** — about 800 fps if it were the only thing on the wire. Bandwidth was never the design driver; **cable management for 136 physical tubes** is.
 
-## Topology: one K128D-B, 34 receivers, 136 outputs
+## Topology: one K128D-B, ten SRx4 boards, 136 outputs
 
 | | |
 |---|---|
 | Controller | 1 × Kulp K128D-B (BeagleBone + FPP) |
-| RJ45 ports | **10 used of 32** — two per zone |
-| Receivers | **34**, 4 pixel outputs each |
-| Tubes | **136**, one per receiver output |
-| Busiest port | 640 px, against an 800 px @ 40 fps budget |
+| RJ45 ports | **10 used of 32** — one per 2×4 hanger board |
+| Receivers | **10 × SRx4 v4.00 quad SmartReceiver** (16 outputs each) |
+| Tubes | **136**, one per receiver output — 14/board on the sides, 12/board on the back |
+| Busiest port | 574 px, against an 800 px @ 40 fps budget |
 
-Each RJ45 carries 4 differential strings and can feed either one standard differential receiver or **up to 6 chained v2 SmartReceivers**, with up to 250 ft of cat5 to the last one. We chain 3–4 receivers per port, two ports per zone:
+Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver positions in one (output groups A–D of 4), so a whole 2×4's tubes hang off a single cat5 run with nothing chained after it. **Every board's ID dial is `A`, all 4 termination DIPs UP (Only/Last)** — see [tube-map.md](tube-map.md) for the board map and [k128/README.md](k128/README.md#the-receiver-boards-falconkulp-srx4-v400--read-this-first) for the dial/DIP traps.
 
-| Zone | Location | Tubes | Receivers | RJ45 ports |
+| Zone | Location | Tubes | Boards (2×4s) | RJ45 ports |
 | --- | --- | ---: | --- | --- |
-| A | Left-Front | 28 | R1–R7 | 1 (4 recv), 2 (3 recv) |
-| B | Left-Back | 28 | R8–R14 | 3 (4 recv), 4 (3 recv) |
-| C | Back | 24 | R15–R20 | 5 (3 recv), 6 (3 recv) |
-| D | Right-Back | 28 | R21–R27 | 7 (4 recv), 8 (3 recv) |
-| E | Right-Front | 28 | R28–R34 | 9 (4 recv), 10 (3 recv) |
+| A | Left-Front | 28 | A1 (L01–L14), A2 (L15–L28) | 1, 2 |
+| B | Left-Back | 28 | B1 (L29–L42), B2 (L43–L56) | 3, 4 |
+| C | Back | 24 | C1 (B01–B12), C2 (B13–B24) | 5, 6 |
+| D | Right-Back | 28 | D1 (R01–R14), D2 (R15–R28) | 7, 8 |
+| E | Right-Front | 28 | E1 (R29–R42), E2 (R43–R56) | 9, 10 |
 
 22 RJ45 ports stay spare — plenty of room to re-split a zone, or to bring a dead port's tubes up elsewhere by editing `ZONES` in [tube_map.py](tube_map.py) and re-running it.
 
-### Layout — where the receivers and tubes sit
+### Layout — where the boards and tubes sit
 
 ```
                  FRONT (OPEN — driver sightline, no tubes)
@@ -46,25 +46,25 @@ Each RJ45 carries 4 differential strings and can feed either one standard differ
      LEFT SIDE    │                        │   RIGHT SIDE
      56 tubes     │        [deck]          │   56 tubes
      4 000 mm     │                        │   4 000 mm
-   A: R1–R7   ────┤      ┌──────────┐      ├──── R28–R34 :E
-   B: R8–R14  ────┤      │  K128D-B │      ├──── R21–R27 :D
+   A: A1, A2  ────┤      ┌──────────┐      ├──── E2, E1 :E
+   B: B1, B2  ────┤      │  K128D-B │      ├──── D2, D1 :D
                   │      └────┬─────┘      │
                   └───────────┼────────────┘
                      REAR 24 tubes / 1 800 mm
-                          C: R15–R20
+                          C: C1, C2
 ```
 
-The K128D lives in one box; 10 cat5 runs fan out to the receiver clusters, and each receiver sits close to the 4 tubes it drives.
+The K128D lives in one box; 10 cat5 runs fan out, one to the SRx4 on each 2×4 hanger board, and each board sits directly above the tubes it drives.
 
-### One receiver, four tubes
+### One board, one 2×4, up to 16 tubes
 
 ```
-K128D RJ45 port ──cat5──▶ [recv A] ──cat5──▶ [recv B] ──▶ …   (≤6 v2 smart, ≤250 ft to the last)
+K128D RJ45 port ──cat5──▶ [SRx4 board · dial=A · DIPs UP]   (one board per port, nothing chained)
                              │
-                             ├─out1─[330–470Ω]─▶ DIN tube 1 (top)
-                             ├─out2─[330–470Ω]─▶ DIN tube 2 (top)
-                             ├─out3─[330–470Ω]─▶ DIN tube 3 (top)
-                             └─out4─[330–470Ω]─▶ DIN tube 4 (top)
+                             ├─ group A outs 1-4 ─[330–470Ω]─▶ DIN tubes 1-4  (top)
+                             ├─ group B outs 1-4 ─[330–470Ω]─▶ DIN tubes 5-8
+                             ├─ group C outs 1-4 ─[330–470Ω]─▶ DIN tubes 9-12
+                             └─ group D outs 1-2 ─[330–470Ω]─▶ DIN tubes 13-14  (12-tube boards skip group D)
 ```
 
 **Every tube takes data at its top end.** Because nothing is chained, every string is *Forward* in FPP, no tube is reversed in software, and a tube can be swapped without disturbing its neighbours.
@@ -83,10 +83,9 @@ out nothing, which looks exactly like a dead data line.
   distances is brutal, and a sagging receiver rail gives marginal data edges —
   a miserable thing to debug. Put a **buck converter at each receiver cluster**,
   fed from the 24 V bus that is already in every zone.
-- **One buck per RJ45 port, 10 for the car** — not 34. The 3–4 receivers on a
-  port are physically adjacent, and each board has power lugs at **both ends**
-  which are the **same rail in parallel**, so feed the first board's near lugs
-  and **daisy-chain out of its far lugs** to the next one.
+- **One buck per board, 10 for the car.** Each 2×4 carries exactly one SRx4,
+  so the buck mounts on the same 2×4 next to it, fed from the 24 V bus that is
+  already there.
 - **12 V (as built) or 5 V** — both are inside the 5–13 V window. At 5 V the
   data outputs are certain to be **5 V logic**, which is what SM16703 wants
   ([led-tubes.md](led-tubes.md)). At 12 V they should still be 5 V logic from
@@ -138,7 +137,7 @@ Power wiring (busbars, trunk, injection zones) lives in [../electrical/led-wirin
 
 ## Control path
 
-FPP runs on the K128D and takes **E1.31 / sACN** on its bridge input: universes **1–32 × 510 channels** onto FPP channel 1, one flat 16,320-channel space for the whole car. Tube *n* (0-based, in map order) owns channels `n × 120 + 1 … n × 120 + 120`.
+FPP runs on the K128D and takes **DDP unicast (preferred) or E1.31 / sACN** on its bridge input: universes **1–33 × 510 channels** onto FPP channel 1, one flat 16,728-channel space for the whole car. Tube *n* (0-based, in map order) owns channels `n × 123 + 1 … n × 123 + 123`. Every frame ends with a latch (DDP PUSH / E1.31 sync) so fppd outputs at the sender's pace — see [k128/README.md](k128/README.md).
 
 The pattern engine ([glorbleds/](glorbleds/)) runs **on the BeagleBone itself** and sends to localhost, so the show does not depend on Wi-Fi or on a laptop staying awake; clients just open the web UI. See [k128/README.md](k128/README.md#step-4--run-the-show-software-on-the-beaglebone) — including the frame-rate caveat, since the AM3358 is a single 1 GHz core and glorbleds is pure Python.
 
@@ -153,4 +152,4 @@ The Angio build chained 4-tube groups onto shared data lines, which meant:
 - **Chain failure domains** — one bad tube or DOUT killed everything downstream of it.
 - **Five controllers** to configure, address, keep on the network and keep spares for.
 
-One data line per tube removes all four. A tube is now an independent, individually addressable 40-px unit: no flips, no reversal, no downstream blast radius, and **the mirrored-D problem simply disappears** — D's tubes are re-patched in the map, not rehung on the car. The cost is 34 receiver boards and 10 cat5 runs.
+One data line per tube removes all four. A tube is now an independent, individually addressable 41-px unit: no flips, no reversal, no downstream blast radius, and **the mirrored-D problem simply disappears** — D's tubes are re-patched in the map, not rehung on the car. The cost is 10 SRx4 boards and 10 cat5 runs.

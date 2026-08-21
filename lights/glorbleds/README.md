@@ -13,8 +13,9 @@ Windows, and the BeagleBone itself.
   The front-left corner is left open for the driver.
 - Each tube is 2.5 m, **41 px/tube** (measured — one more group than the
   nominal 40) → **5576 pixels / 16,728 channels** total.
-- **Every tube has its own data line.** Tubes are grouped **4 per receiver →
-  34 receivers** on 10 RJ45 ports of a single [Kulp K128D-B](../k128/README.md)
+- **Every tube has its own data line.** Tubes hang from **10 2×4 boards**,
+  each carrying one **SRx4 quad receiver** (14 tubes on the sides, 12 on the
+  back) on its own RJ45 port of a single [Kulp K128D-B](../k128/README.md)
   (BeagleBone + FPP). Nothing is chained, so nothing is reversed in software.
 - The whole car is **one flat pixel space**: universes **1–33 × 510 ch** into
   FPP's bridge, landing on FPP channel 1. Tube *n* owns channels

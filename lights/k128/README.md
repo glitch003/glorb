@@ -23,9 +23,11 @@ It replaces the five WLED Angio-8 boards and the chained-tube topology.
 | Power | **External 5 V, ≥4 A (20 W)**, into the screw terminals. This is separate from the tubes' 24 V. |
 | Software | FPP 6.1 or newer on a microSD card |
 
-We use **10 of the 32 ports** — two per zone A–E, 3–4 receivers chained on
-each. That is 34 receivers × 4 outputs = 136 tubes, and the busiest port
-carries 656 px, well inside the 800 px budget.
+We use **10 of the 32 ports** — one per 2×4 hanger board, each carrying one
+SRx4 v4.00 quad SmartReceiver (16 outputs). Side boards drive 14 tubes, back
+boards 12 → 136 tubes, and the busiest port carries 574 px, well inside the
+800 px budget. **Every board's ID dial goes to `A`** since nothing is chained
+after it — see the SRx4 section below.
 
 ## Step 1 — Wi-Fi needs a USB adapter
 
@@ -169,10 +171,10 @@ three rightmost columns:
 That silkscreen also **confirms the one part of the mapping that was inferred**
 rather than documented (there is no published K128D manual): port *p* owns
 strings `4p-3 … 4p`, i.e. `portNumber` `(p-1)×4 … (p-1)×4+3`, which is exactly
-what `port_number()` in [fpp_setup.py](fpp_setup.py) computes. What remains
-unproven until tubes light is only that a **chained** smart receiver taps the
-same string via the `virtualStringsB…F` keys — `tubes R15` in step 3 below is
-the test for that.
+what `port_number()` in [fpp_setup.py](fpp_setup.py) computes. The other
+inferred part — that the SRx4's later output groups tap the same string via
+the `virtualStringsB…F` keys — was **proven on the 2026-08 bench**: 14 tubes
+ran through groups A–D of one board on port 5.
 
 ## Brightness: who owns it
 
@@ -263,10 +265,10 @@ touch the engine.
    V and G may be swapped end to end.** See
    [../controllers.md](../controllers.md#powering-the-receiver-boards).
 3. **Cat5** from the RJ45 jack silkscreened **`17-20`** — that is **port 5**,
-   zone C, receiver R15 = tubes `B01`–`B04` (see
-   [../tube-map.md](../tube-map.md)). Set the receiver's rotary/DIP address
-   for **v2 smart, position A** if it is a SmartReceiver; leave a standard
-   receiver alone.
+   board C1, whose first group R17 = tubes `B01`–`B04` (see
+   [../tube-map.md](../tube-map.md)). **Rotary dial to `A`** (never 0 — dumb
+   mode) and all 4 termination DIPs **UP** (Only/Last), then power-cycle the
+   receiver — the dial is read at power-up.
 4. **Tubes** on receiver outputs 1–4: land **D and G** on each tube (D through
    the 330–470 Ω resistor at DIN), **leave V unconnected**. DIN at the **top**
    of every tube. No chaining, no flipping.
@@ -279,10 +281,10 @@ touch the engine.
 7. **Light it** from `lights/`:
 
 ```bash
-python3 -m glorbleds list                     # confirm R15 = B01-B04
-python3 -m glorbleds --brightness 1.0 colorcheck R15   # R/G/B/W - verify RGB order
-python3 -m glorbleds --brightness 1.0 tubes R15        # out1=red out2=green out3=blue out4=white
-python3 -m glorbleds --brightness 1.0 chase R15        # comet: confirms 41 px and top-to-bottom
+python3 -m glorbleds list                     # confirm R17 = B01-B04
+python3 -m glorbleds --brightness 1.0 colorcheck R17   # R/G/B/W - verify RGB order
+python3 -m glorbleds --brightness 1.0 tubes R17        # out1=red out2=green out3=blue out4=white
+python3 -m glorbleds --brightness 1.0 chase R17        # comet: confirms 41 px and top-to-bottom
 python3 -m glorbleds off all
 ```
 

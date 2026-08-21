@@ -63,9 +63,11 @@ python3 -m glorbleds solid C --color 0,0,255 --host 192.168.8.51   # unicast
 
 # the web control UI + 3D mock visualizer
 python3 -m glorbleds serve                     # http://127.0.0.1:8080
-python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
-# Engine output is capped at 60 FPS. 30 is the show rate; re-measure on the
-# BeagleBone before trusting it there (see PERFORMANCE_AUDIT.md).
+python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 60
+# 60 fps is the default show rate (cap 120). Every pattern is time-based, so
+# animation speed never depends on fps — a slow host just drops frames.
+# Every pattern renders under 8 ms on a laptop-class CPU (see benchmark.py);
+# on Windows use Python 3.11+ for high-resolution sleep timers.
 
 # performance regression checks (stdlib only)
 python3 -m glorbleds.benchmark --frames 120 --fps 30
@@ -185,6 +187,21 @@ Render full-range (0..255); the engine applies brightness. A common trick is
 the **boustrophedon path**: run across a perimeter row, drop down one step, run
 back the other way — a snake that spirals top→bottom over the unrolled sheet.
 `snake` and `pacman` both use it.
+
+House rules for smooth motion (2026-08-21 smoothness pass):
+
+- **Animate from `t`, never per-render steps** — stateful simulations
+  accumulate real elapsed time (see `Fire`/`Life`), so speed is fps-agnostic.
+  `tests/test_patterns.py` enforces this for the decay patterns.
+- **Render edges as coverage, not booleans.** A moving shape whose boundary
+  is a hard `if` test pops pixel-to-pixel; feather it ~1 pixel with `_cov()`
+  (see `DVD`) and it glides.
+- **Particles get sub-pixel positions**: split a point's brightness between
+  the two pixels it straddles (`matrix`, `meteors`, `fireworks`, `sperm`).
+- **Hoist per-frame and per-column work out of the pixel loop.** `perim` is
+  constant within a tube, so anything derived only from it can be computed
+  136 times instead of 5,576 (`ribbons` got 3.5x faster this way) — but
+  `sx` from `_side_unroll` ramps *within* a tube, so it cannot be hoisted.
 
 ### Sprite patterns (SVG → light)
 

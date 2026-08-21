@@ -21,7 +21,7 @@ from .patterns import REGISTRY, NAMES
 
 _ORDER = {"RGB": (0, 1, 2), "RBG": (0, 2, 1), "GRB": (1, 0, 2),
           "GBR": (1, 2, 0), "BRG": (2, 0, 1), "BGR": (2, 1, 0)}
-MAX_FPS = 60.0
+MAX_FPS = 120.0
 
 # Ordered-dither mask size, in pixels. OFF by default: the flicker it was
 # added to fight turned out to be FPP's 20 fps bridge free-run (fixed by the
@@ -362,17 +362,26 @@ class Engine:
     def _loop(self) -> None:
         period = 1.0 / self.fps
         nxt = time.monotonic()
+        monotonic, sleep = time.monotonic, time.sleep
         while self._running:
             self._tick()
             self._frames += 1
-            now = time.monotonic()
+            now = monotonic()
             if now - self._last_fps_t >= 1.0:
                 self._meas_fps = self._frames / (now - self._last_fps_t)
                 self._frames = 0
                 self._last_fps_t = now
             nxt, dropped = self._advance_deadline(nxt, now, period)
             self._dropped_frames += dropped
-            time.sleep(max(0.0, nxt - time.monotonic()))
+            # Coarse sleep, then a short spin to the deadline: time.sleep can
+            # overshoot by more than a millisecond (notably on Windows, where
+            # the timer tick is 15.6 ms before Python 3.11), which matters at
+            # 60 fps. The spin burns at most ~2 ms of CPU per frame.
+            remaining = nxt - monotonic()
+            if remaining > 0.002:
+                sleep(remaining - 0.002)
+            while monotonic() < nxt:
+                pass
 
     def _start_locked(self) -> None:
         """Start a worker while the state lock is held."""

@@ -42,6 +42,15 @@ def _mix(c1, c2, w):
             int(c1[2] + (c2[2] - c1[2]) * w))
 
 
+def _cov(x, w):
+    """Edge coverage: 0 below the edge, 1 past it, a linear ramp of width w
+    between. The cheap anti-aliasing primitive: a shape edge at x=0 rendered
+    as _cov(x, ~1 pixel) glides between pixels instead of popping."""
+    if x <= 0.0:
+        return 0.0
+    return 1.0 if x >= w else x / w
+
+
 def _frame_steps(last_t, t):
     """Elapsed time as 30 Hz simulation steps, capped after pauses."""
     if last_t is None:
@@ -447,10 +456,14 @@ class Rain(Pattern):
             alive.append(d)
             ti, hue = d[0], d[2]
             base = ti * ppt
+            step = 1.0 / (ppt - 1)
             for j in range(ppt):
                 dd = pos - j / (ppt - 1)
-                if 0.0 <= dd < tail:
-                    r, g, b = hsv(hue, 0.55, 1.0 - dd / tail)
+                if -step <= dd < tail:
+                    # leading edge ramps in over one pixel, so the head
+                    # glides down the tube instead of popping pixel to pixel
+                    v = (1.0 - dd / tail) if dd >= 0.0 else (1.0 + dd / step)
+                    r, g, b = hsv(hue, 0.55, v)
                     idx = (base + j) * 3
                     buf[idx] = r
                     buf[idx + 1] = g
@@ -535,7 +548,31 @@ class Sprite(Pattern):
             if 0.0 <= u < 1.0:
                 v = (along[i] - bob[k]) / sh
                 if 0.0 <= v < 1.0:
-                    a = alpha[int(v * H) * W + int(u * W)]
+                    # bilinear sample of the alpha mask: edges glide as the
+                    # sprite sweeps instead of crawling texel by texel
+                    fx = u * W - 0.5
+                    fy = v * H - 0.5
+                    x0 = int(fx) if fx > 0.0 else 0
+                    y0 = int(fy) if fy > 0.0 else 0
+                    if x0 > W - 2:
+                        x0 = W - 2
+                    if y0 > H - 2:
+                        y0 = H - 2
+                    tx = fx - x0
+                    ty = fy - y0
+                    if tx < 0.0:
+                        tx = 0.0
+                    elif tx > 1.0:
+                        tx = 1.0
+                    if ty < 0.0:
+                        ty = 0.0
+                    elif ty > 1.0:
+                        ty = 1.0
+                    q = y0 * W + x0
+                    a00, a10 = alpha[q], alpha[q + 1]
+                    a01, a11 = alpha[q + W], alpha[q + W + 1]
+                    a = (a00 * (1 - tx) * (1 - ty) + a10 * tx * (1 - ty)
+                         + a01 * (1 - tx) * ty + a11 * tx * ty)
             if a > 0.0:
                 # tint from color1 (body) toward color2 by height, scaled by coverage
                 r = (c1[0] * (1 - v) + c2[0] * v) * a
@@ -613,25 +650,31 @@ class PacMan(Pattern):
                     within = near if prow % 2 == 0 else 1.0 - near
                     if (prow + within) / rows > g:        # not yet eaten
                         r, gc, b = dot
-            # --- ghost ---
+            # --- ghost (feathered rim so it glides between pixels) ---
             dyg = py - gy
             if -ry < dyg < ry:
                 dxg = px - gx
                 if -rx < dxg < rx:
                     nx, ny = dxg / rx, dyg / ry
-                    if nx * nx + ny * ny <= 1.0:
-                        r, gc, b = ghost
+                    a = _cov(1.0 - (nx * nx + ny * ny), 0.35)
+                    if a > 0.0:
+                        r = int(ghost[0] * a)
+                        gc = int(ghost[1] * a)
+                        b = int(ghost[2] * a)
             # --- Pac-Man (drawn last so he rides on top) ---
             dy = py - hy
             if -ry < dy < ry:
                 dx = px - hx
                 if -rx < dx < rx:
                     nx, ny = dx / rx, dy / ry
-                    if nx * nx + ny * ny <= 1.0:
+                    a = _cov(1.0 - (nx * nx + ny * ny), 0.35)
+                    if a > 0.0:
                         if -m_ang < atan2(ny, nx * hdir) < m_ang:
                             r = gc = b = 0               # open mouth
                         else:
-                            r, gc, b = pac
+                            r = int(pac[0] * a)
+                            gc = int(pac[1] * a)
+                            b = int(pac[2] * a)
             buf[j], buf[j + 1], buf[j + 2] = r, gc, b
 
 
@@ -841,10 +884,24 @@ class Meteors(Pattern):
                 if 0.0 <= yy <= 1.0:
                     x = (met[0] + yy * self.DRIFT) % 1.0
                     ti = int(x * nt) % nt
-                    j = int(yy * (ppt - 1))
+                    jf = yy * (ppt - 1)
+                    j = int(jf)
                     f = 1.0 - k * step / self.TAIL
                     idx = (ti * ppt + j) * 3
-                    if k < 2:                      # white-hot head
+                    if k == 0:                     # white-hot head, sub-pixel:
+                        fr = jf - j                # split so it glides
+                        for jj, w in ((j, 1.0 - fr), (j + 1, fr)):
+                            if 0 <= jj < ppt:
+                                v = int(255 * w)
+                                idx2 = (ti * ppt + jj) * 3
+                                if v > buf[idx2]:
+                                    buf[idx2] = v
+                                    buf[idx2 + 1] = v
+                                    buf[idx2 + 2] = v
+                        yy -= step
+                        k += 1
+                        continue
+                    if k < 2:                      # second head pixel
                         r, g, b = 255, 255, 255
                     else:
                         r = int(c1[0] * f)
@@ -869,12 +926,24 @@ class Stripes(Pattern):
     def render(self, m, p, t, buf):
         k = 2 + int(p["density"] * 10)
         off = t * p["speed"] * 0.35
-        c1, c2 = bytes(p["color1"]), bytes(p["color2"])
+        c1, c2 = p["color1"], p["color2"]
+        bc1, bc2 = bytes(c1), bytes(c2)
         perim, along = m.perim, m.along
+        cos, tau = math.cos, 2 * math.pi
+        # soft square wave: the stripe boundaries blend over ~a pixel so the
+        # spin glides instead of crawling in hard steps
         for i in range(m.total_pixels):
-            v = (perim[i] * k + along[i] * 0.9 - off) % 1.0
+            v = perim[i] * k + along[i] * 0.9 - off
+            f = 0.5 - 4.0 * cos(tau * v)
             j = i * 3
-            buf[j:j + 3] = c1 if v < 0.5 else c2
+            if f <= 0.0:
+                buf[j:j + 3] = bc1
+            elif f >= 1.0:
+                buf[j:j + 3] = bc2
+            else:
+                buf[j] = int(c1[0] + (c2[0] - c1[0]) * f)
+                buf[j + 1] = int(c1[1] + (c2[1] - c1[1]) * f)
+                buf[j + 2] = int(c1[2] + (c2[2] - c1[2]) * f)
 
 
 class Storm(Pattern):
@@ -1038,7 +1107,8 @@ class Butthole(Pattern):
             # radial wrinkles that tighten as it clenches
             wr = 0.5 + 0.5 * sin(ang * 17.0 + r * 5.0 * (1.0 + w))
             base = _mix(c2, c1, g)
-            f = (0.45 + 0.55 * wr) * (1.0 - g * g * 0.6)
+            f = (0.45 + 0.55 * wr) * (1.0 - g * g * 0.6) \
+                * _cov(1.0 - r, 0.06)            # feathered outer edge
             buf[j] = int(base[0] * f)
             buf[j + 1] = int(base[1] * f)
             buf[j + 2] = int(base[2] * f)
@@ -1081,20 +1151,22 @@ class GooglyEyes(Pattern):
                 continue
             lx, ly, open_ = looks[koff[s] + k]
             vv = v / open_                       # blink = vertical squash
-            if u * u + vv * vv > 1.0:
+            er2 = u * u + vv * vv
+            if er2 > 1.0:
                 continue
+            rim = _cov(1.0 - er2, 0.25)          # feathered eyeball edge
             j = i * 3
             du, dv = u - lx, v - ly
             d = sqrt(du * du + dv * dv)
             if d < 0.18:                         # pupil
                 buf[j] = buf[j + 1] = buf[j + 2] = 8
             elif d < 0.40:                       # iris
-                f = 1.0 - (d - 0.18) / 0.22 * 0.5
+                f = (1.0 - (d - 0.18) / 0.22 * 0.5) * rim
                 buf[j] = int(c1[0] * f)
                 buf[j + 1] = int(c1[1] * f)
                 buf[j + 2] = int(c1[2] * f)
             else:                                # sclera
-                buf[j] = buf[j + 1] = buf[j + 2] = 235
+                buf[j] = buf[j + 1] = buf[j + 2] = int(235 * rim)
 
 
 class Lava(Pattern):
@@ -1138,10 +1210,13 @@ class Lava(Pattern):
                 c = _mix(c2, c1, w)
                 buf[j], buf[j + 1], buf[j + 2] = c
             else:
-                g = f * f * 0.25                 # faint ambient glow outside
-                buf[j] = int(c1[0] * g)
-                buf[j + 1] = int(c1[1] * g)
-                buf[j + 2] = int(c1[2] * g)
+                # outside glow rises continuously to the full rim color at
+                # the surface (f=1), so blobs have no hard pop edge
+                g = f * f
+                g *= g                           # f^4: tight, bright halo
+                buf[j] = int(c2[0] * g)
+                buf[j + 1] = int(c2[1] * g)
+                buf[j + 2] = int(c2[2] * g)
 
 
 class Hypno(Pattern):
@@ -1178,8 +1253,23 @@ class Hypno(Pattern):
             if r >= 1.0:
                 continue
             ang = atan2(v, u) / two_pi
-            s = (ang + r * turns - spin * (1 if k % 2 == 0 else -1)) % 1.0
-            buf[i * 3:i * 3 + 3] = c1 if s < 0.5 else c2
+            s = ang + r * turns - spin * (1 if k % 2 == 0 else -1)
+            # soft band boundaries + a feathered outer rim: the spiral spins
+            # smoothly instead of crawling
+            f = 0.5 - 4.0 * math.cos(two_pi * s)
+            rim = _cov(1.0 - r, 0.08)
+            j = i * 3
+            if f <= 0.0:
+                cr, cg, cb = c1
+            elif f >= 1.0:
+                cr, cg, cb = c2
+            else:
+                cr = c1[0] + (c2[0] - c1[0]) * f
+                cg = c1[1] + (c2[1] - c1[1]) * f
+                cb = c1[2] + (c2[2] - c1[2]) * f
+            buf[j] = int(cr * rim)
+            buf[j + 1] = int(cg * rim)
+            buf[j + 2] = int(cb * rim)
 
 
 class Scrub(Pattern):
@@ -1269,10 +1359,16 @@ class Ribbons(Pattern):
         tau = 2.0 * math.pi
         sin = math.sin
         perim, along = m.perim, m.along
-        for i in range(m.total_pixels):
-            x, y = perim[i], along[i]
-            red = green = blue = 0
-            total = 0.0
+        ppt = m.px_per_tube
+        reach = width * 3.5
+        colors = [_mix(c1, c2, k / max(1, count - 1)) for k in range(count)]
+        # Every pixel of a tube shares one perim value, so each ribbon's
+        # center is a per-COLUMN quantity: hoisting the two sines out of the
+        # pixel loop cuts the render cost by ~the tube length.
+        for ti in range(len(m.tubes)):
+            base = ti * ppt
+            x = perim[base]
+            centers = []
             for k in range(count):
                 freq = 1 + (k % 3)
                 phase = k * 1.618
@@ -1282,28 +1378,36 @@ class Ribbons(Pattern):
                                        + phase)
                           + 0.075 * sin(tau * (x * (freq + 2)
                                               - motion * 0.47) - phase * 0.63))
-                d = abs(y - center)
-                if d >= width * 3.5:
-                    continue
-                bloom = 1.0 - d / (width * 3.5)
-                bloom = bloom * bloom * bloom * 0.22
-                if d < width:
-                    core = 1.0 - d / width
-                    core *= core
-                else:
-                    core = 0.0
-                strength = bloom + core * 0.82
-                total += strength
-                color = _mix(c1, c2, k / max(1, count - 1))
-                red += int(color[0] * strength)
-                green += int(color[1] * strength)
-                blue += int(color[2] * strength)
-            crossing = max(0.0, total - 0.92)
-            crossing = min(1.0, crossing * crossing * 0.72)
-            j = i * 3
-            buf[j] = min(255, red + int(255 * crossing))
-            buf[j + 1] = min(255, green + int(255 * crossing))
-            buf[j + 2] = min(255, blue + int(255 * crossing))
+                centers.append((center, colors[k]))
+            for pj in range(ppt):
+                i = base + pj
+                y = along[i]
+                red = green = blue = 0
+                total = 0.0
+                for center, color in centers:
+                    d = y - center
+                    if d < 0.0:
+                        d = -d
+                    if d >= reach:
+                        continue
+                    bloom = 1.0 - d / reach
+                    bloom = bloom * bloom * bloom * 0.22
+                    if d < width:
+                        core = 1.0 - d / width
+                        core *= core
+                    else:
+                        core = 0.0
+                    strength = bloom + core * 0.82
+                    total += strength
+                    red += int(color[0] * strength)
+                    green += int(color[1] * strength)
+                    blue += int(color[2] * strength)
+                crossing = max(0.0, total - 0.92)
+                crossing = min(1.0, crossing * crossing * 0.72)
+                j = i * 3
+                buf[j] = min(255, red + int(255 * crossing))
+                buf[j + 1] = min(255, green + int(255 * crossing))
+                buf[j + 2] = min(255, blue + int(255 * crossing))
 
 
 class Voronoi(Pattern):
@@ -1336,30 +1440,44 @@ class Voronoi(Pattern):
 
         boundary_w = 0.010 + p["density"] * 0.012
         perim, along = m.perim, m.along
-        for i in range(m.total_pixels):
-            px, py = perim[i], along[i]
-            best = second = 999.0
-            nearest = 0
-            for k, (x, y, _, _) in enumerate(sites):
-                dx = abs(px - x)
+        ppt = m.px_per_tube
+        # perim is per-column, so the wrapped + aspect-scaled dx^2 to every
+        # site is too — hoist it out of the pixel loop.
+        for ti in range(len(m.tubes)):
+            base = ti * ppt
+            px = perim[base]
+            col = []
+            for x, y, hue, pulse in sites:
+                dx = px - x
+                if dx < 0.0:
+                    dx = -dx
                 if dx > 0.5:
                     dx = 1.0 - dx
                 dx *= aspect
-                dy = py - y
-                d2 = dx * dx + dy * dy
-                if d2 < best:
-                    second, best, nearest = best, d2, k
-                elif d2 < second:
-                    second = d2
-            gap = second - best
-            edge = max(0.0, 1.0 - gap / boundary_w)
-            edge = edge * edge * edge
-            _, _, hue, pulse = sites[nearest]
-            value = min(1.0, 0.14 + pulse * 0.17 + edge * 0.88)
-            saturation = 0.88 - edge * 0.48
-            r, g, b = hsv(hue, saturation, value)
-            j = i * 3
-            buf[j], buf[j + 1], buf[j + 2] = r, g, b
+                col.append((dx * dx, y, hue, pulse))
+            for pj in range(ppt):
+                i = base + pj
+                py = along[i]
+                best = second = 999.0
+                bhue = bpulse = 0.0
+                for dx2, y, hue, pulse in col:
+                    if dx2 >= second:
+                        continue
+                    dy = py - y
+                    d2 = dx2 + dy * dy
+                    if d2 < best:
+                        second, best = best, d2
+                        bhue, bpulse = hue, pulse
+                    elif d2 < second:
+                        second = d2
+                gap = second - best
+                edge = max(0.0, 1.0 - gap / boundary_w)
+                edge = edge * edge * edge
+                value = min(1.0, 0.14 + bpulse * 0.17 + edge * 0.88)
+                saturation = 0.88 - edge * 0.48
+                r, g, b = hsv(bhue, saturation, value)
+                j = i * 3
+                buf[j], buf[j + 1], buf[j + 2] = r, g, b
 
 
 class Life(Pattern):
@@ -2096,19 +2214,33 @@ class Collider(Pattern):
 
         sx, sid, fracs = _side_unroll(m)
         aspects = [f * self.PERIM_OVER_TUBE for f in fracs]
-        by_side = [[], [], []]
-        for ripple in self.ripples:
-            by_side[ripple[0]].append(ripple)
         c1, c2 = p["color1"], p["color2"]
+        # Per-ripple geometry is a per-FRAME quantity: radius, widths, fade
+        # and color were being recomputed for all 5,576 pixels.
+        speed_r = 0.13 + p["speed"] * 0.29
+        by_side = [[], [], []]
+        for side_r, cx, cy, age, tone in self.ripples:
+            radius = age * speed_r
+            width = 0.020 + age * 0.010
+            fade = max(0.0, 1.0 - age / 2.0)
+            core_age = max(0.0, 1.0 - age / 0.6)
+            by_side[side_r].append((cx, cy, radius, width, width * 4.0,
+                                    fade, core_age, _mix(c1, c2, tone)))
         bloom_w, core_w = 0.047, 0.012
         along = m.along
         hypot = math.hypot
         for i in range(m.total_pixels):
+            # sx ramps slightly WITHIN each tube (side-local shear), so x is
+            # genuinely per-pixel here — only the per-frame work is hoisted.
             x, y, side = sx[i], along[i], sid[i]
+            asp = aspects[side]
             red, green, blue = 1, 0, 2
             line_energy = 0.0
             for top, slope, inv_len, color in beams[side]:
-                d = abs(x - (top + slope * y)) * inv_len
+                d = x - (top + slope * y)
+                if d < 0.0:
+                    d = -d
+                d *= inv_len
                 if d >= bloom_w:
                     continue
                 bloom = 1.0 - d / bloom_w
@@ -2124,30 +2256,29 @@ class Collider(Pattern):
                 green += int(color[1] * strength + 210 * core * core)
                 blue += int(color[2] * strength + 210 * core * core)
 
-            for _, cx, cy, age, tone in by_side[side]:
-                radius = age * (0.13 + p["speed"] * 0.29)
-                d = hypot((x - cx) * aspects[side], y - cy)
-                width = 0.020 + age * 0.010
-                delta = abs(d - radius)
-                if delta >= width * 4.0 and d >= 0.09:
+            for (cx, cy, radius, width, glow_w,
+                 fade, core_age, color) in by_side[side]:
+                d = hypot((x - cx) * asp, y - cy)
+                delta = d - radius
+                if delta < 0.0:
+                    delta = -delta
+                if delta >= glow_w and d >= 0.09:
                     continue
                 if delta < width:
                     ring = 1.0 - delta / width
                     ring *= ring
                 else:
                     ring = 0.0
-                glow_w = width * 4.0
                 if delta < glow_w:
                     glow = 1.0 - delta / glow_w
                     glow = glow * glow * glow
                 else:
                     glow = 0.0
-                core = max(0.0, 1.0 - d / 0.09) * max(0.0, 1.0 - age / 0.6)
-                fade = max(0.0, 1.0 - age / 2.0)
+                core = max(0.0, 1.0 - d / 0.09) * core_age
                 reaction = ring * line_energy
-                color = _mix(c1, c2, tone)
                 level = (ring * 0.72 + glow * 0.20 + core * 0.75) * fade
-                hot = (ring * ring * 0.34 + reaction * 0.90 + core * 0.55) * fade
+                hot = (ring * ring * 0.34 + reaction * 0.90
+                       + core * 0.55) * fade
                 red += int(color[0] * level + 255 * hot)
                 green += int(color[1] * level + 255 * hot)
                 blue += int(color[2] * level + 255 * hot)
@@ -2186,31 +2317,45 @@ class Supernova(Pattern):
                 sb.append((bx, by, phase * reach, phase, color))
             bursts.append(sb)
 
-        hypot = math.hypot
+        # thickness/glow/fade/core-window depend only on the burst's phase —
+        # per-frame quantities, hoisted out of the pixel loop.
+        for side in range(3):
+            bursts[side] = [(bx, by, radius, 0.022 + phase * 0.032,
+                             (0.022 + phase * 0.032) * 4.5,
+                             1.0 - phase * 0.70,
+                             (1.0 - phase / 0.20) if phase < 0.20 else 0.0,
+                             color)
+                            for bx, by, radius, phase, color in bursts[side]]
         along = m.along
+        hypot = math.hypot
         for i in range(m.total_pixels):
+            # sx ramps slightly WITHIN each tube (side-local shear), so x is
+            # genuinely per-pixel here — only the per-frame work is hoisted.
             side = sid[i]
             x, y = sx[i], along[i]
+            asp = aspects[side]
             red, green, blue = 1, 0, 3
-            for bx, by, radius, phase, color in bursts[side]:
-                d = hypot((x - bx) * aspects[side], y - by)
-                thickness = 0.022 + phase * 0.032
-                delta = abs(d - radius)
+            for (bx, by, radius, thickness, glow_width,
+                 fade, core_ph, color) in bursts[side]:
+                d = hypot((x - bx) * asp, y - by)
+                delta = d - radius
+                if delta < 0.0:
+                    delta = -delta
+                if delta >= glow_width and d >= 0.10:
+                    continue
                 if delta < thickness:
                     ring = 1.0 - delta / thickness
                     ring *= ring
                 else:
                     ring = 0.0
-                glow_width = thickness * 4.5
                 if delta < glow_width:
                     glow = 1.0 - delta / glow_width
                     glow = glow * glow * glow
                 else:
                     glow = 0.0
-                fade = 1.0 - phase * 0.70
-                if d < 0.10 and phase < 0.20:
+                if core_ph and d < 0.10:
                     core = 1.0 - d / 0.10
-                    core = core * core * (1.0 - phase / 0.20)
+                    core = core * core * core_ph
                 else:
                     core = 0.0
                 level = (ring * 0.95 + glow * 0.24) * fade + core
@@ -2253,15 +2398,24 @@ class Fireworks(Pattern):
         cos, sin = math.cos, math.sin
 
         def stamp(x, y, r, g, b):
+            # sub-pixel along the tube: split between the two pixels the
+            # point straddles, so rising rockets and falling sparks glide
             if 0.0 <= y <= 1.0:
                 ti = int((x % 1.0) * nt) % nt
-                idx = (ti * ppt + int(y * (ppt - 1))) * 3
-                if r > buf[idx]:
-                    buf[idx] = r
-                if g > buf[idx + 1]:
-                    buf[idx + 1] = g
-                if b > buf[idx + 2]:
-                    buf[idx + 2] = b
+                jf = y * (ppt - 1)
+                j = int(jf)
+                fr = jf - j
+                base = ti * ppt
+                for jj, w in ((j, 1.0 - fr), (j + 1, fr)):
+                    if 0 <= jj < ppt and w > 0.02:
+                        idx = (base + jj) * 3
+                        rw, gw, bw = int(r * w), int(g * w), int(b * w)
+                        if rw > buf[idx]:
+                            buf[idx] = rw
+                        if gw > buf[idx + 1]:
+                            buf[idx + 1] = gw
+                        if bw > buf[idx + 2]:
+                            buf[idx + 2] = bw
 
         alive = []
         for sh in self.shells:
@@ -2329,24 +2483,31 @@ class Matrix(Pattern):
         for s in self.streams:
             s[1] += s[2] * dt
             ti, y, _, ln = s
-            hj = int(y * (ppt - 1))
+            hf = y * (ppt - 1)
+            hj = math.floor(hf)                      # floor: y starts negative
+            fr = hf - hj                             # sub-pixel head position
             if hj - ln > ppt:
                 continue
             alive.append(s)
             base = ti * ppt
-            for k in range(ln):
+            # the white-hot head glides: split between its two pixels
+            for j, w in ((hj, 1.0 - fr), (hj + 1, fr)):
+                if 0 <= j < ppt and w > 0.0:
+                    idx = (base + j) * 3
+                    if int(255 * w) > buf[idx + 1]:
+                        buf[idx] = int(180 * w)
+                        buf[idx + 1] = int(255 * w)
+                        buf[idx + 2] = int(180 * w)
+            for k in range(1, ln):
                 j = hj - k
                 if 0 <= j < ppt:
                     idx = (base + j) * 3
-                    if k == 0:                       # head: white-green
-                        buf[idx], buf[idx + 1], buf[idx + 2] = 180, 255, 180
-                    else:
-                        f = (1.0 - k / ln) * (0.55 + 0.45 * rnd())
-                        g = int(255 * f)
-                        if g > buf[idx + 1]:
-                            buf[idx] = g // 5
-                            buf[idx + 1] = g
-                            buf[idx + 2] = g // 6
+                    f = (1.0 - k / ln) * (0.55 + 0.45 * rnd())
+                    g = int(255 * f)
+                    if g > buf[idx + 1]:
+                        buf[idx] = g // 5
+                        buf[idx + 1] = g
+                        buf[idx + 2] = g // 6
         self.streams = alive
 
 
@@ -2449,8 +2610,12 @@ class DVD(Pattern):
         x0 = px_ if px_ < spx else 2 * spx - px_
         y0 = py_ if py_ < spy else 2 * spy - py_
         bounces = int(t * vx / spx) + int(t * vy / spy)
-        c = hsv((bounces * 0.161) % 1.0, 1.0, 1.0)
+        cr, cg, cb = hsv((bounces * 0.161) % 1.0, 1.0, 1.0)
         perim, along = m.perim, m.along
+        # ~1-pixel feather in logo units, so the edges glide between pixels
+        # instead of popping as the logo drifts.
+        au = (1.0 / len(m.tubes)) / sw           # one tube column, in u
+        av = (1.0 / (m.px_per_tube - 1)) / sh    # one tube pixel, in v
         for i in range(m.total_pixels):
             u = (perim[i] - x0) / sw
             if not 0.0 <= u < 1.0:
@@ -2458,18 +2623,26 @@ class DVD(Pattern):
             v = (along[i] - y0) / sh
             if not 0.0 <= v < 1.0:
                 continue
-            # stylized logo: fat ellipse on top, solid bar below
-            hit = False
-            if v < 0.62:
+            # stylized logo: fat ellipse ring on top, solid bar below,
+            # every edge rendered as coverage rather than a hard test
+            a = 0.0
+            if v < 0.62 + av:
                 eu = (u - 0.5) / 0.5
                 ev = (v - 0.31) / 0.31
                 e = eu * eu + ev * ev
-                hit = 0.30 < e <= 1.0            # ring with a hole
-            elif v > 0.75:
-                hit = True                       # the disc bar
-            if hit:
+                ring = min(_cov(1.0 - e, 0.18),  # outer rim of the ellipse
+                           _cov(e - 0.30, 0.12))  # hole in the middle
+                a = ring * _cov(0.62 - v, av)    # fade at the ring/gap seam
+            if v > 0.75 - av:
+                bar = min(_cov(v - 0.75, av), _cov(1.0 - v, av),
+                          _cov(u, au), _cov(1.0 - u, au))
+                if bar > a:
+                    a = bar
+            if a > 0.0:
                 j = i * 3
-                buf[j], buf[j + 1], buf[j + 2] = c
+                buf[j] = int(cr * a)
+                buf[j + 1] = int(cg * a)
+                buf[j + 2] = int(cb * a)
 
 
 class DVDPenis(Pattern):
@@ -2512,21 +2685,24 @@ class DVDPenis(Pattern):
                 if not 0.0 <= v < 1.0:
                     continue
                 bx = (u - 0.5) * 0.55            # box coords, aspect-true
-                hit = False
+                # coverage per part, so edges glide instead of popping
                 hx, hy = bx / 0.14, (v - 0.13) / 0.13
-                if hx * hx + hy * hy <= 1.0:     # head
-                    hit = True
-                elif -0.095 < bx < 0.095 and 0.13 <= v <= 0.85:
-                    hit = True                   # shaft
-                else:                            # balls
-                    for s_ in (-1.0, 1.0):
-                        gx = (bx - s_ * 0.15) / 0.15
-                        gy = (v - 0.85) / 0.14
-                        if gx * gx + gy * gy <= 1.0:
-                            hit = True
-                            break
-                if hit:
-                    buf[j], buf[j + 1], buf[j + 2] = c
+                a = _cov(1.0 - (hx * hx + hy * hy), 0.30)        # head
+                shaft = min(_cov(0.095 - bx, 0.03),
+                            _cov(bx + 0.095, 0.03),
+                            _cov(v - 0.13, 0.04), _cov(0.85 - v, 0.04))
+                if shaft > a:
+                    a = shaft
+                for s_ in (-1.0, 1.0):                           # balls
+                    gx = (bx - s_ * 0.15) / 0.15
+                    gy = (v - 0.85) / 0.14
+                    ball = _cov(1.0 - (gx * gx + gy * gy), 0.30)
+                    if ball > a:
+                        a = ball
+                if a > 0.0:
+                    buf[j] = int(c[0] * a)
+                    buf[j + 1] = int(c[1] * a)
+                    buf[j + 2] = int(c[2] * a)
                     break
 
 
@@ -2594,14 +2770,15 @@ class Boobs(Pattern):
                 dv = (v - jig[k][side]) * 0.5 / 0.46
                 r2 = du * du + dv * dv
                 if r2 <= 1.0:
-                    nd = sqrt(du * du + (dv - 0.25) ** 2)
+                    rim = _cov(1.0 - r2, 0.22)   # feathered outline: jiggles
+                    nd = sqrt(du * du + (dv - 0.25) ** 2)   # glide, not pop
                     if nd < 0.13:                # nipple
-                        f = 1.25 if nd < 0.05 else 1.0
+                        f = (1.25 if nd < 0.05 else 1.0) * rim
                         buf[j] = min(255, int(c2[0] * f))
                         buf[j + 1] = min(255, int(c2[1] * f))
                         buf[j + 2] = min(255, int(c2[2] * f))
                     else:                        # skin, shaded round
-                        f = 1.0 - r2 * 0.45
+                        f = (1.0 - r2 * 0.45) * rim
                         buf[j] = int(c1[0] * f)
                         buf[j + 1] = int(c1[1] * f)
                         buf[j + 2] = int(c1[2] * f)
@@ -2642,18 +2819,25 @@ class Sperm(Pattern):
                 if not 0.0 <= ys <= 1.0:
                     continue
                 ti = int((xs % 1.0) * nt) % nt
-                jj = int(ys * (ppt - 1))
+                jf = ys * (ppt - 1)
+                jj = int(jf)
+                fr = jf - jj
                 f = 1.0 if s == 0 else (1.0 - s / tail_len) * 0.8
-                idx = (ti * ppt + jj) * 3
-                r = int(c1[0] * f)
-                g = int(c1[1] * f)
-                b = int(c1[2] * f)
-                if r > buf[idx]:
-                    buf[idx] = r
-                if g > buf[idx + 1]:
-                    buf[idx + 1] = g
-                if b > buf[idx + 2]:
-                    buf[idx + 2] = b
+                # split each sample between its two pixels: the whipping
+                # tail and head glide instead of stair-stepping
+                for j2, w in ((jj, (1.0 - fr) * f), (jj + 1, fr * f)):
+                    if not 0 <= j2 < ppt:
+                        continue
+                    idx = (ti * ppt + j2) * 3
+                    r = int(c1[0] * w)
+                    g = int(c1[1] * w)
+                    b = int(c1[2] * w)
+                    if r > buf[idx]:
+                        buf[idx] = r
+                    if g > buf[idx + 1]:
+                        buf[idx + 1] = g
+                    if b > buf[idx + 2]:
+                        buf[idx + 2] = b
                 if s == 0:                       # fat bright head
                     for dj in (-1, 1):
                         j2 = jj + dj
@@ -2715,18 +2899,21 @@ class Penis(Pattern):
                 if hit:
                     buf[j] = buf[j + 1] = buf[j + 2] = 255
                 continue
-            # head
+            # head (feathered rim so the rise glides, not pops)
             hx, hy = bx / 0.14, (by - (vt + 0.10)) / 0.12
-            if hx * hx + hy * hy <= 1.0:
-                f = 1.0 - 0.35 * hx * hx
+            hr2 = hx * hx + hy * hy
+            if hr2 <= 1.0:
+                f = (1.0 - 0.35 * hx * hx) * _cov(1.0 - hr2, 0.30)
                 c = _mix(c2, (255, 255, 255), 0.6) if e > 0.92 else c2
                 buf[j] = int(c[0] * f)
                 buf[j + 1] = int(c[1] * f)
                 buf[j + 2] = int(c[2] * f)
                 continue
-            # shaft
+            # shaft (soft side edges + soft tip seam)
             if -0.095 < bx < 0.095 and vt + 0.10 <= by <= 1.0:
-                f = 1.0 - 0.45 * (bx / 0.095) ** 2
+                f = (1.0 - 0.45 * (bx / 0.095) ** 2) \
+                    * _cov(0.095 - abs(bx), 0.025) \
+                    * _cov(by - (vt + 0.10), 0.03)
                 buf[j] = int(c1[0] * f)
                 buf[j + 1] = int(c1[1] * f)
                 buf[j + 2] = int(c1[2] * f)
@@ -2736,7 +2923,7 @@ class Penis(Pattern):
                 gx, gy = (bx - s * 0.15) / 0.15, (by - 0.98) / 0.13
                 r2 = gx * gx + gy * gy
                 if r2 <= 1.0:
-                    f = 0.9 - 0.35 * r2
+                    f = (0.9 - 0.35 * r2) * _cov(1.0 - r2, 0.30)
                     buf[j] = int(c1[0] * f)
                     buf[j + 1] = int(c1[1] * f)
                     buf[j + 2] = int(c1[2] * f)
@@ -2785,10 +2972,11 @@ class Twerk(Pattern):
                 gx, gy = (bx - cx) / 0.40, dy / 0.44
                 r2 = gx * gx + gy * gy
                 if r2 <= 1.0:
-                    if abs(bx) < 0.04:           # the crack
-                        f = 0.15
+                    rim = _cov(1.0 - r2, 0.22)   # feathered outline: the
+                    if abs(bx) < 0.04:           # twerk glides, not pops
+                        f = 0.15 * rim           # (the crack)
                     else:
-                        f = 1.0 - 0.40 * r2
+                        f = (1.0 - 0.40 * r2) * rim
                     buf[j] = int(c1[0] * f)
                     buf[j + 1] = int(c1[1] * f)
                     buf[j + 2] = int(c1[2] * f)
@@ -2893,24 +3081,36 @@ class UFO(Pattern):
             elif dx < -0.5:
                 dx += 1.0
             j = i * 3
-            # dome
+            # dome (feathered so the cruise glides)
             gx, gy = dx / (rx * 0.45), (py - (sy - 0.055)) / 0.06
-            if gx * gx + gy * gy <= 1.0 and py <= sy:
-                buf[j], buf[j + 1], buf[j + 2] = 120, 230, 255
+            r2 = gx * gx + gy * gy
+            if r2 <= 1.0 and py <= sy:
+                a = _cov(1.0 - r2, 0.30)
+                buf[j] = int(120 * a)
+                buf[j + 1] = int(230 * a)
+                buf[j + 2] = int(255 * a)
                 continue
             # hull with blinking rim lights
             gx, gy = dx / rx, (py - sy) / 0.045
-            if gx * gx + gy * gy <= 1.0:
+            r2 = gx * gx + gy * gy
+            if r2 <= 1.0:
+                a = _cov(1.0 - r2, 0.25)
                 if gx * gx > 0.55 and sin(t * 9.0 + (1 if gx > 0 else 4)) > 0.2:
-                    buf[j], buf[j + 1], buf[j + 2] = 255, 80, 200
+                    buf[j] = int(255 * a)
+                    buf[j + 1] = int(80 * a)
+                    buf[j + 2] = int(200 * a)
                 else:
-                    buf[j] = buf[j + 1] = buf[j + 2] = 165
+                    buf[j] = buf[j + 1] = buf[j + 2] = int(165 * a)
                 continue
             # abductee: little pink blob flailing in the beam
             adx = (dx - wob) / (0.05 / self.PERIM_OVER_TUBE)
             ady = (py - ay) / 0.05
-            if adx * adx + ady * ady <= 1.0:
-                buf[j], buf[j + 1], buf[j + 2] = 255, 140, 180
+            r2 = adx * adx + ady * ady
+            if r2 <= 1.0:
+                a = _cov(1.0 - r2, 0.35)
+                buf[j] = int(255 * a)
+                buf[j + 1] = int(140 * a)
+                buf[j + 2] = int(180 * a)
                 continue
             # tractor beam cone
             if py > sy:
@@ -2959,8 +3159,7 @@ class Off(Pattern):
     controls = ()
 
     def render(self, m, p, t, buf):
-        for i in range(len(buf)):
-            buf[i] = 0
+        buf[:] = bytes(len(buf))
 
 
 def _load_sprite_patterns():

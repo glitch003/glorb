@@ -82,7 +82,10 @@ def main(argv=None):
     srv.add_argument("--host", dest="serve_host", default="127.0.0.1",
                      help="bind address (0.0.0.0 to reach from another machine)")
     srv.add_argument("--port", type=int, default=8080)
-    srv.add_argument("--fps", type=float, default=30.0)
+    srv.add_argument("--fps", type=float, default=60.0,
+                     help="render/send rate (default 60; the K128 outputs "
+                          "each pushed frame immediately, and every pattern "
+                          "is time-based so speed does not change with fps)")
     srv.add_argument("--fpp-brightness", type=float, default=10.0,
                      help="FPP's per-string brightness %%, so the spatial "
                           "dither can match the step size FPP quantises to "

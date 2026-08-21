@@ -282,7 +282,7 @@ class EnginePacingTests(unittest.TestCase):
 
 class EngineLifecycleTests(unittest.TestCase):
     def test_out_of_range_fps_is_rejected_at_configuration_time(self):
-        for fps in (0.0, -1.0, 60.1, float("nan"), float("inf")):
+        for fps in (0.0, -1.0, 120.1, float("nan"), float("inf")):
             with self.subTest(fps=fps):
                 with self.assertRaises(ValueError):
                     make_engine(fps=fps)

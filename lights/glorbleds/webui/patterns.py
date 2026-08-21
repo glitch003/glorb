@@ -3139,9 +3139,11 @@ class Mapping(Pattern):
 
     def render(self, m, p, t, buf):
         ppt = m.px_per_tube
-        per_group = m.map["meta"]["tubes_per_receiver"]
+        # color by the tube's actual receiver output (1-4), not tube index
+        # modulo group size -- boards carry 14 tubes (groups of 4,4,4,2), so
+        # index parity shears off the physical outputs after the first board
         for ti in range(len(m.tubes)):
-            c = self.COLORS[ti % per_group]
+            c = self.COLORS[(m.tubes[ti]["output"] - 1) % len(self.COLORS)]
             base = ti * ppt
             for j in range(ppt):
                 idx = (base + j) * 3

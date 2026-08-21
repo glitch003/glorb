@@ -4,8 +4,8 @@ LED lighting for Glorb — the giant glowing broom. This folder holds the
 software that drives the LEDs, the physical tube map, and hardware notes.
 
 **136 tubes, each on its own data line**, driven by one
-**[Kulp K128D-B](k128/README.md)** (BeagleBone + FPP) through 34 differential
-receivers on 10 of its 32 RJ45 ports.
+**[Kulp K128D-B](k128/README.md)** (BeagleBone + FPP) through 10 SRx4 quad
+receivers — one per 2×4 hanger board — on 10 of its 32 RJ45 ports.
 
 > **Rebuilt 2026-08-20.** This replaces the five WLED Angio-8 boards and the
 > chained-tube topology. Zones A–E, tube labels, hangers and busbars are

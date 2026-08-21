@@ -1,21 +1,74 @@
 {
   "meta": {
-    "tubes_per_group": 4,
+    "tubes_per_receiver": 4,
     "pixels_per_tube": 40,
     "channels_per_pixel": 3,
     "px_per_universe": 170,
+    "universe_size": 510,
     "total_tubes": 136,
-    "total_groups": 34,
+    "total_receivers": 34,
+    "total_pixels": 5440,
+    "total_channels": 16320,
     "chip": "SM16703",
     "protocol": "sACN / E1.31",
     "color_order": "RGB",
-    "serpentine": true
+    "serpentine": false
   },
-  "angios": [
+  "controller": {
+    "model": "Kulp K128D-B",
+    "platform": "BeagleBone Black/Green + FPP (Falcon Player) 6.1+",
+    "hostname": "glorb-k128.local",
+    "ip": "192.168.8.124",
+    "rj45_ports_total": 32,
+    "strings_total": 128,
+    "rj45_ports_used": 10,
+    "receivers": 34,
+    "start_universe": 1,
+    "universe_count": 32,
+    "universe_size": 510,
+    "universes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "start_channel": 1,
+    "channel_count": 16320
+  },
+  "zones": [
     {
       "name": "A",
       "location": "Left-Front",
-      "groups": [
+      "tube_count": 28,
+      "receivers": [
         1,
         2,
         3,
@@ -24,45 +77,74 @@
         6,
         7
       ],
-      "lines": [
+      "ports": [
         {
-          "line": 1,
-          "groups": [
+          "port": 1,
+          "silkscreen": "1-4",
+          "receivers": [
             1,
             2,
             3,
             4
           ],
+          "receiver_count": 4,
+          "tubes": [
+            "L01",
+            "L02",
+            "L03",
+            "L04",
+            "L05",
+            "L06",
+            "L07",
+            "L08",
+            "L09",
+            "L10",
+            "L11",
+            "L12",
+            "L13",
+            "L14",
+            "L15",
+            "L16"
+          ],
           "tube_count": 16,
           "pixels": 640,
-          "start_px": 0,
-          "pin": 13
+          "differential_type": "v2 smart x4"
         },
         {
-          "line": 2,
-          "groups": [
+          "port": 2,
+          "silkscreen": "5-8",
+          "receivers": [
             5,
             6,
             7
           ],
+          "receiver_count": 3,
+          "tubes": [
+            "L17",
+            "L18",
+            "L19",
+            "L20",
+            "L21",
+            "L22",
+            "L23",
+            "L24",
+            "L25",
+            "L26",
+            "L27",
+            "L28"
+          ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 640,
-          "pin": 12
+          "differential_type": "v2 smart x3"
         }
       ],
-      "ports_used": 2,
-      "tube_count": 28,
-      "pixels": 1120,
-      "start_universe": 1,
-      "universes": 7,
-      "hostname": "glorb-wled-a.local",
-      "ip": "192.168.8.201"
+      "pixels": 1120
     },
     {
       "name": "B",
       "location": "Left-Back",
-      "groups": [
+      "tube_count": 28,
+      "receivers": [
         8,
         9,
         10,
@@ -71,45 +153,74 @@
         13,
         14
       ],
-      "lines": [
+      "ports": [
         {
-          "line": 1,
-          "groups": [
+          "port": 3,
+          "silkscreen": "9-12",
+          "receivers": [
             8,
             9,
             10,
             11
           ],
+          "receiver_count": 4,
+          "tubes": [
+            "L29",
+            "L30",
+            "L31",
+            "L32",
+            "L33",
+            "L34",
+            "L35",
+            "L36",
+            "L37",
+            "L38",
+            "L39",
+            "L40",
+            "L41",
+            "L42",
+            "L43",
+            "L44"
+          ],
           "tube_count": 16,
           "pixels": 640,
-          "start_px": 0,
-          "pin": 13
+          "differential_type": "v2 smart x4"
         },
         {
-          "line": 2,
-          "groups": [
+          "port": 4,
+          "silkscreen": "13-16",
+          "receivers": [
             12,
             13,
             14
           ],
+          "receiver_count": 3,
+          "tubes": [
+            "L45",
+            "L46",
+            "L47",
+            "L48",
+            "L49",
+            "L50",
+            "L51",
+            "L52",
+            "L53",
+            "L54",
+            "L55",
+            "L56"
+          ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 640,
-          "pin": 12
+          "differential_type": "v2 smart x3"
         }
       ],
-      "ports_used": 2,
-      "tube_count": 28,
-      "pixels": 1120,
-      "start_universe": 8,
-      "universes": 7,
-      "hostname": "glorb-wled-b.local",
-      "ip": "192.168.8.169"
+      "pixels": 1120
     },
     {
       "name": "C",
       "location": "Back",
-      "groups": [
+      "tube_count": 24,
+      "receivers": [
         15,
         16,
         17,
@@ -117,44 +228,69 @@
         19,
         20
       ],
-      "lines": [
+      "ports": [
         {
-          "line": 1,
-          "groups": [
+          "port": 5,
+          "silkscreen": "17-20",
+          "receivers": [
             15,
             16,
             17
           ],
+          "receiver_count": 3,
+          "tubes": [
+            "B01",
+            "B02",
+            "B03",
+            "B04",
+            "B05",
+            "B06",
+            "B07",
+            "B08",
+            "B09",
+            "B10",
+            "B11",
+            "B12"
+          ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 0,
-          "pin": 13
+          "differential_type": "v2 smart x3"
         },
         {
-          "line": 2,
-          "groups": [
+          "port": 6,
+          "silkscreen": "21-24",
+          "receivers": [
             18,
             19,
             20
           ],
+          "receiver_count": 3,
+          "tubes": [
+            "B13",
+            "B14",
+            "B15",
+            "B16",
+            "B17",
+            "B18",
+            "B19",
+            "B20",
+            "B21",
+            "B22",
+            "B23",
+            "B24"
+          ],
           "tube_count": 12,
           "pixels": 480,
-          "start_px": 480,
-          "pin": 12
+          "differential_type": "v2 smart x3"
         }
       ],
-      "ports_used": 2,
-      "tube_count": 24,
-      "pixels": 960,
-      "start_universe": 15,
-      "universes": 6,
-      "hostname": "glorb-wled-c.local",
-      "ip": "192.168.8.229"
+      "pixels": 960
     },
     {
       "name": "D",
       "location": "Right-Back",
-      "groups": [
+      "tube_count": 28,
+      "receivers": [
         21,
         22,
         23,
@@ -163,45 +299,74 @@
         26,
         27
       ],
-      "lines": [
+      "ports": [
         {
-          "line": 1,
-          "groups": [
+          "port": 7,
+          "silkscreen": "25-28",
+          "receivers": [
             21,
             22,
             23,
             24
           ],
-          "tube_count": 14,
-          "pixels": 560,
-          "start_px": 0,
-          "pin": 12
+          "receiver_count": 4,
+          "tubes": [
+            "R01",
+            "R02",
+            "R03",
+            "R04",
+            "R05",
+            "R06",
+            "R07",
+            "R08",
+            "R09",
+            "R10",
+            "R11",
+            "R12",
+            "R13",
+            "R14",
+            "R15",
+            "R16"
+          ],
+          "tube_count": 16,
+          "pixels": 640,
+          "differential_type": "v2 smart x4"
         },
         {
-          "line": 2,
-          "groups": [
+          "port": 8,
+          "silkscreen": "29-32",
+          "receivers": [
             25,
             26,
             27
           ],
-          "tube_count": 14,
-          "pixels": 560,
-          "start_px": 560,
-          "pin": 13
+          "receiver_count": 3,
+          "tubes": [
+            "R17",
+            "R18",
+            "R19",
+            "R20",
+            "R21",
+            "R22",
+            "R23",
+            "R24",
+            "R25",
+            "R26",
+            "R27",
+            "R28"
+          ],
+          "tube_count": 12,
+          "pixels": 480,
+          "differential_type": "v2 smart x3"
         }
       ],
-      "ports_used": 2,
-      "tube_count": 28,
-      "pixels": 1120,
-      "start_universe": 21,
-      "universes": 7,
-      "hostname": "glorb-wled-d.local",
-      "ip": "192.168.8.190"
+      "pixels": 1120
     },
     {
       "name": "E",
       "location": "Right-Front",
-      "groups": [
+      "tube_count": 28,
+      "receivers": [
         28,
         29,
         30,
@@ -210,49 +375,77 @@
         33,
         34
       ],
-      "lines": [
+      "ports": [
         {
-          "line": 1,
-          "groups": [
+          "port": 9,
+          "silkscreen": "33-36",
+          "receivers": [
             28,
             29,
             30,
             31
           ],
-          "tube_count": 14,
-          "pixels": 560,
-          "start_px": 0,
-          "pin": 12
+          "receiver_count": 4,
+          "tubes": [
+            "R29",
+            "R30",
+            "R31",
+            "R32",
+            "R33",
+            "R34",
+            "R35",
+            "R36",
+            "R37",
+            "R38",
+            "R39",
+            "R40",
+            "R41",
+            "R42",
+            "R43",
+            "R44"
+          ],
+          "tube_count": 16,
+          "pixels": 640,
+          "differential_type": "v2 smart x4"
         },
         {
-          "line": 2,
-          "groups": [
+          "port": 10,
+          "silkscreen": "37-40",
+          "receivers": [
             32,
             33,
             34
           ],
-          "tube_count": 14,
-          "pixels": 560,
-          "start_px": 560,
-          "pin": 13
+          "receiver_count": 3,
+          "tubes": [
+            "R45",
+            "R46",
+            "R47",
+            "R48",
+            "R49",
+            "R50",
+            "R51",
+            "R52",
+            "R53",
+            "R54",
+            "R55",
+            "R56"
+          ],
+          "tube_count": 12,
+          "pixels": 480,
+          "differential_type": "v2 smart x3"
         }
       ],
-      "ports_used": 2,
-      "tube_count": 28,
-      "pixels": 1120,
-      "start_universe": 28,
-      "universes": 7,
-      "hostname": "glorb-wled-e.local",
-      "ip": "192.168.8.156"
+      "pixels": 1120
     }
   ],
-  "groups": [
+  "receivers": [
     {
-      "group": 1,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 1,
-      "line_pos": 1,
+      "id": 1,
+      "zone": "A",
+      "port": 1,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "L01",
         "L02",
@@ -261,24 +454,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 0,
-      "universes": [
-        1
+      "start_channel": 1,
+      "end_channel": 480,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L01",
+          "pixels": 40,
+          "start_channel": 1,
+          "end_channel": 120
+        },
+        {
+          "output": 2,
+          "tube": "L02",
+          "pixels": 40,
+          "start_channel": 121,
+          "end_channel": 240
+        },
+        {
+          "output": 3,
+          "tube": "L03",
+          "pixels": 40,
+          "start_channel": 241,
+          "end_channel": 360
+        },
+        {
+          "output": 4,
+          "tube": "L04",
+          "pixels": 40,
+          "start_channel": 361,
+          "end_channel": 480
+        }
       ],
-      "data_in": "L01",
-      "data_from": "A line 1",
       "power_in": [
         "L01",
         "L03"
       ]
     },
     {
-      "group": 2,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 1,
-      "line_pos": 2,
+      "id": 2,
+      "zone": "A",
+      "port": 1,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "L05",
         "L06",
@@ -287,25 +505,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 160,
-      "universes": [
-        1,
-        2
+      "start_channel": 481,
+      "end_channel": 960,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L05",
+          "pixels": 40,
+          "start_channel": 481,
+          "end_channel": 600
+        },
+        {
+          "output": 2,
+          "tube": "L06",
+          "pixels": 40,
+          "start_channel": 601,
+          "end_channel": 720
+        },
+        {
+          "output": 3,
+          "tube": "L07",
+          "pixels": 40,
+          "start_channel": 721,
+          "end_channel": 840
+        },
+        {
+          "output": 4,
+          "tube": "L08",
+          "pixels": 40,
+          "start_channel": 841,
+          "end_channel": 960
+        }
       ],
-      "data_in": "L05",
-      "data_from": "G1 DOUT",
       "power_in": [
         "L05",
         "L07"
       ]
     },
     {
-      "group": 3,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 1,
-      "line_pos": 3,
+      "id": 3,
+      "zone": "A",
+      "port": 1,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "L09",
         "L10",
@@ -314,25 +556,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 320,
-      "universes": [
-        2,
-        3
+      "start_channel": 961,
+      "end_channel": 1440,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L09",
+          "pixels": 40,
+          "start_channel": 961,
+          "end_channel": 1080
+        },
+        {
+          "output": 2,
+          "tube": "L10",
+          "pixels": 40,
+          "start_channel": 1081,
+          "end_channel": 1200
+        },
+        {
+          "output": 3,
+          "tube": "L11",
+          "pixels": 40,
+          "start_channel": 1201,
+          "end_channel": 1320
+        },
+        {
+          "output": 4,
+          "tube": "L12",
+          "pixels": 40,
+          "start_channel": 1321,
+          "end_channel": 1440
+        }
       ],
-      "data_in": "L09",
-      "data_from": "G2 DOUT",
       "power_in": [
         "L09",
         "L11"
       ]
     },
     {
-      "group": 4,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 1,
-      "line_pos": 4,
+      "id": 4,
+      "zone": "A",
+      "port": 1,
+      "chain_pos": 4,
+      "chain_letter": "D",
       "tubes": [
         "L13",
         "L14",
@@ -341,25 +607,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 480,
-      "universes": [
-        3,
-        4
+      "start_channel": 1441,
+      "end_channel": 1920,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L13",
+          "pixels": 40,
+          "start_channel": 1441,
+          "end_channel": 1560
+        },
+        {
+          "output": 2,
+          "tube": "L14",
+          "pixels": 40,
+          "start_channel": 1561,
+          "end_channel": 1680
+        },
+        {
+          "output": 3,
+          "tube": "L15",
+          "pixels": 40,
+          "start_channel": 1681,
+          "end_channel": 1800
+        },
+        {
+          "output": 4,
+          "tube": "L16",
+          "pixels": 40,
+          "start_channel": 1801,
+          "end_channel": 1920
+        }
       ],
-      "data_in": "L13",
-      "data_from": "G3 DOUT",
       "power_in": [
         "L13",
         "L15"
       ]
     },
     {
-      "group": 5,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 2,
-      "line_pos": 1,
+      "id": 5,
+      "zone": "A",
+      "port": 2,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "L17",
         "L18",
@@ -368,25 +658,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 640,
-      "universes": [
-        4,
-        5
+      "start_channel": 1921,
+      "end_channel": 2400,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L17",
+          "pixels": 40,
+          "start_channel": 1921,
+          "end_channel": 2040
+        },
+        {
+          "output": 2,
+          "tube": "L18",
+          "pixels": 40,
+          "start_channel": 2041,
+          "end_channel": 2160
+        },
+        {
+          "output": 3,
+          "tube": "L19",
+          "pixels": 40,
+          "start_channel": 2161,
+          "end_channel": 2280
+        },
+        {
+          "output": 4,
+          "tube": "L20",
+          "pixels": 40,
+          "start_channel": 2281,
+          "end_channel": 2400
+        }
       ],
-      "data_in": "L17",
-      "data_from": "A line 2",
       "power_in": [
         "L17",
         "L19"
       ]
     },
     {
-      "group": 6,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 2,
-      "line_pos": 2,
+      "id": 6,
+      "zone": "A",
+      "port": 2,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "L21",
         "L22",
@@ -395,25 +709,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 800,
-      "universes": [
-        5,
-        6
+      "start_channel": 2401,
+      "end_channel": 2880,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L21",
+          "pixels": 40,
+          "start_channel": 2401,
+          "end_channel": 2520
+        },
+        {
+          "output": 2,
+          "tube": "L22",
+          "pixels": 40,
+          "start_channel": 2521,
+          "end_channel": 2640
+        },
+        {
+          "output": 3,
+          "tube": "L23",
+          "pixels": 40,
+          "start_channel": 2641,
+          "end_channel": 2760
+        },
+        {
+          "output": 4,
+          "tube": "L24",
+          "pixels": 40,
+          "start_channel": 2761,
+          "end_channel": 2880
+        }
       ],
-      "data_in": "L21",
-      "data_from": "G5 DOUT",
       "power_in": [
         "L21",
         "L23"
       ]
     },
     {
-      "group": 7,
-      "angio": "A",
-      "angio_location": "Left-Front",
-      "line": 2,
-      "line_pos": 3,
+      "id": 7,
+      "zone": "A",
+      "port": 2,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "L25",
         "L26",
@@ -422,25 +760,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 960,
-      "universes": [
-        6,
-        7
+      "start_channel": 2881,
+      "end_channel": 3360,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L25",
+          "pixels": 40,
+          "start_channel": 2881,
+          "end_channel": 3000
+        },
+        {
+          "output": 2,
+          "tube": "L26",
+          "pixels": 40,
+          "start_channel": 3001,
+          "end_channel": 3120
+        },
+        {
+          "output": 3,
+          "tube": "L27",
+          "pixels": 40,
+          "start_channel": 3121,
+          "end_channel": 3240
+        },
+        {
+          "output": 4,
+          "tube": "L28",
+          "pixels": 40,
+          "start_channel": 3241,
+          "end_channel": 3360
+        }
       ],
-      "data_in": "L25",
-      "data_from": "G6 DOUT",
       "power_in": [
         "L25",
         "L27"
       ]
     },
     {
-      "group": 8,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 1,
-      "line_pos": 1,
+      "id": 8,
+      "zone": "B",
+      "port": 3,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "L29",
         "L30",
@@ -449,24 +811,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 0,
-      "universes": [
-        8
+      "start_channel": 3361,
+      "end_channel": 3840,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L29",
+          "pixels": 40,
+          "start_channel": 3361,
+          "end_channel": 3480
+        },
+        {
+          "output": 2,
+          "tube": "L30",
+          "pixels": 40,
+          "start_channel": 3481,
+          "end_channel": 3600
+        },
+        {
+          "output": 3,
+          "tube": "L31",
+          "pixels": 40,
+          "start_channel": 3601,
+          "end_channel": 3720
+        },
+        {
+          "output": 4,
+          "tube": "L32",
+          "pixels": 40,
+          "start_channel": 3721,
+          "end_channel": 3840
+        }
       ],
-      "data_in": "L29",
-      "data_from": "B line 1",
       "power_in": [
         "L29",
         "L31"
       ]
     },
     {
-      "group": 9,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 1,
-      "line_pos": 2,
+      "id": 9,
+      "zone": "B",
+      "port": 3,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "L33",
         "L34",
@@ -475,25 +862,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 160,
-      "universes": [
-        8,
-        9
+      "start_channel": 3841,
+      "end_channel": 4320,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L33",
+          "pixels": 40,
+          "start_channel": 3841,
+          "end_channel": 3960
+        },
+        {
+          "output": 2,
+          "tube": "L34",
+          "pixels": 40,
+          "start_channel": 3961,
+          "end_channel": 4080
+        },
+        {
+          "output": 3,
+          "tube": "L35",
+          "pixels": 40,
+          "start_channel": 4081,
+          "end_channel": 4200
+        },
+        {
+          "output": 4,
+          "tube": "L36",
+          "pixels": 40,
+          "start_channel": 4201,
+          "end_channel": 4320
+        }
       ],
-      "data_in": "L33",
-      "data_from": "G8 DOUT",
       "power_in": [
         "L33",
         "L35"
       ]
     },
     {
-      "group": 10,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 1,
-      "line_pos": 3,
+      "id": 10,
+      "zone": "B",
+      "port": 3,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "L37",
         "L38",
@@ -502,25 +913,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 320,
-      "universes": [
-        9,
-        10
+      "start_channel": 4321,
+      "end_channel": 4800,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L37",
+          "pixels": 40,
+          "start_channel": 4321,
+          "end_channel": 4440
+        },
+        {
+          "output": 2,
+          "tube": "L38",
+          "pixels": 40,
+          "start_channel": 4441,
+          "end_channel": 4560
+        },
+        {
+          "output": 3,
+          "tube": "L39",
+          "pixels": 40,
+          "start_channel": 4561,
+          "end_channel": 4680
+        },
+        {
+          "output": 4,
+          "tube": "L40",
+          "pixels": 40,
+          "start_channel": 4681,
+          "end_channel": 4800
+        }
       ],
-      "data_in": "L37",
-      "data_from": "G9 DOUT",
       "power_in": [
         "L37",
         "L39"
       ]
     },
     {
-      "group": 11,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 1,
-      "line_pos": 4,
+      "id": 11,
+      "zone": "B",
+      "port": 3,
+      "chain_pos": 4,
+      "chain_letter": "D",
       "tubes": [
         "L41",
         "L42",
@@ -529,25 +964,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 480,
-      "universes": [
-        10,
-        11
+      "start_channel": 4801,
+      "end_channel": 5280,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L41",
+          "pixels": 40,
+          "start_channel": 4801,
+          "end_channel": 4920
+        },
+        {
+          "output": 2,
+          "tube": "L42",
+          "pixels": 40,
+          "start_channel": 4921,
+          "end_channel": 5040
+        },
+        {
+          "output": 3,
+          "tube": "L43",
+          "pixels": 40,
+          "start_channel": 5041,
+          "end_channel": 5160
+        },
+        {
+          "output": 4,
+          "tube": "L44",
+          "pixels": 40,
+          "start_channel": 5161,
+          "end_channel": 5280
+        }
       ],
-      "data_in": "L41",
-      "data_from": "G10 DOUT",
       "power_in": [
         "L41",
         "L43"
       ]
     },
     {
-      "group": 12,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 2,
-      "line_pos": 1,
+      "id": 12,
+      "zone": "B",
+      "port": 4,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "L45",
         "L46",
@@ -556,25 +1015,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 640,
-      "universes": [
-        11,
-        12
+      "start_channel": 5281,
+      "end_channel": 5760,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L45",
+          "pixels": 40,
+          "start_channel": 5281,
+          "end_channel": 5400
+        },
+        {
+          "output": 2,
+          "tube": "L46",
+          "pixels": 40,
+          "start_channel": 5401,
+          "end_channel": 5520
+        },
+        {
+          "output": 3,
+          "tube": "L47",
+          "pixels": 40,
+          "start_channel": 5521,
+          "end_channel": 5640
+        },
+        {
+          "output": 4,
+          "tube": "L48",
+          "pixels": 40,
+          "start_channel": 5641,
+          "end_channel": 5760
+        }
       ],
-      "data_in": "L45",
-      "data_from": "B line 2",
       "power_in": [
         "L45",
         "L47"
       ]
     },
     {
-      "group": 13,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 2,
-      "line_pos": 2,
+      "id": 13,
+      "zone": "B",
+      "port": 4,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "L49",
         "L50",
@@ -583,25 +1066,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 800,
-      "universes": [
-        12,
-        13
+      "start_channel": 5761,
+      "end_channel": 6240,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L49",
+          "pixels": 40,
+          "start_channel": 5761,
+          "end_channel": 5880
+        },
+        {
+          "output": 2,
+          "tube": "L50",
+          "pixels": 40,
+          "start_channel": 5881,
+          "end_channel": 6000
+        },
+        {
+          "output": 3,
+          "tube": "L51",
+          "pixels": 40,
+          "start_channel": 6001,
+          "end_channel": 6120
+        },
+        {
+          "output": 4,
+          "tube": "L52",
+          "pixels": 40,
+          "start_channel": 6121,
+          "end_channel": 6240
+        }
       ],
-      "data_in": "L49",
-      "data_from": "G12 DOUT",
       "power_in": [
         "L49",
         "L51"
       ]
     },
     {
-      "group": 14,
-      "angio": "B",
-      "angio_location": "Left-Back",
-      "line": 2,
-      "line_pos": 3,
+      "id": 14,
+      "zone": "B",
+      "port": 4,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "L53",
         "L54",
@@ -610,25 +1117,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 960,
-      "universes": [
-        13,
-        14
+      "start_channel": 6241,
+      "end_channel": 6720,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "L53",
+          "pixels": 40,
+          "start_channel": 6241,
+          "end_channel": 6360
+        },
+        {
+          "output": 2,
+          "tube": "L54",
+          "pixels": 40,
+          "start_channel": 6361,
+          "end_channel": 6480
+        },
+        {
+          "output": 3,
+          "tube": "L55",
+          "pixels": 40,
+          "start_channel": 6481,
+          "end_channel": 6600
+        },
+        {
+          "output": 4,
+          "tube": "L56",
+          "pixels": 40,
+          "start_channel": 6601,
+          "end_channel": 6720
+        }
       ],
-      "data_in": "L53",
-      "data_from": "G13 DOUT",
       "power_in": [
         "L53",
         "L55"
       ]
     },
     {
-      "group": 15,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 1,
-      "line_pos": 1,
+      "id": 15,
+      "zone": "C",
+      "port": 5,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "B01",
         "B02",
@@ -637,24 +1168,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 0,
-      "universes": [
-        15
+      "start_channel": 6721,
+      "end_channel": 7200,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B01",
+          "pixels": 40,
+          "start_channel": 6721,
+          "end_channel": 6840
+        },
+        {
+          "output": 2,
+          "tube": "B02",
+          "pixels": 40,
+          "start_channel": 6841,
+          "end_channel": 6960
+        },
+        {
+          "output": 3,
+          "tube": "B03",
+          "pixels": 40,
+          "start_channel": 6961,
+          "end_channel": 7080
+        },
+        {
+          "output": 4,
+          "tube": "B04",
+          "pixels": 40,
+          "start_channel": 7081,
+          "end_channel": 7200
+        }
       ],
-      "data_in": "B01",
-      "data_from": "C line 1",
       "power_in": [
         "B01",
         "B03"
       ]
     },
     {
-      "group": 16,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 1,
-      "line_pos": 2,
+      "id": 16,
+      "zone": "C",
+      "port": 5,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "B05",
         "B06",
@@ -663,25 +1219,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 160,
-      "universes": [
-        15,
-        16
+      "start_channel": 7201,
+      "end_channel": 7680,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B05",
+          "pixels": 40,
+          "start_channel": 7201,
+          "end_channel": 7320
+        },
+        {
+          "output": 2,
+          "tube": "B06",
+          "pixels": 40,
+          "start_channel": 7321,
+          "end_channel": 7440
+        },
+        {
+          "output": 3,
+          "tube": "B07",
+          "pixels": 40,
+          "start_channel": 7441,
+          "end_channel": 7560
+        },
+        {
+          "output": 4,
+          "tube": "B08",
+          "pixels": 40,
+          "start_channel": 7561,
+          "end_channel": 7680
+        }
       ],
-      "data_in": "B05",
-      "data_from": "G15 DOUT",
       "power_in": [
         "B05",
         "B07"
       ]
     },
     {
-      "group": 17,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 1,
-      "line_pos": 3,
+      "id": 17,
+      "zone": "C",
+      "port": 5,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "B09",
         "B10",
@@ -690,25 +1270,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 320,
-      "universes": [
-        16,
-        17
+      "start_channel": 7681,
+      "end_channel": 8160,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B09",
+          "pixels": 40,
+          "start_channel": 7681,
+          "end_channel": 7800
+        },
+        {
+          "output": 2,
+          "tube": "B10",
+          "pixels": 40,
+          "start_channel": 7801,
+          "end_channel": 7920
+        },
+        {
+          "output": 3,
+          "tube": "B11",
+          "pixels": 40,
+          "start_channel": 7921,
+          "end_channel": 8040
+        },
+        {
+          "output": 4,
+          "tube": "B12",
+          "pixels": 40,
+          "start_channel": 8041,
+          "end_channel": 8160
+        }
       ],
-      "data_in": "B09",
-      "data_from": "G16 DOUT",
       "power_in": [
         "B09",
         "B11"
       ]
     },
     {
-      "group": 18,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 2,
-      "line_pos": 1,
+      "id": 18,
+      "zone": "C",
+      "port": 6,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "B13",
         "B14",
@@ -717,25 +1321,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 480,
-      "universes": [
-        17,
-        18
+      "start_channel": 8161,
+      "end_channel": 8640,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B13",
+          "pixels": 40,
+          "start_channel": 8161,
+          "end_channel": 8280
+        },
+        {
+          "output": 2,
+          "tube": "B14",
+          "pixels": 40,
+          "start_channel": 8281,
+          "end_channel": 8400
+        },
+        {
+          "output": 3,
+          "tube": "B15",
+          "pixels": 40,
+          "start_channel": 8401,
+          "end_channel": 8520
+        },
+        {
+          "output": 4,
+          "tube": "B16",
+          "pixels": 40,
+          "start_channel": 8521,
+          "end_channel": 8640
+        }
       ],
-      "data_in": "B13",
-      "data_from": "C line 2",
       "power_in": [
         "B13",
         "B15"
       ]
     },
     {
-      "group": 19,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 2,
-      "line_pos": 2,
+      "id": 19,
+      "zone": "C",
+      "port": 6,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "B17",
         "B18",
@@ -744,25 +1372,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 640,
-      "universes": [
-        18,
-        19
+      "start_channel": 8641,
+      "end_channel": 9120,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B17",
+          "pixels": 40,
+          "start_channel": 8641,
+          "end_channel": 8760
+        },
+        {
+          "output": 2,
+          "tube": "B18",
+          "pixels": 40,
+          "start_channel": 8761,
+          "end_channel": 8880
+        },
+        {
+          "output": 3,
+          "tube": "B19",
+          "pixels": 40,
+          "start_channel": 8881,
+          "end_channel": 9000
+        },
+        {
+          "output": 4,
+          "tube": "B20",
+          "pixels": 40,
+          "start_channel": 9001,
+          "end_channel": 9120
+        }
       ],
-      "data_in": "B17",
-      "data_from": "G18 DOUT",
       "power_in": [
         "B17",
         "B19"
       ]
     },
     {
-      "group": 20,
-      "angio": "C",
-      "angio_location": "Back",
-      "line": 2,
-      "line_pos": 3,
+      "id": 20,
+      "zone": "C",
+      "port": 6,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "B21",
         "B22",
@@ -771,213 +1423,406 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 800,
-      "universes": [
-        19,
-        20
+      "start_channel": 9121,
+      "end_channel": 9600,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "B21",
+          "pixels": 40,
+          "start_channel": 9121,
+          "end_channel": 9240
+        },
+        {
+          "output": 2,
+          "tube": "B22",
+          "pixels": 40,
+          "start_channel": 9241,
+          "end_channel": 9360
+        },
+        {
+          "output": 3,
+          "tube": "B23",
+          "pixels": 40,
+          "start_channel": 9361,
+          "end_channel": 9480
+        },
+        {
+          "output": 4,
+          "tube": "B24",
+          "pixels": 40,
+          "start_channel": 9481,
+          "end_channel": 9600
+        }
       ],
-      "data_in": "B21",
-      "data_from": "G19 DOUT",
       "power_in": [
         "B21",
         "B23"
       ]
     },
     {
-      "group": 21,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 1,
-      "line_pos": 1,
+      "id": 21,
+      "zone": "D",
+      "port": 7,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
-        "R14",
-        "R13",
-        "R12",
-        "R11"
-      ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
-      "px_offset": 0,
-      "universes": [
-        21
-      ],
-      "data_in": "R14",
-      "data_from": "D line 1",
-      "power_in": [
-        "R14",
-        "R12"
-      ]
-    },
-    {
-      "group": 22,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 1,
-      "line_pos": 2,
-      "tubes": [
-        "R10",
-        "R09",
-        "R08",
-        "R07"
-      ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
-      "px_offset": 160,
-      "universes": [
-        21,
-        22
-      ],
-      "data_in": "R10",
-      "data_from": "G21 DOUT",
-      "power_in": [
-        "R10",
-        "R08"
-      ]
-    },
-    {
-      "group": 23,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 1,
-      "line_pos": 3,
-      "tubes": [
-        "R06",
-        "R05",
-        "R04",
-        "R03"
-      ],
-      "tube_count": 4,
-      "pixels": 160,
-      "channels": 480,
-      "px_offset": 320,
-      "universes": [
-        22,
-        23
-      ],
-      "data_in": "R06",
-      "data_from": "G22 DOUT",
-      "power_in": [
-        "R06",
-        "R04"
-      ]
-    },
-    {
-      "group": 24,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 1,
-      "line_pos": 4,
-      "tubes": [
+        "R01",
         "R02",
-        "R01"
+        "R03",
+        "R04"
       ],
-      "tube_count": 2,
-      "pixels": 80,
-      "channels": 240,
-      "px_offset": 480,
-      "universes": [
-        23,
-        24
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 9601,
+      "end_channel": 10080,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R01",
+          "pixels": 40,
+          "start_channel": 9601,
+          "end_channel": 9720
+        },
+        {
+          "output": 2,
+          "tube": "R02",
+          "pixels": 40,
+          "start_channel": 9721,
+          "end_channel": 9840
+        },
+        {
+          "output": 3,
+          "tube": "R03",
+          "pixels": 40,
+          "start_channel": 9841,
+          "end_channel": 9960
+        },
+        {
+          "output": 4,
+          "tube": "R04",
+          "pixels": 40,
+          "start_channel": 9961,
+          "end_channel": 10080
+        }
       ],
-      "data_in": "R02",
-      "data_from": "G23 DOUT",
       "power_in": [
-        "R02"
+        "R01",
+        "R03"
       ]
     },
     {
-      "group": 25,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 2,
-      "line_pos": 1,
+      "id": 22,
+      "zone": "D",
+      "port": 7,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
+        "R05",
+        "R06",
+        "R07",
+        "R08"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 10081,
+      "end_channel": 10560,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R05",
+          "pixels": 40,
+          "start_channel": 10081,
+          "end_channel": 10200
+        },
+        {
+          "output": 2,
+          "tube": "R06",
+          "pixels": 40,
+          "start_channel": 10201,
+          "end_channel": 10320
+        },
+        {
+          "output": 3,
+          "tube": "R07",
+          "pixels": 40,
+          "start_channel": 10321,
+          "end_channel": 10440
+        },
+        {
+          "output": 4,
+          "tube": "R08",
+          "pixels": 40,
+          "start_channel": 10441,
+          "end_channel": 10560
+        }
+      ],
+      "power_in": [
+        "R05",
+        "R07"
+      ]
+    },
+    {
+      "id": 23,
+      "zone": "D",
+      "port": 7,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "tubes": [
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 10561,
+      "end_channel": 11040,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R09",
+          "pixels": 40,
+          "start_channel": 10561,
+          "end_channel": 10680
+        },
+        {
+          "output": 2,
+          "tube": "R10",
+          "pixels": 40,
+          "start_channel": 10681,
+          "end_channel": 10800
+        },
+        {
+          "output": 3,
+          "tube": "R11",
+          "pixels": 40,
+          "start_channel": 10801,
+          "end_channel": 10920
+        },
+        {
+          "output": 4,
+          "tube": "R12",
+          "pixels": 40,
+          "start_channel": 10921,
+          "end_channel": 11040
+        }
+      ],
+      "power_in": [
+        "R09",
+        "R11"
+      ]
+    },
+    {
+      "id": 24,
+      "zone": "D",
+      "port": 7,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "tubes": [
+        "R13",
+        "R14",
         "R15",
-        "R16",
+        "R16"
+      ],
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 11041,
+      "end_channel": 11520,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R13",
+          "pixels": 40,
+          "start_channel": 11041,
+          "end_channel": 11160
+        },
+        {
+          "output": 2,
+          "tube": "R14",
+          "pixels": 40,
+          "start_channel": 11161,
+          "end_channel": 11280
+        },
+        {
+          "output": 3,
+          "tube": "R15",
+          "pixels": 40,
+          "start_channel": 11281,
+          "end_channel": 11400
+        },
+        {
+          "output": 4,
+          "tube": "R16",
+          "pixels": 40,
+          "start_channel": 11401,
+          "end_channel": 11520
+        }
+      ],
+      "power_in": [
+        "R13",
+        "R15"
+      ]
+    },
+    {
+      "id": 25,
+      "zone": "D",
+      "port": 8,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "tubes": [
         "R17",
-        "R18"
+        "R18",
+        "R19",
+        "R20"
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 560,
-      "universes": [
-        24,
-        25
+      "start_channel": 11521,
+      "end_channel": 12000,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R17",
+          "pixels": 40,
+          "start_channel": 11521,
+          "end_channel": 11640
+        },
+        {
+          "output": 2,
+          "tube": "R18",
+          "pixels": 40,
+          "start_channel": 11641,
+          "end_channel": 11760
+        },
+        {
+          "output": 3,
+          "tube": "R19",
+          "pixels": 40,
+          "start_channel": 11761,
+          "end_channel": 11880
+        },
+        {
+          "output": 4,
+          "tube": "R20",
+          "pixels": 40,
+          "start_channel": 11881,
+          "end_channel": 12000
+        }
       ],
-      "data_in": "R15",
-      "data_from": "D line 2",
       "power_in": [
-        "R15",
-        "R17"
+        "R17",
+        "R19"
       ]
     },
     {
-      "group": 26,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 2,
-      "line_pos": 2,
+      "id": 26,
+      "zone": "D",
+      "port": 8,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
-        "R19",
-        "R20",
         "R21",
-        "R22"
+        "R22",
+        "R23",
+        "R24"
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 720,
-      "universes": [
-        25,
-        26
+      "start_channel": 12001,
+      "end_channel": 12480,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R21",
+          "pixels": 40,
+          "start_channel": 12001,
+          "end_channel": 12120
+        },
+        {
+          "output": 2,
+          "tube": "R22",
+          "pixels": 40,
+          "start_channel": 12121,
+          "end_channel": 12240
+        },
+        {
+          "output": 3,
+          "tube": "R23",
+          "pixels": 40,
+          "start_channel": 12241,
+          "end_channel": 12360
+        },
+        {
+          "output": 4,
+          "tube": "R24",
+          "pixels": 40,
+          "start_channel": 12361,
+          "end_channel": 12480
+        }
       ],
-      "data_in": "R19",
-      "data_from": "G25 DOUT",
       "power_in": [
-        "R19",
-        "R21"
+        "R21",
+        "R23"
       ]
     },
     {
-      "group": 27,
-      "angio": "D",
-      "angio_location": "Right-Back",
-      "line": 2,
-      "line_pos": 3,
+      "id": 27,
+      "zone": "D",
+      "port": 8,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
-        "R23",
-        "R24",
         "R25",
         "R26",
         "R27",
         "R28"
       ],
-      "tube_count": 6,
-      "pixels": 240,
-      "channels": 720,
-      "px_offset": 880,
-      "universes": [
-        26,
-        27
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 12481,
+      "end_channel": 12960,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R25",
+          "pixels": 40,
+          "start_channel": 12481,
+          "end_channel": 12600
+        },
+        {
+          "output": 2,
+          "tube": "R26",
+          "pixels": 40,
+          "start_channel": 12601,
+          "end_channel": 12720
+        },
+        {
+          "output": 3,
+          "tube": "R27",
+          "pixels": 40,
+          "start_channel": 12721,
+          "end_channel": 12840
+        },
+        {
+          "output": 4,
+          "tube": "R28",
+          "pixels": 40,
+          "start_channel": 12841,
+          "end_channel": 12960
+        }
       ],
-      "data_in": "R23",
-      "data_from": "G26 DOUT",
       "power_in": [
-        "R23",
         "R25",
         "R27"
       ]
     },
     {
-      "group": 28,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 1,
-      "line_pos": 1,
+      "id": 28,
+      "zone": "E",
+      "port": 9,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
         "R29",
         "R30",
@@ -986,24 +1831,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 0,
-      "universes": [
-        28
+      "start_channel": 12961,
+      "end_channel": 13440,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R29",
+          "pixels": 40,
+          "start_channel": 12961,
+          "end_channel": 13080
+        },
+        {
+          "output": 2,
+          "tube": "R30",
+          "pixels": 40,
+          "start_channel": 13081,
+          "end_channel": 13200
+        },
+        {
+          "output": 3,
+          "tube": "R31",
+          "pixels": 40,
+          "start_channel": 13201,
+          "end_channel": 13320
+        },
+        {
+          "output": 4,
+          "tube": "R32",
+          "pixels": 40,
+          "start_channel": 13321,
+          "end_channel": 13440
+        }
       ],
-      "data_in": "R29",
-      "data_from": "E line 1",
       "power_in": [
         "R29",
         "R31"
       ]
     },
     {
-      "group": 29,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 1,
-      "line_pos": 2,
+      "id": 29,
+      "zone": "E",
+      "port": 9,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
         "R33",
         "R34",
@@ -1012,25 +1882,49 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 160,
-      "universes": [
-        28,
-        29
+      "start_channel": 13441,
+      "end_channel": 13920,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R33",
+          "pixels": 40,
+          "start_channel": 13441,
+          "end_channel": 13560
+        },
+        {
+          "output": 2,
+          "tube": "R34",
+          "pixels": 40,
+          "start_channel": 13561,
+          "end_channel": 13680
+        },
+        {
+          "output": 3,
+          "tube": "R35",
+          "pixels": 40,
+          "start_channel": 13681,
+          "end_channel": 13800
+        },
+        {
+          "output": 4,
+          "tube": "R36",
+          "pixels": 40,
+          "start_channel": 13801,
+          "end_channel": 13920
+        }
       ],
-      "data_in": "R33",
-      "data_from": "G28 DOUT",
       "power_in": [
         "R33",
         "R35"
       ]
     },
     {
-      "group": 30,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 1,
-      "line_pos": 3,
+      "id": 30,
+      "zone": "E",
+      "port": 9,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
         "R37",
         "R38",
@@ -1039,126 +1933,3264 @@
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 320,
-      "universes": [
-        29,
-        30
+      "start_channel": 13921,
+      "end_channel": 14400,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R37",
+          "pixels": 40,
+          "start_channel": 13921,
+          "end_channel": 14040
+        },
+        {
+          "output": 2,
+          "tube": "R38",
+          "pixels": 40,
+          "start_channel": 14041,
+          "end_channel": 14160
+        },
+        {
+          "output": 3,
+          "tube": "R39",
+          "pixels": 40,
+          "start_channel": 14161,
+          "end_channel": 14280
+        },
+        {
+          "output": 4,
+          "tube": "R40",
+          "pixels": 40,
+          "start_channel": 14281,
+          "end_channel": 14400
+        }
       ],
-      "data_in": "R37",
-      "data_from": "G29 DOUT",
       "power_in": [
         "R37",
         "R39"
       ]
     },
     {
-      "group": 31,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 1,
-      "line_pos": 4,
+      "id": 31,
+      "zone": "E",
+      "port": 9,
+      "chain_pos": 4,
+      "chain_letter": "D",
       "tubes": [
         "R41",
-        "R42"
+        "R42",
+        "R43",
+        "R44"
       ],
-      "tube_count": 2,
-      "pixels": 80,
-      "channels": 240,
-      "px_offset": 480,
-      "universes": [
-        30,
-        31
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 14401,
+      "end_channel": 14880,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R41",
+          "pixels": 40,
+          "start_channel": 14401,
+          "end_channel": 14520
+        },
+        {
+          "output": 2,
+          "tube": "R42",
+          "pixels": 40,
+          "start_channel": 14521,
+          "end_channel": 14640
+        },
+        {
+          "output": 3,
+          "tube": "R43",
+          "pixels": 40,
+          "start_channel": 14641,
+          "end_channel": 14760
+        },
+        {
+          "output": 4,
+          "tube": "R44",
+          "pixels": 40,
+          "start_channel": 14761,
+          "end_channel": 14880
+        }
       ],
-      "data_in": "R41",
-      "data_from": "G30 DOUT",
       "power_in": [
-        "R41"
+        "R41",
+        "R43"
       ]
     },
     {
-      "group": 32,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 2,
-      "line_pos": 1,
+      "id": 32,
+      "zone": "E",
+      "port": 10,
+      "chain_pos": 1,
+      "chain_letter": "A",
       "tubes": [
-        "R43",
-        "R44",
         "R45",
-        "R46"
+        "R46",
+        "R47",
+        "R48"
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 560,
-      "universes": [
-        31,
-        32
+      "start_channel": 14881,
+      "end_channel": 15360,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R45",
+          "pixels": 40,
+          "start_channel": 14881,
+          "end_channel": 15000
+        },
+        {
+          "output": 2,
+          "tube": "R46",
+          "pixels": 40,
+          "start_channel": 15001,
+          "end_channel": 15120
+        },
+        {
+          "output": 3,
+          "tube": "R47",
+          "pixels": 40,
+          "start_channel": 15121,
+          "end_channel": 15240
+        },
+        {
+          "output": 4,
+          "tube": "R48",
+          "pixels": 40,
+          "start_channel": 15241,
+          "end_channel": 15360
+        }
       ],
-      "data_in": "R43",
-      "data_from": "E line 2",
       "power_in": [
-        "R43",
-        "R45"
+        "R45",
+        "R47"
       ]
     },
     {
-      "group": 33,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 2,
-      "line_pos": 2,
+      "id": 33,
+      "zone": "E",
+      "port": 10,
+      "chain_pos": 2,
+      "chain_letter": "B",
       "tubes": [
-        "R47",
-        "R48",
         "R49",
-        "R50"
+        "R50",
+        "R51",
+        "R52"
       ],
       "tube_count": 4,
       "pixels": 160,
-      "channels": 480,
-      "px_offset": 720,
-      "universes": [
-        32,
-        33
+      "start_channel": 15361,
+      "end_channel": 15840,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R49",
+          "pixels": 40,
+          "start_channel": 15361,
+          "end_channel": 15480
+        },
+        {
+          "output": 2,
+          "tube": "R50",
+          "pixels": 40,
+          "start_channel": 15481,
+          "end_channel": 15600
+        },
+        {
+          "output": 3,
+          "tube": "R51",
+          "pixels": 40,
+          "start_channel": 15601,
+          "end_channel": 15720
+        },
+        {
+          "output": 4,
+          "tube": "R52",
+          "pixels": 40,
+          "start_channel": 15721,
+          "end_channel": 15840
+        }
       ],
-      "data_in": "R47",
-      "data_from": "G32 DOUT",
       "power_in": [
-        "R47",
-        "R49"
+        "R49",
+        "R51"
       ]
     },
     {
-      "group": 34,
-      "angio": "E",
-      "angio_location": "Right-Front",
-      "line": 2,
-      "line_pos": 3,
+      "id": 34,
+      "zone": "E",
+      "port": 10,
+      "chain_pos": 3,
+      "chain_letter": "C",
       "tubes": [
-        "R51",
-        "R52",
         "R53",
         "R54",
         "R55",
         "R56"
       ],
-      "tube_count": 6,
-      "pixels": 240,
-      "channels": 720,
-      "px_offset": 880,
-      "universes": [
-        33,
-        34
+      "tube_count": 4,
+      "pixels": 160,
+      "start_channel": 15841,
+      "end_channel": 16320,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "R53",
+          "pixels": 40,
+          "start_channel": 15841,
+          "end_channel": 15960
+        },
+        {
+          "output": 2,
+          "tube": "R54",
+          "pixels": 40,
+          "start_channel": 15961,
+          "end_channel": 16080
+        },
+        {
+          "output": 3,
+          "tube": "R55",
+          "pixels": 40,
+          "start_channel": 16081,
+          "end_channel": 16200
+        },
+        {
+          "output": 4,
+          "tube": "R56",
+          "pixels": 40,
+          "start_channel": 16201,
+          "end_channel": 16320
+        }
       ],
-      "data_in": "R51",
-      "data_from": "G33 DOUT",
       "power_in": [
-        "R51",
         "R53",
         "R55"
       ]
+    }
+  ],
+  "tubes": [
+    {
+      "label": "L01",
+      "side": "L",
+      "pos": 0,
+      "index": 0,
+      "zone": "A",
+      "receiver": 1,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 0,
+      "start_channel": 1,
+      "end_channel": 120,
+      "universes": [
+        1
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L02",
+      "side": "L",
+      "pos": 1,
+      "index": 1,
+      "zone": "A",
+      "receiver": 1,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 40,
+      "start_channel": 121,
+      "end_channel": 240,
+      "universes": [
+        1
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L03",
+      "side": "L",
+      "pos": 2,
+      "index": 2,
+      "zone": "A",
+      "receiver": 1,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 80,
+      "start_channel": 241,
+      "end_channel": 360,
+      "universes": [
+        1
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L04",
+      "side": "L",
+      "pos": 3,
+      "index": 3,
+      "zone": "A",
+      "receiver": 1,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 120,
+      "start_channel": 361,
+      "end_channel": 480,
+      "universes": [
+        1
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L05",
+      "side": "L",
+      "pos": 4,
+      "index": 4,
+      "zone": "A",
+      "receiver": 2,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 160,
+      "start_channel": 481,
+      "end_channel": 600,
+      "universes": [
+        1,
+        2
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L06",
+      "side": "L",
+      "pos": 5,
+      "index": 5,
+      "zone": "A",
+      "receiver": 2,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 200,
+      "start_channel": 601,
+      "end_channel": 720,
+      "universes": [
+        2
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L07",
+      "side": "L",
+      "pos": 6,
+      "index": 6,
+      "zone": "A",
+      "receiver": 2,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 240,
+      "start_channel": 721,
+      "end_channel": 840,
+      "universes": [
+        2
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L08",
+      "side": "L",
+      "pos": 7,
+      "index": 7,
+      "zone": "A",
+      "receiver": 2,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 280,
+      "start_channel": 841,
+      "end_channel": 960,
+      "universes": [
+        2
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L09",
+      "side": "L",
+      "pos": 8,
+      "index": 8,
+      "zone": "A",
+      "receiver": 3,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 320,
+      "start_channel": 961,
+      "end_channel": 1080,
+      "universes": [
+        2,
+        3
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L10",
+      "side": "L",
+      "pos": 9,
+      "index": 9,
+      "zone": "A",
+      "receiver": 3,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 360,
+      "start_channel": 1081,
+      "end_channel": 1200,
+      "universes": [
+        3
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L11",
+      "side": "L",
+      "pos": 10,
+      "index": 10,
+      "zone": "A",
+      "receiver": 3,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 400,
+      "start_channel": 1201,
+      "end_channel": 1320,
+      "universes": [
+        3
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L12",
+      "side": "L",
+      "pos": 11,
+      "index": 11,
+      "zone": "A",
+      "receiver": 3,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 440,
+      "start_channel": 1321,
+      "end_channel": 1440,
+      "universes": [
+        3
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L13",
+      "side": "L",
+      "pos": 12,
+      "index": 12,
+      "zone": "A",
+      "receiver": 4,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 480,
+      "start_channel": 1441,
+      "end_channel": 1560,
+      "universes": [
+        3,
+        4
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L14",
+      "side": "L",
+      "pos": 13,
+      "index": 13,
+      "zone": "A",
+      "receiver": 4,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 520,
+      "start_channel": 1561,
+      "end_channel": 1680,
+      "universes": [
+        4
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L15",
+      "side": "L",
+      "pos": 14,
+      "index": 14,
+      "zone": "A",
+      "receiver": 4,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 560,
+      "start_channel": 1681,
+      "end_channel": 1800,
+      "universes": [
+        4
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L16",
+      "side": "L",
+      "pos": 15,
+      "index": 15,
+      "zone": "A",
+      "receiver": 4,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 1,
+      "port_silkscreen": "1-4",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 600,
+      "start_channel": 1801,
+      "end_channel": 1920,
+      "universes": [
+        4
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L17",
+      "side": "L",
+      "pos": 16,
+      "index": 16,
+      "zone": "A",
+      "receiver": 5,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 640,
+      "start_channel": 1921,
+      "end_channel": 2040,
+      "universes": [
+        4
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L18",
+      "side": "L",
+      "pos": 17,
+      "index": 17,
+      "zone": "A",
+      "receiver": 5,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 680,
+      "start_channel": 2041,
+      "end_channel": 2160,
+      "universes": [
+        5
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L19",
+      "side": "L",
+      "pos": 18,
+      "index": 18,
+      "zone": "A",
+      "receiver": 5,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 720,
+      "start_channel": 2161,
+      "end_channel": 2280,
+      "universes": [
+        5
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L20",
+      "side": "L",
+      "pos": 19,
+      "index": 19,
+      "zone": "A",
+      "receiver": 5,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 760,
+      "start_channel": 2281,
+      "end_channel": 2400,
+      "universes": [
+        5
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L21",
+      "side": "L",
+      "pos": 20,
+      "index": 20,
+      "zone": "A",
+      "receiver": 6,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 800,
+      "start_channel": 2401,
+      "end_channel": 2520,
+      "universes": [
+        5
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L22",
+      "side": "L",
+      "pos": 21,
+      "index": 21,
+      "zone": "A",
+      "receiver": 6,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 840,
+      "start_channel": 2521,
+      "end_channel": 2640,
+      "universes": [
+        5,
+        6
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L23",
+      "side": "L",
+      "pos": 22,
+      "index": 22,
+      "zone": "A",
+      "receiver": 6,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 880,
+      "start_channel": 2641,
+      "end_channel": 2760,
+      "universes": [
+        6
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L24",
+      "side": "L",
+      "pos": 23,
+      "index": 23,
+      "zone": "A",
+      "receiver": 6,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 920,
+      "start_channel": 2761,
+      "end_channel": 2880,
+      "universes": [
+        6
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L25",
+      "side": "L",
+      "pos": 24,
+      "index": 24,
+      "zone": "A",
+      "receiver": 7,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 960,
+      "start_channel": 2881,
+      "end_channel": 3000,
+      "universes": [
+        6
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L26",
+      "side": "L",
+      "pos": 25,
+      "index": 25,
+      "zone": "A",
+      "receiver": 7,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1000,
+      "start_channel": 3001,
+      "end_channel": 3120,
+      "universes": [
+        6,
+        7
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L27",
+      "side": "L",
+      "pos": 26,
+      "index": 26,
+      "zone": "A",
+      "receiver": 7,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1040,
+      "start_channel": 3121,
+      "end_channel": 3240,
+      "universes": [
+        7
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L28",
+      "side": "L",
+      "pos": 27,
+      "index": 27,
+      "zone": "A",
+      "receiver": 7,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 2,
+      "port_silkscreen": "5-8",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1080,
+      "start_channel": 3241,
+      "end_channel": 3360,
+      "universes": [
+        7
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L29",
+      "side": "L",
+      "pos": 28,
+      "index": 28,
+      "zone": "B",
+      "receiver": 8,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1120,
+      "start_channel": 3361,
+      "end_channel": 3480,
+      "universes": [
+        7
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L30",
+      "side": "L",
+      "pos": 29,
+      "index": 29,
+      "zone": "B",
+      "receiver": 8,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1160,
+      "start_channel": 3481,
+      "end_channel": 3600,
+      "universes": [
+        7,
+        8
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L31",
+      "side": "L",
+      "pos": 30,
+      "index": 30,
+      "zone": "B",
+      "receiver": 8,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1200,
+      "start_channel": 3601,
+      "end_channel": 3720,
+      "universes": [
+        8
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L32",
+      "side": "L",
+      "pos": 31,
+      "index": 31,
+      "zone": "B",
+      "receiver": 8,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1240,
+      "start_channel": 3721,
+      "end_channel": 3840,
+      "universes": [
+        8
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L33",
+      "side": "L",
+      "pos": 32,
+      "index": 32,
+      "zone": "B",
+      "receiver": 9,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1280,
+      "start_channel": 3841,
+      "end_channel": 3960,
+      "universes": [
+        8
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L34",
+      "side": "L",
+      "pos": 33,
+      "index": 33,
+      "zone": "B",
+      "receiver": 9,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1320,
+      "start_channel": 3961,
+      "end_channel": 4080,
+      "universes": [
+        8
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L35",
+      "side": "L",
+      "pos": 34,
+      "index": 34,
+      "zone": "B",
+      "receiver": 9,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1360,
+      "start_channel": 4081,
+      "end_channel": 4200,
+      "universes": [
+        9
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L36",
+      "side": "L",
+      "pos": 35,
+      "index": 35,
+      "zone": "B",
+      "receiver": 9,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1400,
+      "start_channel": 4201,
+      "end_channel": 4320,
+      "universes": [
+        9
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L37",
+      "side": "L",
+      "pos": 36,
+      "index": 36,
+      "zone": "B",
+      "receiver": 10,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1440,
+      "start_channel": 4321,
+      "end_channel": 4440,
+      "universes": [
+        9
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L38",
+      "side": "L",
+      "pos": 37,
+      "index": 37,
+      "zone": "B",
+      "receiver": 10,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1480,
+      "start_channel": 4441,
+      "end_channel": 4560,
+      "universes": [
+        9
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L39",
+      "side": "L",
+      "pos": 38,
+      "index": 38,
+      "zone": "B",
+      "receiver": 10,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1520,
+      "start_channel": 4561,
+      "end_channel": 4680,
+      "universes": [
+        9,
+        10
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L40",
+      "side": "L",
+      "pos": 39,
+      "index": 39,
+      "zone": "B",
+      "receiver": 10,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1560,
+      "start_channel": 4681,
+      "end_channel": 4800,
+      "universes": [
+        10
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L41",
+      "side": "L",
+      "pos": 40,
+      "index": 40,
+      "zone": "B",
+      "receiver": 11,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1600,
+      "start_channel": 4801,
+      "end_channel": 4920,
+      "universes": [
+        10
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L42",
+      "side": "L",
+      "pos": 41,
+      "index": 41,
+      "zone": "B",
+      "receiver": 11,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1640,
+      "start_channel": 4921,
+      "end_channel": 5040,
+      "universes": [
+        10
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L43",
+      "side": "L",
+      "pos": 42,
+      "index": 42,
+      "zone": "B",
+      "receiver": 11,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1680,
+      "start_channel": 5041,
+      "end_channel": 5160,
+      "universes": [
+        10,
+        11
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L44",
+      "side": "L",
+      "pos": 43,
+      "index": 43,
+      "zone": "B",
+      "receiver": 11,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 3,
+      "port_silkscreen": "9-12",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1720,
+      "start_channel": 5161,
+      "end_channel": 5280,
+      "universes": [
+        11
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L45",
+      "side": "L",
+      "pos": 44,
+      "index": 44,
+      "zone": "B",
+      "receiver": 12,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1760,
+      "start_channel": 5281,
+      "end_channel": 5400,
+      "universes": [
+        11
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L46",
+      "side": "L",
+      "pos": 45,
+      "index": 45,
+      "zone": "B",
+      "receiver": 12,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1800,
+      "start_channel": 5401,
+      "end_channel": 5520,
+      "universes": [
+        11
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L47",
+      "side": "L",
+      "pos": 46,
+      "index": 46,
+      "zone": "B",
+      "receiver": 12,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 1840,
+      "start_channel": 5521,
+      "end_channel": 5640,
+      "universes": [
+        11,
+        12
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L48",
+      "side": "L",
+      "pos": 47,
+      "index": 47,
+      "zone": "B",
+      "receiver": 12,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 1880,
+      "start_channel": 5641,
+      "end_channel": 5760,
+      "universes": [
+        12
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L49",
+      "side": "L",
+      "pos": 48,
+      "index": 48,
+      "zone": "B",
+      "receiver": 13,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 1920,
+      "start_channel": 5761,
+      "end_channel": 5880,
+      "universes": [
+        12
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L50",
+      "side": "L",
+      "pos": 49,
+      "index": 49,
+      "zone": "B",
+      "receiver": 13,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 1960,
+      "start_channel": 5881,
+      "end_channel": 6000,
+      "universes": [
+        12
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L51",
+      "side": "L",
+      "pos": 50,
+      "index": 50,
+      "zone": "B",
+      "receiver": 13,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2000,
+      "start_channel": 6001,
+      "end_channel": 6120,
+      "universes": [
+        12
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L52",
+      "side": "L",
+      "pos": 51,
+      "index": 51,
+      "zone": "B",
+      "receiver": 13,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2040,
+      "start_channel": 6121,
+      "end_channel": 6240,
+      "universes": [
+        13
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L53",
+      "side": "L",
+      "pos": 52,
+      "index": 52,
+      "zone": "B",
+      "receiver": 14,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2080,
+      "start_channel": 6241,
+      "end_channel": 6360,
+      "universes": [
+        13
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L54",
+      "side": "L",
+      "pos": 53,
+      "index": 53,
+      "zone": "B",
+      "receiver": 14,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2120,
+      "start_channel": 6361,
+      "end_channel": 6480,
+      "universes": [
+        13
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "L55",
+      "side": "L",
+      "pos": 54,
+      "index": 54,
+      "zone": "B",
+      "receiver": 14,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2160,
+      "start_channel": 6481,
+      "end_channel": 6600,
+      "universes": [
+        13
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "L56",
+      "side": "L",
+      "pos": 55,
+      "index": 55,
+      "zone": "B",
+      "receiver": 14,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 4,
+      "port_silkscreen": "13-16",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2200,
+      "start_channel": 6601,
+      "end_channel": 6720,
+      "universes": [
+        13,
+        14
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B01",
+      "side": "B",
+      "pos": 0,
+      "index": 56,
+      "zone": "C",
+      "receiver": 15,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2240,
+      "start_channel": 6721,
+      "end_channel": 6840,
+      "universes": [
+        14
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B02",
+      "side": "B",
+      "pos": 1,
+      "index": 57,
+      "zone": "C",
+      "receiver": 15,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2280,
+      "start_channel": 6841,
+      "end_channel": 6960,
+      "universes": [
+        14
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B03",
+      "side": "B",
+      "pos": 2,
+      "index": 58,
+      "zone": "C",
+      "receiver": 15,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2320,
+      "start_channel": 6961,
+      "end_channel": 7080,
+      "universes": [
+        14
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B04",
+      "side": "B",
+      "pos": 3,
+      "index": 59,
+      "zone": "C",
+      "receiver": 15,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2360,
+      "start_channel": 7081,
+      "end_channel": 7200,
+      "universes": [
+        14,
+        15
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B05",
+      "side": "B",
+      "pos": 4,
+      "index": 60,
+      "zone": "C",
+      "receiver": 16,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2400,
+      "start_channel": 7201,
+      "end_channel": 7320,
+      "universes": [
+        15
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B06",
+      "side": "B",
+      "pos": 5,
+      "index": 61,
+      "zone": "C",
+      "receiver": 16,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2440,
+      "start_channel": 7321,
+      "end_channel": 7440,
+      "universes": [
+        15
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B07",
+      "side": "B",
+      "pos": 6,
+      "index": 62,
+      "zone": "C",
+      "receiver": 16,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2480,
+      "start_channel": 7441,
+      "end_channel": 7560,
+      "universes": [
+        15
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B08",
+      "side": "B",
+      "pos": 7,
+      "index": 63,
+      "zone": "C",
+      "receiver": 16,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2520,
+      "start_channel": 7561,
+      "end_channel": 7680,
+      "universes": [
+        15,
+        16
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B09",
+      "side": "B",
+      "pos": 8,
+      "index": 64,
+      "zone": "C",
+      "receiver": 17,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2560,
+      "start_channel": 7681,
+      "end_channel": 7800,
+      "universes": [
+        16
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B10",
+      "side": "B",
+      "pos": 9,
+      "index": 65,
+      "zone": "C",
+      "receiver": 17,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2600,
+      "start_channel": 7801,
+      "end_channel": 7920,
+      "universes": [
+        16
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B11",
+      "side": "B",
+      "pos": 10,
+      "index": 66,
+      "zone": "C",
+      "receiver": 17,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2640,
+      "start_channel": 7921,
+      "end_channel": 8040,
+      "universes": [
+        16
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B12",
+      "side": "B",
+      "pos": 11,
+      "index": 67,
+      "zone": "C",
+      "receiver": 17,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 5,
+      "port_silkscreen": "17-20",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2680,
+      "start_channel": 8041,
+      "end_channel": 8160,
+      "universes": [
+        16
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B13",
+      "side": "B",
+      "pos": 12,
+      "index": 68,
+      "zone": "C",
+      "receiver": 18,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2720,
+      "start_channel": 8161,
+      "end_channel": 8280,
+      "universes": [
+        17
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B14",
+      "side": "B",
+      "pos": 13,
+      "index": 69,
+      "zone": "C",
+      "receiver": 18,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2760,
+      "start_channel": 8281,
+      "end_channel": 8400,
+      "universes": [
+        17
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B15",
+      "side": "B",
+      "pos": 14,
+      "index": 70,
+      "zone": "C",
+      "receiver": 18,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2800,
+      "start_channel": 8401,
+      "end_channel": 8520,
+      "universes": [
+        17
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B16",
+      "side": "B",
+      "pos": 15,
+      "index": 71,
+      "zone": "C",
+      "receiver": 18,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 2840,
+      "start_channel": 8521,
+      "end_channel": 8640,
+      "universes": [
+        17
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B17",
+      "side": "B",
+      "pos": 16,
+      "index": 72,
+      "zone": "C",
+      "receiver": 19,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 2880,
+      "start_channel": 8641,
+      "end_channel": 8760,
+      "universes": [
+        17,
+        18
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B18",
+      "side": "B",
+      "pos": 17,
+      "index": 73,
+      "zone": "C",
+      "receiver": 19,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 2920,
+      "start_channel": 8761,
+      "end_channel": 8880,
+      "universes": [
+        18
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B19",
+      "side": "B",
+      "pos": 18,
+      "index": 74,
+      "zone": "C",
+      "receiver": 19,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 2960,
+      "start_channel": 8881,
+      "end_channel": 9000,
+      "universes": [
+        18
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B20",
+      "side": "B",
+      "pos": 19,
+      "index": 75,
+      "zone": "C",
+      "receiver": 19,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3000,
+      "start_channel": 9001,
+      "end_channel": 9120,
+      "universes": [
+        18
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B21",
+      "side": "B",
+      "pos": 20,
+      "index": 76,
+      "zone": "C",
+      "receiver": 20,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3040,
+      "start_channel": 9121,
+      "end_channel": 9240,
+      "universes": [
+        18,
+        19
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B22",
+      "side": "B",
+      "pos": 21,
+      "index": 77,
+      "zone": "C",
+      "receiver": 20,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3080,
+      "start_channel": 9241,
+      "end_channel": 9360,
+      "universes": [
+        19
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "B23",
+      "side": "B",
+      "pos": 22,
+      "index": 78,
+      "zone": "C",
+      "receiver": 20,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3120,
+      "start_channel": 9361,
+      "end_channel": 9480,
+      "universes": [
+        19
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "B24",
+      "side": "B",
+      "pos": 23,
+      "index": 79,
+      "zone": "C",
+      "receiver": 20,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 6,
+      "port_silkscreen": "21-24",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3160,
+      "start_channel": 9481,
+      "end_channel": 9600,
+      "universes": [
+        19
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R01",
+      "side": "R",
+      "pos": 0,
+      "index": 80,
+      "zone": "D",
+      "receiver": 21,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3200,
+      "start_channel": 9601,
+      "end_channel": 9720,
+      "universes": [
+        19,
+        20
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R02",
+      "side": "R",
+      "pos": 1,
+      "index": 81,
+      "zone": "D",
+      "receiver": 21,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3240,
+      "start_channel": 9721,
+      "end_channel": 9840,
+      "universes": [
+        20
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R03",
+      "side": "R",
+      "pos": 2,
+      "index": 82,
+      "zone": "D",
+      "receiver": 21,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3280,
+      "start_channel": 9841,
+      "end_channel": 9960,
+      "universes": [
+        20
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R04",
+      "side": "R",
+      "pos": 3,
+      "index": 83,
+      "zone": "D",
+      "receiver": 21,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3320,
+      "start_channel": 9961,
+      "end_channel": 10080,
+      "universes": [
+        20
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R05",
+      "side": "R",
+      "pos": 4,
+      "index": 84,
+      "zone": "D",
+      "receiver": 22,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3360,
+      "start_channel": 10081,
+      "end_channel": 10200,
+      "universes": [
+        20
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R06",
+      "side": "R",
+      "pos": 5,
+      "index": 85,
+      "zone": "D",
+      "receiver": 22,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3400,
+      "start_channel": 10201,
+      "end_channel": 10320,
+      "universes": [
+        21
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R07",
+      "side": "R",
+      "pos": 6,
+      "index": 86,
+      "zone": "D",
+      "receiver": 22,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3440,
+      "start_channel": 10321,
+      "end_channel": 10440,
+      "universes": [
+        21
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R08",
+      "side": "R",
+      "pos": 7,
+      "index": 87,
+      "zone": "D",
+      "receiver": 22,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3480,
+      "start_channel": 10441,
+      "end_channel": 10560,
+      "universes": [
+        21
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R09",
+      "side": "R",
+      "pos": 8,
+      "index": 88,
+      "zone": "D",
+      "receiver": 23,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3520,
+      "start_channel": 10561,
+      "end_channel": 10680,
+      "universes": [
+        21
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R10",
+      "side": "R",
+      "pos": 9,
+      "index": 89,
+      "zone": "D",
+      "receiver": 23,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3560,
+      "start_channel": 10681,
+      "end_channel": 10800,
+      "universes": [
+        21,
+        22
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R11",
+      "side": "R",
+      "pos": 10,
+      "index": 90,
+      "zone": "D",
+      "receiver": 23,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3600,
+      "start_channel": 10801,
+      "end_channel": 10920,
+      "universes": [
+        22
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R12",
+      "side": "R",
+      "pos": 11,
+      "index": 91,
+      "zone": "D",
+      "receiver": 23,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3640,
+      "start_channel": 10921,
+      "end_channel": 11040,
+      "universes": [
+        22
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R13",
+      "side": "R",
+      "pos": 12,
+      "index": 92,
+      "zone": "D",
+      "receiver": 24,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3680,
+      "start_channel": 11041,
+      "end_channel": 11160,
+      "universes": [
+        22
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R14",
+      "side": "R",
+      "pos": 13,
+      "index": 93,
+      "zone": "D",
+      "receiver": 24,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3720,
+      "start_channel": 11161,
+      "end_channel": 11280,
+      "universes": [
+        22,
+        23
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R15",
+      "side": "R",
+      "pos": 14,
+      "index": 94,
+      "zone": "D",
+      "receiver": 24,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3760,
+      "start_channel": 11281,
+      "end_channel": 11400,
+      "universes": [
+        23
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R16",
+      "side": "R",
+      "pos": 15,
+      "index": 95,
+      "zone": "D",
+      "receiver": 24,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 7,
+      "port_silkscreen": "25-28",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3800,
+      "start_channel": 11401,
+      "end_channel": 11520,
+      "universes": [
+        23
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R17",
+      "side": "R",
+      "pos": 16,
+      "index": 96,
+      "zone": "D",
+      "receiver": 25,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 3840,
+      "start_channel": 11521,
+      "end_channel": 11640,
+      "universes": [
+        23
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R18",
+      "side": "R",
+      "pos": 17,
+      "index": 97,
+      "zone": "D",
+      "receiver": 25,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 3880,
+      "start_channel": 11641,
+      "end_channel": 11760,
+      "universes": [
+        23,
+        24
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R19",
+      "side": "R",
+      "pos": 18,
+      "index": 98,
+      "zone": "D",
+      "receiver": 25,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 3920,
+      "start_channel": 11761,
+      "end_channel": 11880,
+      "universes": [
+        24
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R20",
+      "side": "R",
+      "pos": 19,
+      "index": 99,
+      "zone": "D",
+      "receiver": 25,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 3960,
+      "start_channel": 11881,
+      "end_channel": 12000,
+      "universes": [
+        24
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R21",
+      "side": "R",
+      "pos": 20,
+      "index": 100,
+      "zone": "D",
+      "receiver": 26,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4000,
+      "start_channel": 12001,
+      "end_channel": 12120,
+      "universes": [
+        24
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R22",
+      "side": "R",
+      "pos": 21,
+      "index": 101,
+      "zone": "D",
+      "receiver": 26,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4040,
+      "start_channel": 12121,
+      "end_channel": 12240,
+      "universes": [
+        24
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R23",
+      "side": "R",
+      "pos": 22,
+      "index": 102,
+      "zone": "D",
+      "receiver": 26,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4080,
+      "start_channel": 12241,
+      "end_channel": 12360,
+      "universes": [
+        25
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R24",
+      "side": "R",
+      "pos": 23,
+      "index": 103,
+      "zone": "D",
+      "receiver": 26,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4120,
+      "start_channel": 12361,
+      "end_channel": 12480,
+      "universes": [
+        25
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R25",
+      "side": "R",
+      "pos": 24,
+      "index": 104,
+      "zone": "D",
+      "receiver": 27,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4160,
+      "start_channel": 12481,
+      "end_channel": 12600,
+      "universes": [
+        25
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R26",
+      "side": "R",
+      "pos": 25,
+      "index": 105,
+      "zone": "D",
+      "receiver": 27,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4200,
+      "start_channel": 12601,
+      "end_channel": 12720,
+      "universes": [
+        25
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R27",
+      "side": "R",
+      "pos": 26,
+      "index": 106,
+      "zone": "D",
+      "receiver": 27,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4240,
+      "start_channel": 12721,
+      "end_channel": 12840,
+      "universes": [
+        25,
+        26
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R28",
+      "side": "R",
+      "pos": 27,
+      "index": 107,
+      "zone": "D",
+      "receiver": 27,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 8,
+      "port_silkscreen": "29-32",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4280,
+      "start_channel": 12841,
+      "end_channel": 12960,
+      "universes": [
+        26
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R29",
+      "side": "R",
+      "pos": 28,
+      "index": 108,
+      "zone": "E",
+      "receiver": 28,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4320,
+      "start_channel": 12961,
+      "end_channel": 13080,
+      "universes": [
+        26
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R30",
+      "side": "R",
+      "pos": 29,
+      "index": 109,
+      "zone": "E",
+      "receiver": 28,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4360,
+      "start_channel": 13081,
+      "end_channel": 13200,
+      "universes": [
+        26
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R31",
+      "side": "R",
+      "pos": 30,
+      "index": 110,
+      "zone": "E",
+      "receiver": 28,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4400,
+      "start_channel": 13201,
+      "end_channel": 13320,
+      "universes": [
+        26,
+        27
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R32",
+      "side": "R",
+      "pos": 31,
+      "index": 111,
+      "zone": "E",
+      "receiver": 28,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4440,
+      "start_channel": 13321,
+      "end_channel": 13440,
+      "universes": [
+        27
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R33",
+      "side": "R",
+      "pos": 32,
+      "index": 112,
+      "zone": "E",
+      "receiver": 29,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4480,
+      "start_channel": 13441,
+      "end_channel": 13560,
+      "universes": [
+        27
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R34",
+      "side": "R",
+      "pos": 33,
+      "index": 113,
+      "zone": "E",
+      "receiver": 29,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4520,
+      "start_channel": 13561,
+      "end_channel": 13680,
+      "universes": [
+        27
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R35",
+      "side": "R",
+      "pos": 34,
+      "index": 114,
+      "zone": "E",
+      "receiver": 29,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4560,
+      "start_channel": 13681,
+      "end_channel": 13800,
+      "universes": [
+        27,
+        28
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R36",
+      "side": "R",
+      "pos": 35,
+      "index": 115,
+      "zone": "E",
+      "receiver": 29,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4600,
+      "start_channel": 13801,
+      "end_channel": 13920,
+      "universes": [
+        28
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R37",
+      "side": "R",
+      "pos": 36,
+      "index": 116,
+      "zone": "E",
+      "receiver": 30,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4640,
+      "start_channel": 13921,
+      "end_channel": 14040,
+      "universes": [
+        28
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R38",
+      "side": "R",
+      "pos": 37,
+      "index": 117,
+      "zone": "E",
+      "receiver": 30,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4680,
+      "start_channel": 14041,
+      "end_channel": 14160,
+      "universes": [
+        28
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R39",
+      "side": "R",
+      "pos": 38,
+      "index": 118,
+      "zone": "E",
+      "receiver": 30,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4720,
+      "start_channel": 14161,
+      "end_channel": 14280,
+      "universes": [
+        28
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R40",
+      "side": "R",
+      "pos": 39,
+      "index": 119,
+      "zone": "E",
+      "receiver": 30,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4760,
+      "start_channel": 14281,
+      "end_channel": 14400,
+      "universes": [
+        29
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R41",
+      "side": "R",
+      "pos": 40,
+      "index": 120,
+      "zone": "E",
+      "receiver": 31,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4800,
+      "start_channel": 14401,
+      "end_channel": 14520,
+      "universes": [
+        29
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R42",
+      "side": "R",
+      "pos": 41,
+      "index": 121,
+      "zone": "E",
+      "receiver": 31,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 4840,
+      "start_channel": 14521,
+      "end_channel": 14640,
+      "universes": [
+        29
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R43",
+      "side": "R",
+      "pos": 42,
+      "index": 122,
+      "zone": "E",
+      "receiver": 31,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 4880,
+      "start_channel": 14641,
+      "end_channel": 14760,
+      "universes": [
+        29
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R44",
+      "side": "R",
+      "pos": 43,
+      "index": 123,
+      "zone": "E",
+      "receiver": 31,
+      "chain_pos": 4,
+      "chain_letter": "D",
+      "port": 9,
+      "port_silkscreen": "33-36",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 4920,
+      "start_channel": 14761,
+      "end_channel": 14880,
+      "universes": [
+        29,
+        30
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R45",
+      "side": "R",
+      "pos": 44,
+      "index": 124,
+      "zone": "E",
+      "receiver": 32,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 4960,
+      "start_channel": 14881,
+      "end_channel": 15000,
+      "universes": [
+        30
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R46",
+      "side": "R",
+      "pos": 45,
+      "index": 125,
+      "zone": "E",
+      "receiver": 32,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 5000,
+      "start_channel": 15001,
+      "end_channel": 15120,
+      "universes": [
+        30
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R47",
+      "side": "R",
+      "pos": 46,
+      "index": 126,
+      "zone": "E",
+      "receiver": 32,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 5040,
+      "start_channel": 15121,
+      "end_channel": 15240,
+      "universes": [
+        30
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R48",
+      "side": "R",
+      "pos": 47,
+      "index": 127,
+      "zone": "E",
+      "receiver": 32,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 5080,
+      "start_channel": 15241,
+      "end_channel": 15360,
+      "universes": [
+        30,
+        31
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R49",
+      "side": "R",
+      "pos": 48,
+      "index": 128,
+      "zone": "E",
+      "receiver": 33,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 5120,
+      "start_channel": 15361,
+      "end_channel": 15480,
+      "universes": [
+        31
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R50",
+      "side": "R",
+      "pos": 49,
+      "index": 129,
+      "zone": "E",
+      "receiver": 33,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 5160,
+      "start_channel": 15481,
+      "end_channel": 15600,
+      "universes": [
+        31
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R51",
+      "side": "R",
+      "pos": 50,
+      "index": 130,
+      "zone": "E",
+      "receiver": 33,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 5200,
+      "start_channel": 15601,
+      "end_channel": 15720,
+      "universes": [
+        31
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R52",
+      "side": "R",
+      "pos": 51,
+      "index": 131,
+      "zone": "E",
+      "receiver": 33,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 5240,
+      "start_channel": 15721,
+      "end_channel": 15840,
+      "universes": [
+        31,
+        32
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R53",
+      "side": "R",
+      "pos": 52,
+      "index": 132,
+      "zone": "E",
+      "receiver": 34,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 1,
+      "pixels": 40,
+      "px_offset": 5280,
+      "start_channel": 15841,
+      "end_channel": 15960,
+      "universes": [
+        32
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R54",
+      "side": "R",
+      "pos": 53,
+      "index": 133,
+      "zone": "E",
+      "receiver": 34,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 2,
+      "pixels": 40,
+      "px_offset": 5320,
+      "start_channel": 15961,
+      "end_channel": 16080,
+      "universes": [
+        32
+      ],
+      "direction": "forward",
+      "power_in": false
+    },
+    {
+      "label": "R55",
+      "side": "R",
+      "pos": 54,
+      "index": 134,
+      "zone": "E",
+      "receiver": 34,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 3,
+      "pixels": 40,
+      "px_offset": 5360,
+      "start_channel": 16081,
+      "end_channel": 16200,
+      "universes": [
+        32
+      ],
+      "direction": "forward",
+      "power_in": true
+    },
+    {
+      "label": "R56",
+      "side": "R",
+      "pos": 55,
+      "index": 135,
+      "zone": "E",
+      "receiver": 34,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 10,
+      "port_silkscreen": "37-40",
+      "output": 4,
+      "pixels": 40,
+      "px_offset": 5400,
+      "start_channel": 16201,
+      "end_channel": 16320,
+      "universes": [
+        32
+      ],
+      "direction": "forward",
+      "power_in": false
     }
   ]
 }

@@ -48,11 +48,13 @@ class BenchmarkTests(unittest.TestCase):
             result = run(frames=1, fps=30.0,
                          udp_host="127.0.0.1", udp_frames=2)
 
+        # 5,440 px packed 170 px/universe = 32 universes per frame, x2 frames.
+        expected = 32 * 2
         sender = self.RecordingSender.instances[0]
-        self.assertEqual(len(sender.calls), 68)
+        self.assertEqual(len(sender.calls), expected)
         self.assertTrue(sender.closed)
         self.assertEqual(result["udp_send"]["frames"], 2)
-        self.assertEqual(result["udp_send"]["packets"], 68)
+        self.assertEqual(result["udp_send"]["packets"], expected)
 
 
 if __name__ == "__main__":

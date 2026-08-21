@@ -95,9 +95,11 @@ class Handler(BaseHTTPRequestHandler):
             self.engine.unsubscribe(q)
 
 
-def run(gmap=None, host="127.0.0.1", port=8080, fps=30.0):
+def run(gmap=None, host="127.0.0.1", port=8080, fps=30.0,
+        fpp_brightness=10.0, dither=True):
     gmap = gmap or load_map()
-    engine = Engine(gmap, fps=fps)
+    engine = Engine(gmap, fps=fps, fpp_brightness=fpp_brightness,
+                    dither=dither)
     engine.start()
     httpd = ThreadingHTTPServer((host, port), Handler)
     httpd.daemon_threads = True
@@ -105,7 +107,7 @@ def run(gmap=None, host="127.0.0.1", port=8080, fps=30.0):
     url = f"http://{host}:{port}/"
     print(f"glorb control UI  ->  {url}")
     print(f"  {engine.model.total_pixels} px, "
-          f"{len(gmap['groups'])} groups. Ctrl-C to stop.")
+          f"{len(gmap['receivers'])} receivers. Ctrl-C to stop.")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

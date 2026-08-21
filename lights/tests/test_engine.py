@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from glorbleds.webui.engine import Engine
+from glorbleds.webui.engine import DITHER_CELLS, Engine
 
 
 LIGHTS = Path(__file__).resolve().parents[1]
@@ -416,3 +416,94 @@ class EngineLifecycleTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+class DitherTests(unittest.TestCase):
+    """Spatial ordered dithering recovers resolution lost to FPP's
+    requantisation, without introducing any temporal artefact.
+
+    FPP's per-string brightness LUT is round(x * B * 2.55 / 255), i.e. steps of
+    100/B in our 0..255 space, so precision finer than that step is discarded.
+    The dither amplitude has to match the step to survive it.
+    """
+
+    @staticmethod
+    def _fpp(x, bri=10.0):
+        return min(255, max(0, round(bri * 2.55 * (x / 255.0))))
+
+    def test_adjacent_pixels_average_to_the_unreachable_value(self):
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        # 65 wants 6.5 levels, which the hardware cannot hold at 10%
+        levels = [self._fpp(luts[k][65]) for k in range(DITHER_CELLS)]
+        self.assertEqual(sorted(levels), [6, 6, 7, 7])
+        self.assertAlmostEqual(sum(levels) / len(levels), 6.5, places=6)
+
+    def test_dither_increases_distinct_levels(self):
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        undithered = {self._fpp(v) for v in range(256)}
+        dithered = {sum(self._fpp(luts[k][v]) for k in range(DITHER_CELLS))
+                    / DITHER_CELLS for v in range(256)}
+        self.assertGreater(len(dithered), 3 * len(undithered))
+
+    def test_mean_tracks_the_target_within_half_a_step(self):
+        for gb in (1.0, 0.5, 0.25):
+            luts = Engine._make_hw_luts(gb, 10.0)
+            for v in range(0, 256, 7):
+                want = v * gb / 10.0
+                got = sum(self._fpp(luts[k][v])
+                          for k in range(DITHER_CELLS)) / DITHER_CELLS
+                self.assertLess(abs(got - want), 0.5,
+                                f"b={gb} v={v}: {got} vs {want}")
+
+    def test_static_frame_is_bit_identical_every_time(self):
+        """The reason this dither is spatial. A per-frame phase term gave each
+        pixel a 30/4 = 7.5 Hz cycle -- near the worst frequency for human
+        flicker perception -- and near-black strobed at 100% modulation depth.
+        """
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        buf = bytearray((i * 7) % 251 for i in range(3 * 4 * 40))
+        first = Engine._apply_dither(buf, luts)
+        for _ in range(8):
+            self.assertEqual(Engine._apply_dither(buf, luts), first)
+
+    def test_all_three_channels_of_a_pixel_share_a_phase(self):
+        """A byte-indexed mask puts R, G and B of one pixel on different
+        phases, which reads as per-pixel hue speckle (worst on blue)."""
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        flat = bytearray([65] * (3 * 4 * 8))
+        out = Engine._apply_dither(flat, luts)
+        for i in range(len(out) // 3):
+            r, g, b = out[i * 3:i * 3 + 3]
+            self.assertEqual((r, g), (r, b), f"pixel {i} channels disagree")
+
+    def test_neighbouring_pixels_do_differ(self):
+        """Otherwise there is no dithering happening at all."""
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        flat = bytearray([65] * (3 * 4 * 8))
+        out = Engine._apply_dither(flat, luts)
+        px = {tuple(out[i * 3:i * 3 + 3]) for i in range(DITHER_CELLS)}
+        self.assertGreater(len(px), 1)
+
+    def test_true_black_stays_black(self):
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        black = bytearray(3 * 4 * 8)
+        self.assertEqual(set(Engine._apply_dither(black, luts)), {0})
+
+    def test_zero_brightness_is_black_on_every_phase(self):
+        luts = Engine._make_hw_luts(0.0, 10.0)
+        for k in range(DITHER_CELLS):
+            self.assertEqual(set(luts[k]), {0})
+
+    def test_output_length_and_type_preserved(self):
+        luts = Engine._make_hw_luts(1.0, 10.0)
+        buf = bytearray(i % 251 for i in range(3 * 4 * 33))
+        out = Engine._apply_dither(buf, luts)
+        self.assertIsInstance(out, bytes)
+        self.assertEqual(len(out), len(buf))
+
+    def test_preview_lut_stays_smooth(self):
+        """The browser should see the integrated value, not the dither."""
+        lut = Engine._make_lut(1.0)
+        self.assertEqual(lut[65], 65)
+        self.assertEqual(lut[255], 255)

@@ -30,19 +30,27 @@ class CarModelTests(unittest.TestCase):
         self.assertIsInstance(physical, bytes)
         self.assertEqual(len(physical), len(logical))
 
-    def test_every_second_tube_in_group_is_reversed(self):
-        ppt_bytes = self.model.px_per_tube * 3
-        logical = bytearray(self.model.nbytes)
-        for pixel in range(self.model.px_per_tube):
-            start = ppt_bytes + pixel * 3
-            logical[start:start + 3] = bytes((pixel, pixel + 1, pixel + 2))
+    def test_no_tube_is_reversed_on_the_wire(self):
+        """Every tube has its own data line and takes data at the top, so
+        the physical frame is the logical frame — nothing is flipped."""
+        logical = bytes(i % 251 for i in range(self.model.nbytes))
 
-        physical = self.model.to_physical(bytes(logical))
+        self.assertEqual(self.model._rev_offsets, [])
+        self.assertEqual(self.model.to_physical(logical), logical)
 
-        first = physical[ppt_bytes:ppt_bytes + 3]
-        last = physical[2 * ppt_bytes - 3:2 * ppt_bytes]
-        self.assertEqual(first, bytes((39, 40, 41)))
-        self.assertEqual(last, bytes((0, 1, 2)))
+    def test_output_is_one_flat_span_from_universe_one(self):
+        self.assertEqual(self.model.output_spans,
+                         [(1, 0, self.model.nbytes)])
+
+    def test_each_tube_owns_120_contiguous_channels(self):
+        """The channel layout FPP is configured against: tube n starts at
+        channel n * 120 + 1."""
+        tubes = self.model.map["tubes"]
+        self.assertEqual(len(tubes), 136)
+        for n, t in enumerate(tubes):
+            self.assertEqual(t["start_channel"], n * 120 + 1)
+            self.assertEqual(t["end_channel"], n * 120 + 120)
+        self.assertEqual(tubes[-1]["end_channel"], self.model.nbytes)
 
 
 if __name__ == "__main__":

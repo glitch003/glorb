@@ -2939,7 +2939,7 @@ class Mapping(Pattern):
 
     def render(self, m, p, t, buf):
         ppt = m.px_per_tube
-        per_group = m.map["meta"]["tubes_per_group"]
+        per_group = m.map["meta"]["tubes_per_receiver"]
         for ti in range(len(m.tubes)):
             c = self.COLORS[ti % per_group]
             base = ti * ppt

@@ -23,32 +23,49 @@ def percentile(values, fraction):
     return values[max(0, min(len(values) - 1, int(len(values) * fraction) - 1))]
 
 
-def _benchmark_udp_send(model, host, frames):
-    """Time snapshot, wire-order conversion, packet build, and UDP send."""
+def _benchmark_udp_send(model, host, frames, fps):
+    """Time snapshot, wire-order conversion, packet build, and UDP send.
+
+    Paced at `fps`, like the engine. Sending flat-out instead would just
+    measure how fast the kernel refuses packets: the sender is deliberately
+    nonblocking (a full send buffer drops the frame rather than stalling the
+    engine), so an unpaced loop fills the socket buffer and every frame after
+    that raises BlockingIOError. `dropped` counts frames the kernel refused
+    even at the paced rate -- that number should be 0.
+    """
     if frames < 1:
         raise ValueError("udp_frames must be positive")
     sender = Sender(host=host)
     logical = bytes(model.nbytes)
     lut = bytes(range(256))
     samples = []
+    dropped = 0
+    period = 1.0 / fps
     try:
+        nxt = time.monotonic()
         for _ in range(frames):
             started = time.perf_counter_ns()
             snapshot = logical.translate(lut)
             physical = model.to_physical(snapshot)
-            for universe, start, length in model.angio_slices:
-                send_span(sender, universe, physical[start:start + length])
+            try:
+                for universe, start, length in model.output_spans:
+                    send_span(sender, universe, physical[start:start + length])
+            except BlockingIOError:
+                dropped += 1
             samples.append((time.perf_counter_ns() - started) / 1_000_000)
+            nxt += period
+            time.sleep(max(0.0, nxt - time.monotonic()))
     finally:
         sender.close()
     packets_per_frame = sum(
         (length + UNIVERSE_BYTES - 1) // UNIVERSE_BYTES
-        for _, _, length in model.angio_slices
+        for _, _, length in model.output_spans
     )
     return {
         "host": host,
         "frames": frames,
-        "packets": frames * packets_per_frame,
+        "dropped": dropped,
+        "packets": (frames - dropped) * packets_per_frame,
         "mean_ms": round(statistics.mean(samples), 3),
         "p95_ms": round(percentile(samples, 0.95), 3),
         "max_ms": round(max(samples), 3),
@@ -86,7 +103,7 @@ def run(frames=120, fps=30.0, udp_host=None, udp_frames=1000):
 
     packets = sum(
         (length + UNIVERSE_BYTES - 1) // UNIVERSE_BYTES
-        for _, _, length in model.angio_slices
+        for _, _, length in model.output_spans
     )
     packet_bytes = len(build_packet(1, bytes(UNIVERSE_BYTES), 1, bytes(16)))
     payload_per_frame = packets * packet_bytes
@@ -101,7 +118,7 @@ def run(frames=120, fps=30.0, udp_host=None, udp_frames=1000):
         "patterns": pattern_rows,
     }
     if udp_host is not None:
-        result["udp_send"] = _benchmark_udp_send(model, udp_host, udp_frames)
+        result["udp_send"] = _benchmark_udp_send(model, udp_host, udp_frames, fps)
     return result
 
 

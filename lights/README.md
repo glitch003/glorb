@@ -3,61 +3,95 @@
 LED lighting for Glorb — the giant glowing broom. This folder holds the
 software that drives the LEDs, the physical tube map, and hardware notes.
 
+**136 tubes, each on its own data line**, driven by one
+**[Kulp K128D-B](k128/README.md)** (BeagleBone + FPP) through 34 differential
+receivers on 10 of its 32 RJ45 ports.
+
+> **Rebuilt 2026-08-20.** This replaces the five WLED Angio-8 boards and the
+> chained-tube topology. Zones A–E, tube labels, hangers and busbars are
+> unchanged; only the data path changed. Why, and what it bought us:
+> [controllers.md](controllers.md#why-we-moved-off-chaining).
+
 ## Running patterns
 
-Run **[./start.sh](start.sh)** from this folder to send patterns to the LEDs.
-Before running:
+The pattern engine runs on the **glorb Windows laptop** (proven on the Angio
+build); the K128D is a dumb E1.31 receiver. Running the engine on the
+BeagleBone was benchmarked and rejected — the AM3358 is 30–90× too slow
+([details](glorbleds/PERFORMANCE_AUDIT.md#beaglebone-measurements-2026-08-21)).
 
-1. Connect your laptop to the **glorb** wifi network.
-2. Make sure the Angios ("shlomo boxes") and LED tubes have power.
-3. Open <http://127.0.0.1:8080> in a browser to pick the pattern.
+1. Connect to the **glorb** wifi network.
+2. Make sure the K128D and the LED tubes have power (the cape needs its own
+   5 V ≥4 A supply, separate from the tubes' 24 V).
+3. Run `./start.sh` and open <http://127.0.0.1:8080> to pick the pattern.
 
-> **Router note:** the glorb wifi router currently lives next to the aux battery
-> box, plugged into a wall outlet. For the burn it needs to be plugged into the
-> inverter in the belly of the car.
+> **Router note:** the glorb wifi router currently lives next to the aux
+> battery box, plugged into a wall outlet. For the burn it needs to be plugged
+> into the inverter in the belly of the car.
 
 ## Software
 
+- **[k128/](k128/)** — controller bring-up: wifi, FPP install, config push,
+  bench test. **Start here for hardware: [k128/README.md](k128/README.md).**
+
+  ```bash
+  cd lights
+  python3 k128/fpp_setup.py --host glorb-k128.local --verify   # what's on the board
+  python3 k128/fpp_setup.py --host glorb-k128.local            # push the map into FPP
+  ```
+
 - **[glorbleds/](glorbleds/)** — pure-Python (stdlib only) LED control:
   E1.31 / sACN sender, a web control UI, a 3D mock visualizer, and the pattern
-  library (rainbow, fire, pacman, SVG sprites, etc.). **Start here:
-  [glorbleds/README.md](glorbleds/README.md).**
+  library (rainbow, fire, pacman, SVG sprites, etc.). **Start here for
+  software: [glorbleds/README.md](glorbleds/README.md).**
 
   ```bash
   cd lights
   python3 -m glorbleds serve      # http://127.0.0.1:8080  (UI + mock viz)
-  python3 -m glorbleds list       # print the group map
+  python3 -m glorbleds list       # print the receiver map
   ```
+
+- **[archive/](archive/)** — `angio_setup.py`, the retired WLED configurator.
 
 ## Install status
 
 ### Done
-- Zones **C, D, E** — tubes hung, powered, and controllable. Use these as the
-  reference for how zones A and B should look when finished.
+- Zones **C, D, E** — tubes hung and powered. Use these as the reference for
+  how zones A and B should look when finished.
 
 ### To do
 
-**Zones A and B — Angio install + tube hang**
+**Controller bring-up — K128D-B: done 2026-08-21**
 
-The Angios for zones A and B are currently dangling from magnets on the
-second-floor railings where they need to be installed. Each zone has one Angio
-box.
+The board is up at **192.168.8.124** (FPP 9.5.3, cape auto-detected as
+K128D-B v1.1), wired to the router, zone C configured, and the E1.31 path
+verified end to end. Remaining: make that IP a **DHCP reservation**, set the
+FPP HostName to `glorb-k128`, and fix the clock (NTP or the cape's RTC — it is
+currently reporting ~2000). See [k128/README.md](k128/README.md).
 
-- **Mount the Angios** on the second-floor railings (they're already positioned
-  on magnets — just secure them).
-- **Power:** wire each Angio into the **same busbar as the LED power** for that
-  zone.
-- **Data lines:** each Angio has two data outputs.
-  - The **long** data line runs toward the **front of the car**.
-  - The **short** data line connects to the **next segment of the chain**,
-    which sits right next to the Angio (since the busbar is in the middle of
-    the zone).
-- **Chain layout:** **24 tubes per zone**, **14 per chain**. **Every other
-  tube must be flipped** so the tubes chain end-to-end cleanly.
+**Re-patch the data lines — all zones**
+
+Every tube needs its own run from a receiver output instead of being chained
+to its neighbour. Per receiver (4 tubes): run the cat5, land each tube's DIN
+on its own output through the 330–470 Ω resistor, **DIN at the top of every
+tube**. No flipping, no serpentine — that is all gone.
+
+- The old chain jumpers between tubes come out. Power jumpers **stay**.
+- **Zone D's mirrored line is no longer a problem** and does not need
+  rehanging — D's tubes are just re-patched in the map.
 - All connections use **Wago connectors**, so wires can be shortened or
   lengthened easily — don't be afraid to redo runs.
 
-**Tube hang — power injection**
+**Zones A and B — receiver mounts + tube hang**
+
+- **Mount the receivers** for A and B on the second-floor railings (the old
+  Angio boxes came off the magnets there).
+- **Power:** each receiver needs its own **5–13 V** (12 V from a buck off the
+  24 V bus), **never 24 V**; the tubes take 24 V from the **same busbar as the
+  LED power** for that zone. One buck per RJ45 port, daisy-chained through the
+  receivers' second lug set.
+- **Chain layout:** **24 tubes per zone** over 7 receivers on 2 RJ45 ports.
+
+**Tube hang — power injection (unchanged)**
 
 Every other tube needs power injected at the top:
 
@@ -74,19 +108,25 @@ See **[tube-map.png](tube-map.png)** for the full wiring diagram.
 
 ## Tube map (source of truth)
 
-- **[tube-map.md](tube-map.md)** / **[tube-map.json](tube-map.json)** — which of
-  the 136 tubes lives on which Angio controller data line and E1.31 universe(s).
-- **[tube-map.pdf](tube-map.pdf)** / **[tube-map.png](tube-map.png)** — printable
-  wiring diagram. Generated by **[tube_map.py](tube_map.py)**.
-- **[labeling-progress.md](labeling-progress.md)** — hand-maintained checklist of
-  which groups are labeled + grouped.
+- **[tube-map.md](tube-map.md)** / **[tube-map.json](tube-map.json)** — which
+  of the 136 tubes is on which RJ45 port, receiver, output and channel range.
+- **[tube-map.pdf](tube-map.pdf)** / **[tube-map.png](tube-map.png)** —
+  printable wiring diagram. Generated by **[tube_map.py](tube_map.py)**.
+- **[labeling-progress.md](labeling-progress.md)** — hand-maintained checklist
+  of which groups are labeled + grouped.
+
+`tube_map.py` is the source of truth: change the knobs at the top, re-run it,
+and the JSON, markdown and diagram all regenerate together.
 
 ## Hardware notes
 
-- **[led-tubes.md](led-tubes.md)** — the 360° silicone LED tubes (SM16703, 24 V,
-  RGB, 16 px/m).
+- **[k128/README.md](k128/README.md)** — the K128D-B controller: specs, wifi,
+  FPP config, brightness ownership, bench test.
+- **[controllers.md](controllers.md)** — data wiring, receivers, shared
+  ground, and why the chained topology went away.
+- **[led-tubes.md](led-tubes.md)** — the 360° silicone LED tubes (SM16703,
+  24 V, RGB, 16 px/m).
 - **[leds.md](leds.md)** — LED panel power/current calculations.
-- **[controllers.md](controllers.md)** — Angio controller notes.
 - **[nano_sm16703_cylon/](nano_sm16703_cylon/)** /
   **[nano_sm16703_powertest/](nano_sm16703_powertest/)** — Arduino test sketches.
 

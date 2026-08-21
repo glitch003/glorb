@@ -1,12 +1,14 @@
 """Minimal sACN / E1.31 (ANSI E1.31-2016) packet sender — pure stdlib.
 
-Each Angio owns one pixel space packed 170 px/universe from its start
-universe (WLED "Multi" mode; see tube-map.json). Sends by multicast
-(default, no device IPs needed) or unicast to a specific Angio.
+The whole car is one pixel space on one K128D controller, packed
+170 px/universe (510 ch) from universe 1 — see tube-map.json. Sends by
+multicast (default, no device IP needed) or unicast to the controller.
+FPP's E1.31 bridge input maps those universes onto its 128 string outputs.
 """
 
 import socket
 import struct
+import time
 import uuid
 
 E131_PORT = 5568
@@ -32,14 +34,14 @@ def iface_for(host: str) -> str | None:
             s.close()
 
 
-def resolve_angio(angio: dict, timeout: float = 0.4) -> str | None:
-    """Best host string for reaching this Angio: prefer the mapped IP, fall
-    back to mDNS on `hostname` if the IP is unreachable (lease changed, board
-    moved networks, etc.). Returns None if nothing resolves."""
-    ip = angio.get("ip")
+def resolve_controller(controller: dict, timeout: float = 0.4) -> str | None:
+    """Best host string for reaching the controller: prefer the mapped IP,
+    fall back to mDNS on `hostname` if the IP is unreachable (lease changed,
+    board moved networks, etc.). Returns None if nothing resolves."""
+    ip = controller.get("ip")
     if ip and _reachable(ip, 80, timeout):
         return ip
-    host = angio.get("hostname")
+    host = controller.get("hostname")
     if host:
         try:
             return socket.gethostbyname(host)
@@ -111,16 +113,32 @@ def build_packet(universe: int, dmx: bytes, sequence: int,
 class Sender:
     """UDP sender for E1.31. Multicast by default; pass host for unicast."""
 
+    # A whole 32-universe frame is ~20 KB of packets emitted back-to-back,
+    # but the default UDP send buffer is ~9 KB on macOS, so a frame reliably
+    # overruns it mid-burst. Ask for room for several frames.
+    SNDBUF = 512 * 1024
+    # If the buffer still fills, briefly retry rather than abandoning the rest
+    # of the frame: a torn frame (some universes updated, some not) looks worse
+    # on the tubes than one arriving a few hundred microseconds late.
+    RETRY_BUDGET_S = 0.004
+    RETRY_SLEEP_S = 0.0002
+
     def __init__(self, host: str | None = None, iface: str | None = None,
                  source_name: str = "glorb", cid: bytes | None = None):
         self.host = host
         self.source_name = source_name
         self.cid = cid or uuid.uuid4().bytes
         self._seq: dict[int, int] = {}
+        self.dropped_packets = 0
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # Never let a congested UDP socket stall animation/control threads.
         # A skipped frame is preferable to replaying stale LED data.
         self.sock.setblocking(False)
+        try:
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF,
+                                 self.SNDBUF)
+        except OSError:
+            pass          # kernel cap is fine; the retry below covers it
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 8)
         if iface:
             self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF,
@@ -131,14 +149,25 @@ class Sender:
         self._seq[universe] = seq
         pkt = build_packet(universe, dmx, seq, self.cid, self.source_name)
         dest = self.host or multicast_addr(universe)
-        self.sock.sendto(pkt, (dest, E131_PORT))
+        deadline = time.monotonic() + self.RETRY_BUDGET_S
+        while True:
+            try:
+                self.sock.sendto(pkt, (dest, E131_PORT))
+                return
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    # Give up on this packet only, so the rest of the frame
+                    # still goes out. Callers can watch dropped_packets.
+                    self.dropped_packets += 1
+                    return
+                time.sleep(self.RETRY_SLEEP_S)
 
     def close(self) -> None:
         self.sock.close()
 
 
 def send_span(sender, start_universe: int, data: bytes) -> None:
-    """Send one Angio's whole pixel space, split at 170-px universes."""
+    """Send a whole pixel space, split at 170-px (510-channel) universes."""
     for i in range(0, len(data), UNIVERSE_BYTES):
         sender.send(start_universe + i // UNIVERSE_BYTES,
                     data[i:i + UNIVERSE_BYTES])

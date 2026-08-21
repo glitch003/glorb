@@ -3,29 +3,33 @@
 Pure-Python (stdlib only, no pip deps) LED control for Glorb — the giant
 glowing broom. Drives 136 vertical LED tubes over sACN / E1.31, with a
 browser-based control UI and a 3D mock visualizer so you can design patterns
-without the car plugged in. Runs the same on Mac and Windows.
+without the car plugged in. Runs the same on Mac, Windows, and the
+BeagleBone itself.
 
 ## The car
 
 - Rectangular box: **1800 mm wide (X) × 4000 mm long (Y)**.
 - **136 tubes** hang vertically down 3 sides: 56 left + 24 rear + 56 right.
   The front-left corner is left open for the driver.
-- Each tube is 2.5 m, **40 px/tube** → **5440 pixels** total.
-- Tubes are grouped **4 per group → 34 groups**; each Angio chains 3–4 groups
-  per data line (2 lines/board) and owns one E1.31 pixel space packed
-  **170 px/universe** from its start universe (WLED "Multi" mode).
+- Each tube is 2.5 m, **40 px/tube** → **5440 pixels / 16,320 channels** total.
+- **Every tube has its own data line.** Tubes are grouped **4 per receiver →
+  34 receivers** on 10 RJ45 ports of a single [Kulp K128D-B](../k128/README.md)
+  (BeagleBone + FPP). Nothing is chained, so nothing is reversed in software.
+- The whole car is **one flat pixel space**: universes **1–32 × 510 ch** into
+  FPP's E1.31 bridge, landing on FPP channel 1. Tube *n* owns channels
+  `n × 120 + 1 … n × 120 + 120`.
 - Chip **SM16703**, color order **RGB** (see [../led-tubes.md](../led-tubes.md)).
 
 Physical wiring, power, and the tube layout map live one level up in
 [../](../): `tube-map.json` / `tube-map.md` / `tube-map.pdf` are the source of
-truth for which tube is on which Angio controller line and universe.
+truth for which tube is on which port, receiver, output and channel range.
 
 ## Layout
 
 ```
 glorbleds/
   __main__.py      CLI: list / solid / tubes / colorcheck / chase / off / serve
-  controller.py    tube-map.json -> groups; install-time test patterns (Show)
+  controller.py    tube-map.json -> receivers; install-time test patterns (Show)
   e131.py          minimal sACN / E1.31 packet builder + UDP Sender
   benchmark.py     repeatable per-pattern + E1.31 bandwidth benchmark
   PERFORMANCE_AUDIT.md  measured architecture, wire, FPS, and visual audit
@@ -43,19 +47,21 @@ glorbleds/
 From the `lights/` directory:
 
 ```bash
-# install-time hardware tests (send straight to the Angios)
-python3 -m glorbleds list                      # print the group map
-python3 -m glorbleds colorcheck G15            # verify RGB color order
-python3 -m glorbleds tubes G15                 # each tube a distinct color
-python3 -m glorbleds chase G15                 # comet down the chain
+# install-time hardware tests (send straight to the K128D)
+# targets: R15 (receiver), A-E (zone), all
+python3 -m glorbleds list                      # print the receiver map
+python3 -m glorbleds colorcheck R15            # verify RGB color order
+python3 -m glorbleds tubes R15                 # each of its 4 tubes a distinct color
+python3 -m glorbleds chase R15                 # comet across its 4 tubes
 python3 -m glorbleds solid all --color 255,80,0
 python3 -m glorbleds off all
-python3 -m glorbleds solid C --color 0,0,255 --host 10.0.0.51    # unicast one Angio
+python3 -m glorbleds solid C --color 0,0,255 --host 192.168.8.51   # unicast
 
 # the web control UI + 3D mock visualizer
 python3 -m glorbleds serve                     # http://127.0.0.1:8080
 python3 -m glorbleds serve --host 0.0.0.0 --port 8080 --fps 30
-# Engine output is capped at 60 FPS; keep production at 30 pending an Angio bench test.
+# Engine output is capped at 60 FPS. 30 is the show rate; re-measure on the
+# BeagleBone before trusting it there (see PERFORMANCE_AUDIT.md).
 
 # performance regression checks (stdlib only)
 python3 -m glorbleds.benchmark --frames 120 --fps 30
@@ -63,24 +69,26 @@ python3 -m glorbleds.benchmark --frames 120 --fps 30 --udp-host 127.0.0.1 --udp-
 python3 -m unittest discover -s tests -v
 ```
 
-`--dry-run` builds and prints packets instead of transmitting. `--brightness`
-defaults to `0.05` (5%) as a safety margin; the Angio boards output realtime
-data at full range (force-max-brightness on) now that the tubes run off the
-main batteries, so what you send is what the tubes show. Multicast is the default (no device
-IPs needed); pass `--host` to unicast, `--iface` to pick the NIC on a
-multi-homed host.
+`--dry-run` builds and prints packets instead of transmitting. Multicast is
+the default (no device IP needed); pass `--host` to unicast, `--iface` to pick
+the NIC on a multi-homed host.
+
+**`--brightness` defaults to `0.05` (5%) and multiplies with FPP's own
+per-string brightness.** Set both to 5% and you get 0.25% — near black. FPP's
+is the hard power ceiling; this one is the show dimmer. Pick one owner before
+touching either: [../k128/README.md](../k128/README.md#brightness-who-owns-it).
 
 See [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) for measured frame/network
 budgets, buffering rationale, the per-pattern visual review, and the remaining
-Angio hardware acceptance checks.
+K128D hardware acceptance checks.
 
 ## How the pipeline fits together
 
 1. **`CarModel`** ([webui/model.py](webui/model.py)) flattens `tube-map.json`
-   into a per-pixel model in **canonical order**: groups in map order, each
-   group's tubes in order, each tube's pixels 0..39. Because that order is
-   contiguous per Angio, an Angio's pixel space is just a flat slice of the
-   frame buffer. For each pixel it precomputes attributes patterns read:
+   into a per-pixel model in **canonical order**: tubes in map order, each
+   tube's pixels 0..39. That is exactly the channel order FPP is configured
+   against, so hardware output is one flat span of the frame buffer. For each
+   pixel it precomputes attributes patterns read:
    - `side` — `'L'`/`'B'`/`'R'`
    - `along` — 0..1 down the tube (0 = top, 1 = bottom)
    - `perim` — 0..1 around the perimeter of the whole car
@@ -90,7 +98,7 @@ Angio hardware acceptance checks.
 3. **`Engine`** ([webui/engine.py](webui/engine.py)) runs the loop at `fps`:
    render → scale by brightness via a 256-entry LUT (`buf.translate(lut)`, one
    C call) → broadcast to browsers (SSE, base64) and, if hardware is enabled,
-   split into per-Angio slices packed 170 px/universe and send over E1.31.
+   split into 510-channel universes and send over E1.31 to FPP's bridge input.
 4. **`server.py`** serves the static UI, streams frames over Server-Sent
    Events (`/stream`), and takes control updates via `POST /control`.
 5. **`app.js`** in the browser draws the frame two ways: a **3D car** (drag to

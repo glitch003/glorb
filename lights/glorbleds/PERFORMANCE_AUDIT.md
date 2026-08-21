@@ -1,8 +1,17 @@
 # glorbleds performance and visual audit
 
 Audit date: 2026-08-01. Target map: 136 tubes × 40 RGB pixels = 5,440 pixels.
-All measurements below were made with CPython 3.11 on the audit host. They are
+All measurements below were made with CPython 3.11 on **a laptop**. They are
 repeatable with:
+
+> **Measured on the real BeagleBone 2026-08-21 — see
+> [the section below](#beaglebone-measurements-2026-08-21). Verdict: the engine
+> cannot run on the K128D.** It is 30–90× slower than this laptop, not the
+> 5–10× estimated. The laptop numbers in this document remain valid for a
+> laptop or Pi host.
+>
+> The wire/universe figures were also measured against 34 universes; the flat
+> single-controller map now sends 32.
 
 ```bash
 cd lights
@@ -24,16 +33,19 @@ Rendering plus measured output work therefore remains far below the
 30 FPS budget on the audit host.
 
 Do **not** raise the production default to 60 FPS without a controller/LED bench
-test. The longest configured Angio output is 640 SM16703 pixels. At the usual
-~30 microseconds/pixel wire rate, one output takes about 19.2 ms to serialize,
-which puts its theoretical ceiling near 52 FPS before reset/latch and controller
-overhead. Thirty FPS is a conservative, appropriate show rate and leaves margin
-for the controller.
+test. **This ceiling changed for the better:** with one data line per tube the
+longest output is now a single 40-px tube, which serializes in about 1.2 ms at
+the usual ~30 microseconds/pixel wire rate, instead of the 640-px / 19.2 ms
+chains the Angio build ran. The per-port budget is Kulp's 800 px at 40 fps,
+shared across a port's receiver chain, and our busiest port carries 640 px.
+The output wire is no longer the limiting factor — **host CPU is**, especially
+on the BeagleBone.
 
 ## Frame and wire budget
 
 - Canonical frame: 16,320 RGB bytes.
-- Five Angio spans: 7 + 7 + 6 + 7 + 7 = **34 E1.31 universes/frame**.
+- One flat controller span: 5,440 px / 170 px = **32 E1.31 universes/frame**
+  (was 34 across five Angio spans).
 - E1.31 data packet: 638-byte UDP payload (full 512-channel DMX payload).
 - UDP payload/frame: **21,692 bytes**.
 - At 30 FPS: **5.206 Mbit/s UDP payload**, about 5.745 Mbit/s including rough
@@ -45,7 +57,7 @@ for the controller.
 - Wired 100 Mbit/s Ethernet has abundant bandwidth. Multicast avoids having to
   duplicate all data per controller.
 
-The sender emits each frame's universes in ascending, contiguous Angio order.
+The sender emits each frame's universes in ascending, contiguous order.
 Every universe has an independent monotonically wrapping E1.31 sequence number.
 Packet lengths, vectors, property counts, CID width, universe range, splitting,
 and sequence behavior now have regression tests.
@@ -55,12 +67,13 @@ and sequence behavior now have regression tests.
 The sender does not emit E1.31 synchronization packets. The measured 34-packet
 burst is under 0.5 ms, much shorter than the ~19.2 ms longest LED-output shift,
 so ordinary buffered controllers should receive the next frame before output.
-Whether Chroma-Tech Angio-8 firmware latches a multi-universe span atomically is
-still a hardware fact, not something a host-only test can prove. Test a hard
-black/white vertical edge moving across universe boundaries. If a camera shows
-tearing, confirm Angio synchronization support before adding sync-universe
-packets; unsupported synchronization can be worse than the sub-millisecond
-unsynchronized burst.
+Whether FPP latches a multi-universe span atomically before the PRUs shift it
+out is still a hardware fact, not something a host-only test can prove. Test a
+hard black/white vertical edge moving across universe boundaries. If a camera
+shows tearing, confirm FPP's synchronization behaviour before adding
+sync-universe packets; unsupported synchronization can be worse than the
+sub-millisecond unsynchronized burst. Sending to localhost on the BeagleBone
+makes the burst faster still.
 
 ## Buffering and concurrency
 
@@ -154,12 +167,14 @@ Host-only tests cannot certify the final optical result. Before show deployment:
 
 1. Use wired Ethernet and capture traffic while running `mapping`, `stripes`,
    and a one-column black/white edge at 30 FPS.
-2. Film at high shutter speed across each universe and Angio boundary; look for
+2. Film at high shutter speed across each universe boundary; look for
    horizontal/vertical frame tears rather than relying only on the eye.
-3. Confirm each Angio accepts all configured adjacent universes and latches a
-   complete span before shifting its two outputs.
-4. Measure actual output refresh for the 640-pixel lines; do not assume the
+3. Confirm FPP accepts all 32 configured universes and latches a complete span
+   before shifting its outputs.
+4. Measure actual output refresh at the port level; do not assume the
    controller's network receive FPS equals LED shift FPS.
+4b. **Re-run the whole benchmark on the BeagleBone**, not the laptop, and set
+   the show frame rate from those numbers.
 5. Run 30–60 minutes on `disco`, `lava`, `plasma`, and `fire`; confirm the UI
    stays at ~30 FPS and `dropped_frames` remains stable.
 6. Verify multicast routing/NIC selection on the production host and repeat with
@@ -167,3 +182,86 @@ Host-only tests cannot certify the final optical result. Before show deployment:
 7. Start at the 5% safety brightness. Raise current only after power, thermal,
    and voltage-drop checks; preview attractiveness is not a reason to skip the
    electrical limits.
+
+## BeagleBone measurements (2026-08-21)
+
+Measured on the actual K128D-B host, not estimated: **BeagleBone Black, single
+ARMv7 core (AM3358 Cortex-A8), 481 MB RAM, Python 3.11.2, FPP 9.5.3**, via
+`python3 -m glorbleds.benchmark` run on the board itself.
+
+**Conclusion: do not run the pattern engine on the BeagleBone.** Run it on a
+laptop or a Raspberry Pi and treat the K128D as a pure E1.31 output device, or
+pre-render to FSEQ and let FPP play it.
+
+### Why
+
+- **The engine is 30–90x slower here than on the laptop.** `disco` 7.69 ms ->
+  **272 ms**. `lava` 5.61 ms -> **178 ms**. `voronoi` -> **667 ms**.
+- **E1.31 output alone costs 7.95 ms/frame** (p95 9.0, max 10.3) sending 32
+  universes to localhost — **24% of a 30 fps budget before rendering a single
+  pixel.**
+- The run was fully CPU-bound on one core (`user` 2m23s of `real` 2m25s), and
+  `fppd` already takes ~5% idle and needs headroom to feed the PRUs. The web
+  UI's SSE broadcast (base64 per frame per client) is *not* in these numbers
+  and would come out of the same core.
+
+### What would actually fit
+
+Render room = frame budget minus 7.95 ms of output:
+
+| Target | Frame budget | Render room | Patterns that fit |
+|---|---:|---:|---:|
+| 30 fps | 33.3 ms | 25.4 ms | **13 / 50** |
+| 20 fps | 50.0 ms | 42.0 ms | 16 / 50 |
+| 15 fps | 66.7 ms | 58.7 ms | 25 / 50 |
+| 10 fps | 100.0 ms | 92.0 ms | 32 / 50 |
+| 5 fps | 200.0 ms | 192.0 ms | 42 / 50 |
+
+Sixteen patterns cannot clear 10 fps even given the *entire* frame, including
+most of the best-looking ones — their hard ceilings on this CPU:
+
+| pattern | ms | max fps |
+|---|---:|---:|
+| voronoi | 666.7 | 1.50 |
+| ribbons | 659.0 | 1.52 |
+| supernova | 483.9 | 2.07 |
+| collider | 360.7 | 2.77 |
+| scrub | 343.8 | 2.91 |
+| reaction | 284.8 | 3.51 |
+| disco | 272.4 | 3.67 |
+| lasers | 199.6 | 5.01 |
+| lava | 178.3 | 5.61 |
+| poop | 174.1 | 5.74 |
+| plasma | 168.9 | 5.92 |
+| cubes | 154.7 | 6.46 |
+| rainbow | 118.9 | 8.41 |
+| life | 107.4 | 9.31 |
+| broomstroke | 103.8 | 9.64 |
+| boobs | 101.0 | 9.90 |
+
+Cheap enough to run anywhere (<10 ms on the board): `meteors`, `breathe`,
+`rainbreathe`, `fireworks`, `matrix`, `solid`, `emoji`, `rain`, `sperm`,
+`storm`, `dvd`, `off`.
+
+### Options
+
+1. **glorbleds on a Pi 4/5 on the car**, E1.31 over a short cat5 to the K128D.
+   Keeps every pattern and the live web UI, no laptop at showtime. Closest to
+   the original intent.
+2. **glorbleds on the laptop** — works today, zero further work, but the
+   laptop has to stay awake and on the network.
+3. **Pre-render to FSEQ**, let FPP play it from the SD card at near-zero CPU.
+   Full pattern fidelity and no extra host at all, but control becomes
+   "pick a sequence" rather than live sliders.
+4. **A curated subset at 15 fps on the BeagleBone** — possible, but it gives up
+   over half the library and leaves no CPU margin. Not recommended.
+
+Reproduce with:
+
+```bash
+ssh fpp@<board> 'cd /home/fpp/media/glorb/lights && \
+  python3 -m glorbleds.benchmark --frames 20 --fps 30'
+ssh fpp@<board> 'cd /home/fpp/media/glorb/lights && \
+  python3 -m glorbleds.benchmark --frames 3 --fps 30 \
+    --udp-host 127.0.0.1 --udp-frames 150'
+```

@@ -6,7 +6,7 @@ import queue
 import threading
 import time
 
-from ..e131 import Sender, iface_for, resolve_angio, send_span
+from ..e131 import Sender, iface_for, resolve_controller, send_span
 from .model import CarModel
 from .patterns import REGISTRY, NAMES
 
@@ -14,9 +14,27 @@ _ORDER = {"RGB": (0, 1, 2), "RBG": (0, 2, 1), "GRB": (1, 0, 2),
           "GBR": (1, 2, 0), "BRG": (2, 0, 1), "BGR": (2, 1, 0)}
 MAX_FPS = 60.0
 
+# Ordered-dither mask size, in pixels. The dither is purely SPATIAL: pixel p
+# always uses phase p % DITHER_CELLS, and that never changes between frames.
+#
+# An earlier version rotated the phase with the frame number (temporal
+# dithering) and it was clearly visible: 30 fps / 4 phases = 7.5 Hz per pixel,
+# which is near the WORST frequency for human flicker perception, not above
+# fusion. At low levels the modulation depth is 100% (LED off vs level 1), so
+# near-black areas strobed. Never reintroduce a per-frame phase term here
+# unless the frame rate is high enough that the cycle clears ~60 Hz.
+DITHER_CELLS = 4
+# FPP's per-string brightness is a hard ceiling and it re-quantises whatever we
+# send: at B%, its LUT is round(x * B * 2.55 / 255), i.e. steps of 100/B in our
+# 0..255 space. Any precision we add finer than that step is thrown away, so
+# the dither amplitude has to MATCH the step. Default 10 = FPP at 10%.
+DEFAULT_FPP_BRIGHTNESS = 10.0
+
 
 class Engine:
-    def __init__(self, gmap: dict, fps: float = 30.0):
+    def __init__(self, gmap: dict, fps: float = 30.0,
+                 fpp_brightness: float = DEFAULT_FPP_BRIGHTNESS,
+                 dither: bool = True):
         if not math.isfinite(fps) or not 0 < fps <= MAX_FPS:
             raise ValueError(f"fps must be finite and in the range (0, {MAX_FPS:g}]")
         self.model = CarModel(gmap)
@@ -27,15 +45,14 @@ class Engine:
         self.lock = threading.Lock()
         self._lifecycle_lock = threading.Lock()
         self.pattern = "plasma"
-        # Boards output full range (force-max-brightness on) now that we're
-        # on the real batteries — start conservative, raise from the UI.
+        # FPP's per-string brightness is the hard hardware ceiling; this is
+        # the show-time dimmer on top of it. Start conservative, raise in UI.
         self.brightness = 0.05
         # Every pattern remembers its own knob settings.
         self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
-        # Pin multicast to the NIC that routes to the Angios (multi-homed
+        # Pin multicast to the NIC that routes to the K128D (multi-homed
         # hosts otherwise send it out the default route).
-        probe = next(filter(None, (resolve_angio(a)
-                                   for a in gmap.get("angios", []))), None)
+        probe = resolve_controller(gmap.get("controller", {}))
         self.hw = {"enabled": True, "host": None,
                    "iface": iface_for(probe) if probe else None,
                    "color_order": "RGB", "error": None}
@@ -44,7 +61,10 @@ class Engine:
         self._sender_order = "RGB"
         self._sender_generation = 0
         self._refresh_sender()
-        self._lut = self._make_lut(self.brightness)
+        # Downstream (FPP) brightness, so the dither can match its step size.
+        self.fpp_brightness = max(0.1, min(100.0, float(fpp_brightness)))
+        self.dither = bool(dither)
+        self._rebuild_luts()
 
         self.subs: set[queue.Queue] = set()
         self._running = False
@@ -53,13 +73,72 @@ class Engine:
         self._meas_fps = 0.0
         self._frames = 0
         self._dropped_frames = 0
+        self._dropped_packets = 0
         self._last_fps_t = self._t0
 
-    # --- lookup table for brightness scaling ---
+    # --- lookup tables for brightness scaling ---
     @staticmethod
     def _make_lut(b):
+        """Smooth (undithered) brightness. Used for the browser preview, which
+        should show what the eye integrates, not the dither itself."""
         b = max(0.0, min(1.0, b))
         return bytes(int(i * b) & 0xFF for i in range(256))
+
+    @staticmethod
+    def _make_hw_luts(b, fpp_brightness, frames=DITHER_CELLS):
+        """One LUT per dither phase, for the hardware path.
+
+        FPP quantises our byte to steps of `q = 100 / fpp_brightness`. So pick
+        the *output level* we want, dither the rounding of that level, then
+        send level*q back -- FPP's own rounding maps it to exactly that level.
+
+        LUT_k[i] = clamp(floor(i*b/q + (k+0.5)/frames) * q)
+
+        Averaged over the phases this lands on i*b/q, so a region wanting 6.5
+        levels comes out as neighbouring pixels at 6,6,7,7 and reads as 6.5 --
+        spatially, with no change over time.
+        """
+        b = max(0.0, min(1.0, b))
+        q = max(1.0, 100.0 / max(0.1, fpp_brightness))
+        luts = []
+        for k in range(frames):
+            bias = (k + 0.5) / frames
+            luts.append(bytes(
+                min(255, int((int(i * b / q + bias)) * q)) & 0xFF
+                for i in range(256)))
+        return tuple(luts)
+
+    def _rebuild_luts(self) -> None:
+        self._lut = self._make_lut(self.brightness)
+        self._hw_luts = self._make_hw_luts(self.brightness,
+                                           self.fpp_brightness)
+
+    @staticmethod
+    def _apply_dither(buf, luts):
+        """Spatial ordered dither: pixel p uses phase p % N, fixed in time.
+
+        The phase is chosen per PIXEL, not per byte, so all three channels of a
+        pixel round the same way -- a byte-indexed mask makes R, G and B of one
+        pixel land on different phases, which shows up as per-pixel hue
+        speckle (most obvious on blue).
+
+        Because the mask never moves, a static frame is bit-identical every
+        frame: no temporal artefacts at all. Neighbouring pixels differ by at
+        most one output level and the eye averages them at any real viewing
+        distance.
+
+        Each of the 3*N slices is one C-level translate, so this stays roughly
+        as cheap as the single translate it replaces.
+        """
+        n = len(luts)
+        out = bytearray(len(buf))
+        stride = 3 * n                     # bytes spanned by N pixels
+        for k in range(n):
+            lut = luts[k]
+            base = k * 3
+            for c in range(3):             # R, G, B share this pixel's phase
+                out[base + c::stride] = buf[base + c::stride].translate(lut)
+        return bytes(out)
 
     # --- subscribers (SSE clients) ---
     def subscribe(self) -> queue.Queue:
@@ -98,7 +177,13 @@ class Engine:
                 self.pattern = upd["pattern"]
             if "brightness" in upd:
                 self.brightness = max(0.0, min(1.0, float(upd["brightness"])))
-                self._lut = self._make_lut(self.brightness)
+                self._rebuild_luts()
+            if "dither" in upd:
+                self.dither = bool(upd["dither"])
+            if "fpp_brightness" in upd:
+                self.fpp_brightness = max(0.1, min(
+                    100.0, float(upd["fpp_brightness"])))
+                self._rebuild_luts()
             p = self.pp[self.pattern]
             for k in ("speed", "density"):
                 if k in upd:
@@ -152,11 +237,17 @@ class Engine:
             "controls": list(REGISTRY[pattern].controls),
             "params": p,
             "brightness": bri,
+            "dither": self.dither,
+            "fpp_brightness": self.fpp_brightness,
             "emoji": REGISTRY["emoji"].label,
             "hardware": hw,
             "fps": round(self._meas_fps, 1),
             "target_fps": self.fps,
             "dropped_frames": self._dropped_frames,
+            # UDP packets the kernel refused even after the retry budget --
+            # a torn frame on the tubes. Should stay 0; if it climbs, the
+            # send path is the flicker suspect.
+            "dropped_packets": self._dropped_packets,
         }
 
     # --- main loop ---
@@ -165,12 +256,25 @@ class Engine:
             pattern = self.pattern
             p = dict(self.pp[pattern])
             lut = self._lut
+            hw_luts = self._hw_luts
+            dither = self.dither
         t = time.monotonic() - self._t0
         REGISTRY[pattern].render(self.model, p, t, self._buf)
-        frame = self._buf.translate(lut)     # brightness in one C call
+
+        # The preview gets the smooth frame: dithering exists so the eye
+        # integrates a value the hardware cannot hold, and the browser should
+        # show that integrated value, not the alternation.
+        frame = self._buf.translate(lut)
         self.frame = frame
         self._broadcast(frame)
-        self._send_hw(frame)
+
+        # The tubes get the dithered frame, pre-multiplied so FPP's own
+        # quantisation lands on the level we chose this phase.
+        if dither:
+            hw = self._apply_dither(self._buf, hw_luts)
+        else:
+            hw = frame
+        self._send_hw(hw)
 
     def _send_hw(self, frame) -> None:
         error = None
@@ -184,11 +288,15 @@ class Engine:
             generation = self._sender_generation
             perm = _ORDER.get(self._sender_order, (0, 1, 2))
             try:
-                for start_universe, start, length in self.model.angio_slices:
+                for start_universe, start, length in self.model.output_spans:
                     chunk = frame[start:start + length]
                     if perm != (0, 1, 2):
                         chunk = self._reorder(chunk, perm)
                     send_span(sender, start_universe, chunk)
+                # getattr: a stand-in sender need not carry the counter.
+                # Cached as a plain int so state() never has to take the
+                # sender lock and stall behind an in-flight frame.
+                self._dropped_packets = getattr(sender, "dropped_packets", 0)
             except OSError as e:
                 error = str(e)
         if error is not None:

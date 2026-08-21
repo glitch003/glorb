@@ -1,3 +1,4 @@
+import json
 import struct
 import unittest
 from unittest.mock import MagicMock, patch
@@ -115,3 +116,44 @@ class SenderSequenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FppInputConfigTests(unittest.TestCase):
+    """fpp_setup writes the E1.31 bridge input FPP actually reads."""
+
+    @classmethod
+    def setUpClass(cls):
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "k128"))
+        import fpp_setup
+        cls.fpp_setup = fpp_setup
+        cls.gmap = json.loads(
+            (Path(__file__).resolve().parents[1] / "tube-map.json").read_text())
+
+    def _entry(self):
+        cfg = self.fpp_setup.build_input_universes(self.gmap, {}, "glorb")
+        block = cfg["channelInputs"][0]
+        self.assertEqual(block["type"], "universes")
+        return block["universes"][0]
+
+    def test_start_universe_goes_in_id_not_just_universe(self):
+        """fppd reads u["id"] (src/e131bridge.cpp). Writing only "universe"
+        leaves id defaulting to 0, so FPP allocates universes 0..N-1 and every
+        channel lands 510 early. Verified against real hardware 2026-08-21."""
+        e = self._entry()
+        start = self.gmap["controller"]["start_universe"]
+        self.assertEqual(e["id"], start)
+        self.assertEqual(e["universe"], start, "mirror id for the web UI")
+        self.assertEqual(e["id"], 1)
+
+    def test_covers_every_universe_the_sender_emits(self):
+        e = self._entry()
+        c = self.gmap["controller"]
+        self.assertEqual(e["universeCount"], c["universe_count"])
+        self.assertEqual(e["channelCount"], c["universe_size"])
+        self.assertEqual(e["startChannel"], 1)
+        self.assertEqual(e["active"], 1)
+        # last universe must reach the last channel of the map
+        last = e["startChannel"] + e["universeCount"] * e["channelCount"] - 1
+        self.assertGreaterEqual(last, self.gmap["meta"]["total_channels"])

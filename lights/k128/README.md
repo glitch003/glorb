@@ -25,7 +25,7 @@ It replaces the five WLED Angio-8 boards and the chained-tube topology.
 
 We use **10 of the 32 ports** — two per zone A–E, 3–4 receivers chained on
 each. That is 34 receivers × 4 outputs = 136 tubes, and the busiest port
-carries 640 px, well inside the 800 px budget.
+carries 656 px, well inside the 800 px budget.
 
 ## Step 1 — Wi-Fi needs a USB adapter
 
@@ -113,10 +113,10 @@ python3 k128/fpp_setup.py --host glorb-k128.local              # write + restart
 
 [fpp_setup.py](fpp_setup.py) reads [../tube-map.json](../tube-map.json) and writes:
 
-- **`ci-universes.json`** — E1.31 bridge input, universes **1–32 × 510 ch**
+- **`ci-universes.json`** — E1.31 bridge input, universes **1–33 × 510 ch**
   landing on FPP channel 1, multicast, which is exactly what glorbleds sends.
-- **`co-bbbStrings.json`** — 136 pixel strings: 40 px, **Forward**, **RGB**,
-  start channel `n × 120 + 1`, on the port/receiver/output from the map, with
+- **`co-bbbStrings.json`** — 136 pixel strings: 41 px, **Forward**, **BRG**,
+  start channel `n × 123 + 1`, on the port/receiver/output from the map, with
   `differentialType` set per port for the smart-receiver chain length.
 
 It is read-modify-write: it preserves whatever the cape reports for `type`,
@@ -140,7 +140,7 @@ proves the whole path independently of wiring:
 ```bash
 curl -s -X DELETE http://<ip>/api/channel/input/stats     # zero the counters
 python3 -m glorbleds --brightness 1.0 solid C --color 0,0,255
-curl -s http://<ip>/api/channel/input/stats               # expect 32 universes, 0 errors
+curl -s http://<ip>/api/channel/input/stats               # expect 33 universes, 0 errors
 ```
 
 Each entry's `id` is the universe number and `startChannel` is where FPP maps
@@ -211,6 +211,46 @@ of 4 would try to pull ~290 W. At 5% a 4-tube receiver draws ~14 W. Do not
 raise brightness on the bench supply — raise it once the tubes are on the
 battery bus.
 
+## The receiver boards: Falcon/Kulp SRx4 v4.00 — READ THIS FIRST
+
+The bench (and likely the car) uses **SRx4 v4.00 "SmartReceiver × 4"**
+boards: one board = **four chained receiver positions in one** (output
+groups `ID`, `ID+1`, `ID+2`, `ID+3`, 16 outputs total), with protocol
+auto-detect (v1/v2). Three switches on the board decide everything, and two
+of them cost us a full day of "flicker" debugging on 2026-08-21:
+
+- **ID Selection rotary (0–F): position `0` is DUMB PASSTHROUGH MODE, and
+  it ships from the factory set to 0.** In dumb mode the board forwards the
+  *entire* multi-segment smart stream to every tube; the tubes re-latch at
+  each 0.15 ms segment gap and strobe through all four segments every frame.
+  The symptom is a dim, flickering ghost of whatever is on *other* tubes
+  (the bouncing-DVD ghost), fluorescent-style flicker on static content, and
+  corrupted pixels at tube bottoms. **The first board in a chain goes at
+  `A`** (positions A–D for its four groups), the second at `E`, etc. The
+  board reads the dial at power-up — power-cycle after changing it.
+- **Termination DIP block ("Middle RCVR" / "Only-Last RCVR"): all four
+  switches to "Only/Last"** when the board is the only or last receiver on
+  the cat5; "Middle" only for a board with another receiver chained after
+  it.
+- **Two `Data` RJ45s** — in from the controller, out to the next chained
+  board.
+
+FPP-side setting for one SRx4: `differentialType: 7` (v2 smart receivers ×
+4), which is what [fpp_setup.py](fpp_setup.py) writes. We tested the v1 (3)
+and FalconV5 (13) framings against this board during the debug: v1 renders
+garbage and **v5 sprays full-brightness config packets onto the tubes,
+bypassing the brightness cap — don't.**
+
+### Color order: the tubes are BRG, not RGB
+
+Measured on the real tubes: sent red showed blue, sent blue showed green —
+the strips are wired **BRG** despite SM16703 datasheets claiming RGB.
+`meta.color_order` in tube-map.json is now `BRG`; FPP reorders on output and
+everything upstream (patterns, preview, CLI) stays RGB. If colors are ever
+wrong again, `colorcheck` + fix `color_order` in
+[../tube_map.py](../tube_map.py), regenerate, re-run fpp_setup — don't
+touch the engine.
+
 ## Step 3 — Bench test: board + one receiver + tubes
 
 1. **Power the cape** from its own 5 V ≥4 A supply (screw terminals). The
@@ -242,7 +282,7 @@ battery bus.
 python3 -m glorbleds list                     # confirm R15 = B01-B04
 python3 -m glorbleds --brightness 1.0 colorcheck R15   # R/G/B/W - verify RGB order
 python3 -m glorbleds --brightness 1.0 tubes R15        # out1=red out2=green out3=blue out4=white
-python3 -m glorbleds --brightness 1.0 chase R15        # comet: confirms 40 px and top-to-bottom
+python3 -m glorbleds --brightness 1.0 chase R15        # comet: confirms 41 px and top-to-bottom
 python3 -m glorbleds off all
 ```
 
@@ -253,7 +293,7 @@ that assumption with `--verify` before you type it.
 
 | Test | Passes if | Fails → |
 |---|---|---|
-| `colorcheck` | printed color matches the tubes | wrong `colorOrder`; SM16703 is RGB |
+| `colorcheck` | printed color matches the tubes | wrong `colorOrder`; these tubes measured **BRG** (see above) |
 | `tubes` | out1 red, out2 green, out3 blue, out4 white | receiver outputs patched in the wrong order, or `port_number()` mapping is wrong |
 | `chase` | one comet crosses all 4 tubes top→bottom, no gaps | wrong `pixelCount`/`startChannel`, or a tube hung upside down |
 | — | no flicker or color corruption at length | SM16703 clocking on the differential receiver; check the 5 V data logic and the series resistor |
@@ -279,9 +319,45 @@ cd lights
 ./start.sh                    # binds 0.0.0.0:8080 so a phone can reach it
 ```
 
-Multicast is the default, so the laptop needs no controller IP; `--iface` pins
-the NIC on a multi-homed host (it auto-selects the one that routes to the
-controller). Clients just open `http://<laptop-ip>:8080`.
+glorbleds talks to the board over **DDP unicast** (UDP 4048, no FPP config
+needed) when the controller resolves, falling back to E1.31 multicast with a
+per-frame sync packet otherwise. Clients just open `http://<laptop-ip>:8080`.
+
+### Frame pacing — why the first bring-up flickered (fixed 2026-08-21)
+
+The move from WLED to FPP brought visible flicker/judder on moving patterns
+(the bouncing-DVD kind) that the Angio boards never showed. It was **not**
+packet loss (30.03 fps per universe, 0 errors over 30 s), not the smart
+receivers, and not quantisation — it was **fppd's bridge-mode output clock**:
+
+- WLED applies E1.31 packets to the LEDs as they arrive — the *sender* paces
+  the LEDs.
+- fppd only writes bridge data into channel memory; the LEDs are latched by a
+  free-running **50 ms timer** (`E131BridgingInterval`, i.e. **20 fps**),
+  fully unsynchronised with the sender (`src/channeloutputthread.cpp`).
+
+Against a 30 fps stream that latch beats at ~10 Hz (frames alternately
+dropped and doubled) and regularly lands mid-way through the 32-packet frame
+burst — a torn frame. That is the "flickery before the logo comes in"
+weirdness. An earlier attempt blamed quantisation and added dithering; the
+temporal variant strobed at 7.5 Hz and made it worse (it is now opt-in,
+spatial-only, and off by default).
+
+The fix is in the sender, and it makes the K128D a truly dumb receiver:
+**every frame now ends with a latch signal** that makes fppd output the
+completed frame immediately (`ForceChannelOutputNow()`), so glorbleds paces
+the LEDs exactly as WLED did:
+
+- **DDP (default):** the frame's last packet carries the **PUSH flag**
+  (`glorbleds/ddp.py`). Unicast, ~12 packets/frame instead of 32, and no
+  multicast/IGMP in the show path.
+- **E1.31 fallback:** a 49-byte **universe-sync packet** after the data
+  (`Sender.send_pixels` in `glorbleds/e131.py`) — same latch, still
+  multicast, no controller IP needed.
+
+Leave `E131BridgingInterval` at its 50 ms default: it is now only the idle
+fallback, and it must stay *slower* than the send rate so the free-run timer
+never fires (and never races a frame burst) while frames are flowing.
 
 The trade-off is that the laptop has to stay awake and on the glorb network for
 the show. If that ever becomes the weak link, the two escape hatches are a

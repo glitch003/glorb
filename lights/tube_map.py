@@ -20,7 +20,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- knobs -----------------------------------------------------------------
-PIX_PER_TUBE = 40            # 16 px/m * 2.5 m
+PIX_PER_TUBE = 41            # measured 2026-08-21: probe with only pixel 39
+                             # lit showed one more unlit pixel group below it
+                             # on every tube — the strips are 41 groups, not
+                             # the nominal 40 (16 px/m * 2.5 m)
 CHAN_PER_PIX = 3             # RGB
 TUBES_PER_RECEIVER = 4       # a differential receiver board has 4 pixel outputs
 MAX_RECEIVERS_PER_PORT = 6   # FPP v2 SmartReceiver chain limit (MAX_SMART_RECEIVERS)
@@ -227,8 +230,12 @@ def build():
             "total_pixels": total_px,
             "total_channels": total_ch,
             "chip": "SM16703",
-            "protocol": "sACN / E1.31",
-            "color_order": "RGB",
+            "protocol": "DDP (E1.31 fallback)",
+            # Measured on the real tubes 2026-08-21: sent red showed blue,
+            # sent blue showed green -> the strips are wired BRG, despite
+            # SM16703 datasheets claiming RGB. FPP reorders on output, so
+            # everything upstream (patterns, preview, CLI) stays RGB.
+            "color_order": "BRG",
             # every tube has its own data line now: no chaining, so no
             # serpentine flip and nothing to reverse in software
             "serpentine": False,

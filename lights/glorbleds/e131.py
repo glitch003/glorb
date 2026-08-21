@@ -4,6 +4,16 @@ The whole car is one pixel space on one K128D controller, packed
 170 px/universe (510 ch) from universe 1 — see tube-map.json. Sends by
 multicast (default, no device IP needed) or unicast to the controller.
 FPP's E1.31 bridge input maps those universes onto its 128 string outputs.
+
+Frame pacing: FPP's bridge free-runs its outputs on a 50 ms timer
+(E131BridgingInterval, 20 fps) and latches whatever is in channel memory when
+it fires — data packets alone do NOT trigger output. Against a 30 fps stream
+that beats at ~10 Hz and can latch mid-way through a 32-packet frame burst: a
+torn frame, visible as flicker on moving patterns. An E1.31 *sync* packet
+forces an immediate latch (fppd: Bridge_StoreData returns true ->
+ForceChannelOutputNow), so `send_pixels()` ends every frame with one and the
+sender paces the LEDs. DDP (ddp.py) is the preferred transport; this is the
+no-IP-needed multicast fallback with the same per-frame latch semantics.
 """
 
 import socket
@@ -18,6 +28,8 @@ _ACN_PID = b"ASC-E1.17\x00\x00\x00"
 _VECTOR_ROOT = 0x00000004
 _VECTOR_FRAMING = 0x00000002
 _VECTOR_DMP = 0x02
+_VECTOR_ROOT_EXTENDED = 0x00000008
+_VECTOR_EXTENDED_SYNC = 0x00000001
 
 
 def iface_for(host: str) -> str | None:
@@ -110,6 +122,34 @@ def build_packet(universe: int, dmx: bytes, sequence: int,
     return bytes(pkt)
 
 
+def build_sync_packet(sync_universe: int, sequence: int, cid: bytes) -> bytes:
+    """Build one E1.31-2016 universe synchronization packet (49 bytes).
+
+    fppd only checks byte 21 == 0x08 (root vector, extended) and byte 43 ==
+    0x01 (framing vector, synchronization); on a match it forces the channel
+    outputs to latch immediately (src/e131bridge.cpp -> ForceChannelOutputNow).
+    """
+    if not 1 <= sync_universe <= 63999:
+        raise ValueError("E1.31 universe must be in the range 1..63999")
+    if len(cid) != 16:
+        raise ValueError("E1.31 CID must be exactly 16 bytes")
+    total = 49
+    pkt = bytearray()
+    # --- Root layer ---
+    pkt += struct.pack("!HH", 0x0010, 0x0000)   # preamble / postamble
+    pkt += _ACN_PID
+    pkt += struct.pack("!H", 0x7000 | (total - 16))
+    pkt += struct.pack("!I", _VECTOR_ROOT_EXTENDED)
+    pkt += cid
+    # --- Framing layer ---
+    pkt += struct.pack("!H", 0x7000 | (total - 38))
+    pkt += struct.pack("!I", _VECTOR_EXTENDED_SYNC)
+    pkt += struct.pack("!B", sequence & 0xFF)
+    pkt += struct.pack("!H", sync_universe)     # synchronization address
+    pkt += struct.pack("!H", 0)                 # reserved
+    return bytes(pkt)
+
+
 class Sender:
     """UDP sender for E1.31. Multicast by default; pass host for unicast."""
 
@@ -129,6 +169,7 @@ class Sender:
         self.source_name = source_name
         self.cid = cid or uuid.uuid4().bytes
         self._seq: dict[int, int] = {}
+        self._sync_seq = 0
         self.dropped_packets = 0
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # Never let a congested UDP socket stall animation/control threads.
@@ -148,7 +189,20 @@ class Sender:
         seq = (self._seq.get(universe, 0) + 1) & 0xFF
         self._seq[universe] = seq
         pkt = build_packet(universe, dmx, seq, self.cid, self.source_name)
-        dest = self.host or multicast_addr(universe)
+        self._transmit(pkt, self.host or multicast_addr(universe))
+
+    def send_sync(self, sync_universe: int) -> None:
+        """End-of-frame latch: tells fppd to output NOW (see module doc)."""
+        self._sync_seq = (self._sync_seq + 1) & 0xFF
+        pkt = build_sync_packet(sync_universe, self._sync_seq, self.cid)
+        self._transmit(pkt, self.host or multicast_addr(sync_universe))
+
+    def send_pixels(self, start_universe: int, data: bytes) -> None:
+        """One whole frame: every universe's data, then the sync latch."""
+        send_span(self, start_universe, data)
+        self.send_sync(start_universe)
+
+    def _transmit(self, pkt: bytes, dest: str) -> None:
         deadline = time.monotonic() + self.RETRY_BUDGET_S
         while True:
             try:

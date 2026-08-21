@@ -1,10 +1,14 @@
-"""Maps tube-map.json onto E1.31 universes and renders test patterns."""
+"""Maps tube-map.json onto the controller and renders test patterns.
+
+Works with any sender exposing send_pixels(start_universe, data):
+ddp.DDPSender (preferred) or e131.Sender (multicast fallback).
+"""
 
 import json
 import time
 from pathlib import Path
 
-from .e131 import Sender, send_span
+from .e131 import Sender
 
 DEFAULT_MAP = Path(__file__).resolve().parent.parent / "tube-map.json"
 
@@ -68,7 +72,9 @@ class Show:
         frame = self._frame(pixels)
         off = recv["start_channel"] - 1
         self._buf[off:off + len(frame)] = frame
-        send_span(self.sender, self.start_universe, bytes(self._buf))
+        # send_pixels ends each frame with a latch (DDP push / E1.31 sync)
+        # so fppd outputs it immediately and whole (see ddp.py).
+        self.sender.send_pixels(self.start_universe, bytes(self._buf))
 
     # --- static patterns ---
     def solid(self, token, rgb=(255, 255, 255)) -> None:

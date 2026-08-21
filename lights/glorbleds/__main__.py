@@ -17,6 +17,7 @@ import argparse
 import sys
 
 from .controller import Show, load_map, normalize_receiver
+from .ddp import DDPSender
 from .e131 import Sender, iface_for, resolve_controller
 
 NAMED = {
@@ -38,10 +39,10 @@ def parse_color(s: str):
 
 class DrySender:
     """Stand-in sender: prints instead of transmitting (for --dry-run)."""
-    def send(self, universe, dmx):
-        nonzero = sum(1 for b in dmx if b)
-        print(f"  [dry] univ {universe}: {len(dmx)} ch, {nonzero} lit, "
-              f"head={tuple(dmx[:6])}")
+    def send_pixels(self, start_universe, data):
+        nonzero = sum(1 for b in data if b)
+        print(f"  [dry] frame from univ {start_universe}: {len(data)} ch, "
+              f"{nonzero} lit, head={tuple(data[:6])}")
 
     def close(self):
         pass
@@ -63,7 +64,12 @@ def main(argv=None):
                    help="0..1 global scale, applied on top of FPP's "
                         "per-string brightness (default 5%% for bench safety)")
     p.add_argument("--color-order", default="RGB")
-    p.add_argument("--host", help="unicast to this IP (default: multicast)")
+    p.add_argument("--host", help="controller IP (default: resolve from "
+                   "the map; multicast E1.31 if it doesn't resolve)")
+    p.add_argument("--protocol", choices=("auto", "ddp", "e131"),
+                   default="auto",
+                   help="auto = DDP unicast when the controller resolves, "
+                        "else E1.31 multicast (both latch per frame)")
     p.add_argument("--iface", help="local IP of the NIC facing the K128D "
                    "(for multicast on multi-homed hosts)")
     p.add_argument("--source", default="glorb", help="sACN source name")
@@ -76,13 +82,18 @@ def main(argv=None):
     srv.add_argument("--host", dest="serve_host", default="127.0.0.1",
                      help="bind address (0.0.0.0 to reach from another machine)")
     srv.add_argument("--port", type=int, default=8080)
-    srv.add_argument("--fps", type=float, default=30.0)
+    srv.add_argument("--fps", type=float, default=60.0,
+                     help="render/send rate (default 60; the K128 outputs "
+                          "each pushed frame immediately, and every pattern "
+                          "is time-based so speed does not change with fps)")
     srv.add_argument("--fpp-brightness", type=float, default=10.0,
-                     help="FPP's per-string brightness %%, so the temporal "
+                     help="FPP's per-string brightness %%, so the spatial "
                           "dither can match the step size FPP quantises to "
                           "(default 10; use 100 when FPP is passthrough)")
-    srv.add_argument("--no-dither", action="store_true",
-                     help="disable temporal dithering on the hardware path")
+    srv.add_argument("--dither", action="store_true",
+                     help="opt-in spatial dithering on the hardware path "
+                          "(smooths banding on dim gradients; off by "
+                          "default now that frame pacing is fixed)")
     sp = sub.add_parser("solid", help="fill target with one color")
     sp.add_argument("target"); sp.add_argument("--color", type=parse_color,
                                                default=(255, 255, 255))
@@ -100,7 +111,7 @@ def main(argv=None):
     if args.cmd == "serve":
         from .webui.server import run
         run(gmap, host=args.serve_host, port=args.port, fps=args.fps,
-            fpp_brightness=args.fpp_brightness, dither=not args.no_dither)
+            fpp_brightness=args.fpp_brightness, dither=args.dither)
         return 0
 
     if args.cmd == "list":
@@ -118,12 +129,19 @@ def main(argv=None):
                   f"ch {r['start_channel']}-{r['end_channel']}")
         return 0
 
-    iface = args.iface
-    if not iface and not args.host:
-        probe = resolve_controller(gmap.get("controller", {}))
-        iface = iface_for(probe) if probe else None
-    sender = DrySender() if args.dry_run else Sender(
-        host=args.host, iface=iface, source_name=args.source)
+    host = args.host or resolve_controller(gmap.get("controller", {}))
+    if args.dry_run:
+        sender = DrySender()
+    elif args.protocol == "ddp" or (args.protocol == "auto" and host):
+        if not host:
+            print("error: --protocol ddp needs a reachable controller "
+                  "(or --host)", file=sys.stderr)
+            return 1
+        sender = DDPSender(host)
+    else:
+        iface = args.iface or (iface_for(host) if host else None)
+        sender = Sender(host=args.host, iface=iface,
+                        source_name=args.source)
     show = Show(sender, gmap, brightness=args.brightness,
                 color_order=args.color_order)
 

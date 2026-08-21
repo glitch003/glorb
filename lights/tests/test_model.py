@@ -15,9 +15,10 @@ class CarModelTests(unittest.TestCase):
         cls.model = CarModel(gmap)
 
     def test_layout_matches_physical_inventory(self):
+        # 41 px/tube measured on the real strips 2026-08-21 (not nominal 40)
         self.assertEqual(len(self.model.tubes), 136)
-        self.assertEqual(self.model.total_pixels, 5440)
-        self.assertEqual(self.model.nbytes, 16320)
+        self.assertEqual(self.model.total_pixels, 136 * 41)
+        self.assertEqual(self.model.nbytes, 136 * 41 * 3)
         self.assertEqual(self.model.sides_count(), {"L": 56, "B": 24, "R": 56})
 
     def test_physical_conversion_returns_snapshot_without_mutating_input(self):
@@ -42,14 +43,15 @@ class CarModelTests(unittest.TestCase):
         self.assertEqual(self.model.output_spans,
                          [(1, 0, self.model.nbytes)])
 
-    def test_each_tube_owns_120_contiguous_channels(self):
+    def test_each_tube_owns_contiguous_channels(self):
         """The channel layout FPP is configured against: tube n starts at
-        channel n * 120 + 1."""
+        channel n * px_per_tube * 3 + 1."""
         tubes = self.model.map["tubes"]
+        ch = self.model.px_per_tube * 3
         self.assertEqual(len(tubes), 136)
         for n, t in enumerate(tubes):
-            self.assertEqual(t["start_channel"], n * 120 + 1)
-            self.assertEqual(t["end_channel"], n * 120 + 120)
+            self.assertEqual(t["start_channel"], n * ch + 1)
+            self.assertEqual(t["end_channel"], n * ch + ch)
         self.assertEqual(tubes[-1]["end_channel"], self.model.nbytes)
 
 

@@ -111,8 +111,9 @@ K128D hardware acceptance checks.
 3. **`Engine`** ([webui/engine.py](webui/engine.py)) runs the loop at `fps`:
    render → scale by brightness via a 256-entry LUT (`buf.translate(lut)`, one
    C call) → broadcast to browsers (SSE, base64) and, if hardware is enabled,
-   send to FPP's bridge input (DDP unicast, or E1.31 multicast fallback),
-   ending each frame with a latch so fppd outputs it immediately and whole.
+   sub-pixel-align R/B (see below), then send to FPP's bridge input (DDP
+   unicast, or E1.31 multicast fallback), ending each frame with a latch so
+   fppd outputs it immediately and whole.
 4. **`server.py`** serves the static UI, streams frames over Server-Sent
    Events (`/stream`), and takes control updates via `POST /control`.
 5. **`app.js`** in the browser draws the frame two ways: a **3D car** (drag to
@@ -125,6 +126,25 @@ Brightness is applied **server-side**, before the frame ever reaches the
 browser. At 30% brightness, a white pixel (255) becomes ~76 before it's sent.
 So both the hardware and the browser see already-dimmed values — the preview
 stays faithful to what the LEDs actually output.
+
+### Sub-pixel R/B alignment
+
+One addressable "pixel" on the tubes is ~62 mm holding 6 single-color LEDs in
+series pairs, laid out **along** the tube: R,R,G,G,B,B — pair centres ⅓ of a
+pixel apart, red highest. So a hard horizontal edge fringes on the car: a red
+line above the shape, blue/teal below (first spotted as the pink dvd-penis's
+red tip). It's physics, not a mapping bug.
+
+The engine compensates: it resamples the red channel ⅓ pixel up and blue ⅓
+pixel down along each tube (clamped at tube ends), which puts each color's
+emitted centroid back on green's. Costs ~0.04 ms/frame. `--subpixel` sets the
+offset (default `1/3`; `0` disables, negative flips the direction), and it's
+live-tunable: `curl -X POST localhost:8080/control -d '{"subpixel": 0.33}'`.
+
+The preview is honest about all of this: the browser draws every pixel as its
+real red/green/blue candy-stripe, and it receives the same compensated frame
+the hardware gets — so set `subpixel` to 0 and the preview fringes just like
+the car would.
 
 ### Display-only gamma (preview realism)
 

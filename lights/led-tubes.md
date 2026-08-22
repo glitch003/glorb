@@ -20,6 +20,17 @@ Flexible 360° black/white silicone-jacketed addressable LED tube.
 - `DATA` → strip DIN (through ~330–470 Ω resistor recommended)
 - 1000 µF cap across V+/GND at strip injection point
 
+## Sub-pixel color layout (observed on the car, 2026-08)
+
+The 6 LEDs in one addressable group are **single-color series pairs laid out
+along the tube**: R,R,G,G,B,B — red pair at the top of the ~62 mm pixel, blue
+at the bottom, pair centres ⅓ pixel apart. Mid-shape it blends in the
+diffuser, but a hard horizontal edge fringes: red line above, blue/teal
+below, most visible on mixed colors (pink, skin). Not a data/mapping
+problem — glorbleds' engine compensates with a ⅓-pixel R/B resample, and the
+web preview draws the candy-stripe structure (`--subpixel`, see
+[glorbleds/README.md](glorbleds/README.md)).
+
 ## Source
 
 https://www.alibaba.com/product-detail/Flexible-360-Degree-Black-White-Silicone_1601739508491.html

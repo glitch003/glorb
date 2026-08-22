@@ -122,6 +122,8 @@ and the JSON, markdown and diagram all regenerate together.
 
 - **[k128/README.md](k128/README.md)** — the K128D-B controller: specs, wifi,
   FPP config, brightness ownership, bench test.
+- **[power.md](power.md)** — measured current draw on the real car and
+  battery-runtime table for the 6 × 230 Ah Tesla modules.
 - **[controllers.md](controllers.md)** — data wiring, receivers, shared
   ground, and why the chained topology went away.
 - **[led-tubes.md](led-tubes.md)** — the 360° silicone LED tubes (SM16703,

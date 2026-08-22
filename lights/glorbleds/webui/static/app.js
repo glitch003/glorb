@@ -140,8 +140,16 @@ function draw3d() {
       const dim = Math.max(0.82, Math.min(1, (16 - P[2]) / 6));
       const sz = Math.max(2, Math.min(10, P[3] * 0.062));
       ctx.globalAlpha = dim;
-      ctx.fillStyle = "rgb(" + r + "," + gg + "," + b + ")";
-      ctx.fillRect(P[0] - sz / 2, P[1] - sz / 2, sz, sz);
+      // A physical pixel is three single-color bands stacked down the tube
+      // (R,R,G,G,B,B LEDs). Draw the real candy-stripe so edge fringing
+      // previews like the car instead of hiding in a solid RGB square.
+      const t3 = sz / 3, x = P[0] - sz / 2, y = P[1] - sz / 2;
+      ctx.fillStyle = "rgb(" + r + ",0,0)";
+      ctx.fillRect(x, y, sz, t3);
+      ctx.fillStyle = "rgb(0," + gg + ",0)";
+      ctx.fillRect(x, y + t3, sz, t3);
+      ctx.fillStyle = "rgb(0,0," + b + ")";
+      ctx.fillRect(x, y + 2 * t3, sz, t3);
     }
   }
   ctx.globalAlpha = 1;
@@ -240,9 +248,18 @@ function draw2d() {
         const r0 = frame[bi], g0 = frame[bi + 1], b0 = frame[bi + 2];
         if (r0 + g0 + b0 < 10) continue;
         const r = GAMMA[r0], gg = GAMMA[g0], b = GAMMA[b0];
-        ctx.fillStyle = "rgb(" + r + "," + gg + "," + b + ")";
         const x = g.x0 + g.dx * j, y = g.y0 + g.dy * j;
-        ctx.fillRect(x - PX / 2, y - PX / 2, PX, PX);
+        // Real pixel structure: three single-color bands along the tube,
+        // red on the tube-top side (toward j-1), blue toward the tip.
+        const t3 = PX / 3;
+        const ux = Math.sign(g.dx), uy = Math.sign(g.dy);
+        const bw = ux ? t3 : PX, bh = uy ? t3 : PX;
+        ctx.fillStyle = "rgb(" + r + ",0,0)";
+        ctx.fillRect(x - ux * t3 - bw / 2, y - uy * t3 - bh / 2, bw, bh);
+        ctx.fillStyle = "rgb(0," + gg + ",0)";
+        ctx.fillRect(x - bw / 2, y - bh / 2, bw, bh);
+        ctx.fillStyle = "rgb(0,0," + b + ")";
+        ctx.fillRect(x + ux * t3 - bw / 2, y + uy * t3 - bh / 2, bw, bh);
       }
     }
   }

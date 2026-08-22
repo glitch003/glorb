@@ -91,6 +91,13 @@ def main(argv=None):
                           "dither can match the step size FPP quantises to "
                           "(default 30, the car's FPP ceiling; use 100 when "
                           "FPP is passthrough)")
+    srv.add_argument("--subpixel", type=float, default=1 / 3,
+                     help="sub-pixel R/B alignment along each tube, in "
+                          "pixels (default 1/3: a pixel's 6 LEDs are laid "
+                          "out R,R,G,G,B,B down the tube, so red sits 1/3 "
+                          "px above blue, which fringes hard horizontal "
+                          "edges red-on-top/blue-below; 0 disables, "
+                          "negative flips the direction)")
     srv.add_argument("--dither", action="store_true",
                      help="opt-in spatial dithering on the hardware path "
                           "(smooths banding on dim gradients; off by "
@@ -112,7 +119,8 @@ def main(argv=None):
     if args.cmd == "serve":
         from .webui.server import run
         run(gmap, host=args.serve_host, port=args.port, fps=args.fps,
-            fpp_brightness=args.fpp_brightness, dither=args.dither)
+            fpp_brightness=args.fpp_brightness, dither=args.dither,
+            subpixel=args.subpixel)
         return 0
 
     if args.cmd == "list":

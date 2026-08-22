@@ -96,10 +96,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def run(gmap=None, host="127.0.0.1", port=8080, fps=60.0,
-        fpp_brightness=30.0, dither=False):
+        fpp_brightness=30.0, dither=False, subpixel=1 / 3):
     gmap = gmap or load_map()
     engine = Engine(gmap, fps=fps, fpp_brightness=fpp_brightness,
-                    dither=dither)
+                    dither=dither, subpixel=subpixel)
     engine.start()
     httpd = ThreadingHTTPServer((host, port), Handler)
     httpd.daemon_threads = True

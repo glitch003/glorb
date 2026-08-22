@@ -514,3 +514,91 @@ class DitherTests(unittest.TestCase):
         lut = Engine._make_lut(1.0)
         self.assertEqual(lut[65], 65)
         self.assertEqual(lut[255], 255)
+
+
+class SubpixelTests(unittest.TestCase):
+    """Sub-pixel R/B alignment: a pixel's red LEDs sit ~1/4 px above its
+    blue LEDs, so hard horizontal edges fringe red-on-top / blue-below on
+    the tubes. The engine resamples R up and B down along each tube to
+    cancel it (hardware frame only)."""
+
+    def setUp(self):
+        self.engine = make_engine()
+        self.ppt = self.engine.model.px_per_tube
+
+    def tearDown(self):
+        self.engine.stop()
+
+    def _shift(self, frame, s=0.25):
+        luts = Engine._make_subpixel_luts(s)
+        return self.engine._subpixel_shift(bytes(frame), luts, s < 0)
+
+    def _set_px(self, buf, px, rgb):
+        buf[px * 3:px * 3 + 3] = bytes(rgb)
+
+    def test_solid_fill_passes_through_bit_identical(self):
+        n = self.engine.model.total_pixels
+        buf = bytearray(bytes((200, 30, 90)) * n)
+        self.assertEqual(self._shift(buf), bytes(buf))
+
+    def test_red_data_extends_down_and_blue_data_extends_up(self):
+        """Red LEDs sit ABOVE pixel centre, so red DATA must reach one byte
+        further down the tube (R_out[j] = 3/4 R[j] + 1/4 R[j-1]) for the
+        emitted red centroid to land back on the green one — and mirrored
+        for blue."""
+        buf = bytearray(self.engine.model.nbytes)
+        j = 10                                  # mid-tube pixel, tube 0
+        self._set_px(buf, j, (255, 255, 255))
+        out = self._shift(buf)
+        # own pixel keeps the 3/4 weight of every channel, green untouched
+        self.assertEqual(tuple(out[j * 3:j * 3 + 3]), (191, 255, 191))
+        up, dn = j - 1, j + 1
+        self.assertEqual(tuple(out[dn * 3:dn * 3 + 3]), (64, 0, 0))
+        self.assertEqual(tuple(out[up * 3:up * 3 + 3]), (0, 0, 64))
+
+    def test_negative_subpixel_flips_the_direction(self):
+        buf = bytearray(self.engine.model.nbytes)
+        j = 10
+        self._set_px(buf, j, (255, 255, 255))
+        out = self._shift(buf, s=-0.25)
+        up, dn = j - 1, j + 1
+        self.assertEqual(tuple(out[dn * 3:dn * 3 + 3]), (0, 0, 64))
+        self.assertEqual(tuple(out[up * 3:up * 3 + 3]), (64, 0, 0))
+
+    def test_no_leak_across_tube_boundaries(self):
+        buf = bytearray(self.engine.model.nbytes)
+        top = self.ppt                          # first pixel of tube 1
+        bot = self.ppt - 1                      # last pixel of tube 0
+        self._set_px(buf, top, (255, 0, 0))     # red at a tube top
+        out = self._shift(buf)
+        # tube 1's top pixel clamps: full value, nothing crosses to tube 0
+        self.assertEqual(out[top * 3], 255)
+        self.assertEqual(out[bot * 3], 0)
+        # and blue at a tube bottom clamps the other way
+        buf2 = bytearray(self.engine.model.nbytes)
+        self._set_px(buf2, bot, (0, 0, 255))
+        out2 = self._shift(buf2)
+        self.assertEqual(out2[bot * 3 + 2], 255)
+        self.assertEqual(out2[top * 3 + 2], 0)
+
+    def test_zero_disables(self):
+        self.assertIsNone(Engine._make_subpixel_luts(0.0))
+
+    def test_weights_never_overflow_a_byte(self):
+        # If main+side could exceed 255 the bigint add would carry into the
+        # neighbouring byte and corrupt the whole plane.
+        for s in (0.1, 0.25, 0.33, 0.5):
+            main, side = Engine._make_subpixel_luts(s)
+            self.assertLessEqual(max(main) + max(side), 255, f"s={s}")
+
+    def test_control_updates_and_state_reports(self):
+        self.engine.set_control({"subpixel": -0.4})
+        self.assertEqual(self.engine.state()["subpixel"], -0.4)
+        self.engine.set_control({"subpixel": 0.9})   # clamped
+        self.assertEqual(self.engine.state()["subpixel"], 0.5)
+        self.engine.set_control({"subpixel": 0})
+        self.assertIsNone(self.engine._sp_luts)
+
+    def test_default_is_one_third_pixel(self):
+        # R,R,G,G,B,B layout: pair centres sit 1/3 px apart.
+        self.assertAlmostEqual(self.engine.state()["subpixel"], 1 / 3)

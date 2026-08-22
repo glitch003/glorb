@@ -85,10 +85,11 @@ outputs whole frames at *our* pace instead of free-running at 20 fps — the
 fix for the post-WLED flicker; see
 [../k128/README.md](../k128/README.md#frame-pacing--why-the-first-bring-up-flickered-fixed-2026-08-21).
 
-**`--brightness` defaults to `0.05` (5%) and multiplies with FPP's own
-per-string brightness.** Set both to 5% and you get 0.25% — near black. FPP's
-is the hard power ceiling; this one is the show dimmer. Pick one owner before
-touching either: [../k128/README.md](../k128/README.md#brightness-who-owns-it).
+**`--brightness` defaults to `0.40` (40%) and multiplies with FPP's own
+per-string brightness** — 30% on the car, so the UI slider's 0–100% scales
+within that hard power ceiling (100% on the slider = 30% on the wire). FPP's
+is the ceiling; this one is the show dimmer:
+[../k128/README.md](../k128/README.md#brightness-who-owns-it).
 
 See [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) for measured frame/network
 budgets, buffering rationale, the per-pattern visual review, and the remaining

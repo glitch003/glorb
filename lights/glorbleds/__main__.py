@@ -60,9 +60,9 @@ def resolve_targets(show: Show, target: str):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="glorbleds")
     p.add_argument("--map", help="path to tube-map.json")
-    p.add_argument("--brightness", type=float, default=0.05,
+    p.add_argument("--brightness", type=float, default=0.40,
                    help="0..1 global scale, applied on top of FPP's "
-                        "per-string brightness (default 5%% for bench safety)")
+                        "per-string brightness ceiling (30%% on the car)")
     p.add_argument("--color-order", default="RGB")
     p.add_argument("--host", help="controller IP (default: resolve from "
                    "the map; multicast E1.31 if it doesn't resolve)")
@@ -86,10 +86,11 @@ def main(argv=None):
                      help="render/send rate (default 60; the K128 outputs "
                           "each pushed frame immediately, and every pattern "
                           "is time-based so speed does not change with fps)")
-    srv.add_argument("--fpp-brightness", type=float, default=10.0,
+    srv.add_argument("--fpp-brightness", type=float, default=30.0,
                      help="FPP's per-string brightness %%, so the spatial "
                           "dither can match the step size FPP quantises to "
-                          "(default 10; use 100 when FPP is passthrough)")
+                          "(default 30, the car's FPP ceiling; use 100 when "
+                          "FPP is passthrough)")
     srv.add_argument("--dither", action="store_true",
                      help="opt-in spatial dithering on the hardware path "
                           "(smooths banding on dim gradients; off by "

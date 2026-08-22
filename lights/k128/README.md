@@ -187,13 +187,16 @@ and you get 0.25% — near-black. Pick an owner:
 | Scope | hard ceiling, per string, in the controller | show dimmer, whole car |
 | Survives a rogue full-white frame? | **yes** | no |
 
-- **Bench / bring-up (now):** FPP at **5%** (the `fpp_setup.py` default) and
+- **Bench / bring-up:** FPP at **5%** (the `fpp_setup.py` default) and
   glorbleds at **100%**. The 5% is then a real power ceiling that no pattern,
   slider or stray sACN source can exceed — which is the point when you are on
   a 200 W supply.
-- **Show, on the real batteries:** FPP at **100%**
-  (`--brightness 100`) and glorbleds owns the dimmer. Full range on the wire,
-  one slider to ride.
+- **Show, on the batteries (as configured 2026-08-21):** FPP at **30%**
+  (`fpp_setup.py --brightness 30`) and glorbleds owns the dimmer, defaulting
+  to **40%**. The UI slider's 0–100% scales *within* the 30% ceiling — a
+  user at 100% is really 30% on the wire. Re-running `fpp_setup.py` without
+  `--brightness 30` silently resets the ceiling to the 5% bench default, so
+  always pass it on the car.
 
 The old WLED boards used the same single-owner rule (*force-max-brightness on,
 server owns brightness*); FPP's per-string brightness is the equivalent knob.

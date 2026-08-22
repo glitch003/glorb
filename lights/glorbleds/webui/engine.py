@@ -41,7 +41,7 @@ DITHER_CELLS = 4
 # send: at B%, its LUT is round(x * B * 2.55 / 255), i.e. steps of 100/B in our
 # 0..255 space. Any precision we add finer than that step is thrown away, so
 # the dither amplitude has to MATCH the step. Default 10 = FPP at 10%.
-DEFAULT_FPP_BRIGHTNESS = 10.0
+DEFAULT_FPP_BRIGHTNESS = 30.0
 
 
 class Engine:
@@ -58,9 +58,10 @@ class Engine:
         self.lock = threading.Lock()
         self._lifecycle_lock = threading.Lock()
         self.pattern = "plasma"
-        # FPP's per-string brightness is the hard hardware ceiling; this is
-        # the show-time dimmer on top of it. Start conservative, raise in UI.
-        self.brightness = 0.05
+        # FPP's per-string brightness is the hard hardware ceiling (30% on
+        # the car); this is the show-time dimmer on top of it — the UI's
+        # 0-100% scales within that ceiling.
+        self.brightness = 0.40
         # Every pattern remembers its own knob settings.
         self.pp = {name: pat.params() for name, pat in REGISTRY.items()}
         # Resolve the K128D once up front: DDP needs its IP, and multicast

@@ -42,12 +42,24 @@ DITHER_CELLS = 4
 # 0..255 space. Any precision we add finer than that step is thrown away, so
 # the dither amplitude has to MATCH the step. Default 10 = FPP at 10%.
 DEFAULT_FPP_BRIGHTNESS = 30.0
+# Sub-pixel color alignment. One addressable "pixel" on the tubes is ~62 mm
+# holding 6 single-color LEDs in series pairs laid out along the tube:
+# R,R,G,G,B,B — pair centres a third of a pixel apart, red highest. At a
+# hard horizontal edge the colors therefore separate: a red line above the
+# shape, blue/teal below (first seen as the "pink dvd penis has a red tip"
+# artifact). Compensate by sampling the red channel 1/3 pixel up and blue
+# 1/3 pixel down along each tube. The compensated frame goes to the
+# hardware AND the preview (the browser draws each pixel as its real
+# R/G/B candy-stripe, so what you see is what the car does). 0 disables;
+# negative flips the direction (if a future tube batch stacks B over R).
+DEFAULT_SUBPIXEL = 1 / 3
 
 
 class Engine:
     def __init__(self, gmap: dict, fps: float = 30.0,
                  fpp_brightness: float = DEFAULT_FPP_BRIGHTNESS,
-                 dither: bool = False):
+                 dither: bool = False,
+                 subpixel: float = DEFAULT_SUBPIXEL):
         if not math.isfinite(fps) or not 0 < fps <= MAX_FPS:
             raise ValueError(f"fps must be finite and in the range (0, {MAX_FPS:g}]")
         self.model = CarModel(gmap)
@@ -80,6 +92,13 @@ class Engine:
         # Downstream (FPP) brightness, so the dither can match its step size.
         self.fpp_brightness = max(0.1, min(100.0, float(fpp_brightness)))
         self.dither = bool(dither)
+        self.subpixel = max(-0.5, min(0.5, float(subpixel)))
+        # Pixel-plane indices of each tube's first/last pixel: the sub-pixel
+        # resample clamps there so a shape can't leak light across the gap
+        # between the bottom of one tube and the top of the next.
+        ppt = self.model.px_per_tube
+        self._tube_starts = tuple(range(0, self.model.total_pixels, ppt))
+        self._tube_ends = tuple(s + ppt - 1 for s in self._tube_starts)
         self._rebuild_luts()
 
         self.subs: set[queue.Queue] = set()
@@ -124,10 +143,72 @@ class Engine:
                 for i in range(256)))
         return tuple(luts)
 
+    @staticmethod
+    def _make_subpixel_luts(s):
+        """Weight LUTs for the sub-pixel resample, or None when disabled.
+
+        main[i] + side[i'] reconstructs (1-w)·own + w·neighbour. Defining
+        main as the exact remainder (i - side[i]) makes the pair sum to i on
+        uniform regions — solid fills pass through bit-identical — and caps
+        any mixed sum at 255, so the bigint adds in _subpixel_shift can
+        never carry between bytes.
+        """
+        w = min(0.5, abs(s))
+        if w < 1e-6:
+            return None
+        side = bytes(int(i * w + 0.5) for i in range(256))
+        main = bytes(i - side[i] for i in range(256))
+        return main, side
+
     def _rebuild_luts(self) -> None:
         self._lut = self._make_lut(self.brightness)
         self._hw_luts = self._make_hw_luts(self.brightness,
                                            self.fpp_brightness)
+        self._sp_luts = self._make_subpixel_luts(self.subpixel)
+
+    def _subpixel_shift(self, frame, luts, flip):
+        """Re-align red and blue with green along each tube.
+
+        Physically, a pixel's red LEDs sit ~w of a pixel ABOVE its centre and
+        the blue LEDs ~w below (see DEFAULT_SUBPIXEL). Give each emitter the
+        pattern's value at its true position:
+
+            R_out[j] = (1-w)·R[j] + w·R[j-1]      (sample where red shines)
+            B_out[j] = (1-w)·B[j] + w·B[j+1]      (sample where blue shines)
+
+        flip swaps the two neighbour directions. Tube-end pixels clamp to
+        their own value. Each channel plane is two C-level translates plus a
+        bigint add (the weight LUTs guarantee no byte can carry), so the
+        whole frame costs well under a millisecond.
+        """
+        main, side = luts
+        r = frame[0::3]
+        b = frame[2::3]
+
+        def neighbour(plane, above):
+            if above:                          # plane[j-1]
+                nb = bytearray(plane[:1])
+                nb += plane[:-1]
+                clamp = self._tube_starts
+            else:                              # plane[j+1]
+                nb = bytearray(plane[1:])
+                nb += plane[-1:]
+                clamp = self._tube_ends
+            for i in clamp:
+                nb[i] = plane[i]
+            return bytes(nb)
+
+        n = len(r)
+        ro = (int.from_bytes(bytes(r).translate(main), "big")
+              + int.from_bytes(neighbour(r, not flip).translate(side), "big")
+              ).to_bytes(n, "big")
+        bo = (int.from_bytes(bytes(b).translate(main), "big")
+              + int.from_bytes(neighbour(b, flip).translate(side), "big")
+              ).to_bytes(n, "big")
+        out = bytearray(frame)
+        out[0::3] = ro
+        out[2::3] = bo
+        return bytes(out)
 
     @staticmethod
     def _apply_dither(buf, luts):
@@ -200,6 +281,9 @@ class Engine:
                 self.fpp_brightness = max(0.1, min(
                     100.0, float(upd["fpp_brightness"])))
                 self._rebuild_luts()
+            if "subpixel" in upd:
+                self.subpixel = max(-0.5, min(0.5, float(upd["subpixel"])))
+                self._rebuild_luts()
             p = self.pp[self.pattern]
             for k in ("speed", "density"):
                 if k in upd:
@@ -270,6 +354,7 @@ class Engine:
             "brightness": bri,
             "dither": self.dither,
             "fpp_brightness": self.fpp_brightness,
+            "subpixel": self.subpixel,
             "emoji": REGISTRY["emoji"].label,
             "hardware": hw,
             "fps": round(self._meas_fps, 1),
@@ -289,20 +374,30 @@ class Engine:
             lut = self._lut
             hw_luts = self._hw_luts
             dither = self.dither
+            sp_luts = self._sp_luts
+            sp_flip = self.subpixel < 0
         t = time.monotonic() - self._t0
         REGISTRY[pattern].render(self.model, p, t, self._buf)
 
-        # The preview gets the smooth frame: dithering exists so the eye
-        # integrates a value the hardware cannot hold, and the browser should
-        # show that integrated value, not the alternation.
-        frame = self._buf.translate(lut)
+        # Re-align R/B with the tubes' physical LED layout first: both the
+        # hardware and the preview get the compensated data, so the browser
+        # (which draws each pixel as its real R/G/B candy-stripe) shows
+        # exactly what the tubes will do.
+        src = self._buf
+        if sp_luts:
+            src = self._subpixel_shift(src, sp_luts, sp_flip)
+
+        # The preview gets the smooth (undithered) frame: dithering exists so
+        # the eye integrates a value the hardware cannot hold, and the browser
+        # should show that integrated value, not the alternation.
+        frame = src.translate(lut)
         self.frame = frame
         self._broadcast(frame)
 
         # The tubes get the dithered frame, pre-multiplied so FPP's own
         # quantisation lands on the level we chose this phase.
         if dither:
-            hw = self._apply_dither(self._buf, hw_luts)
+            hw = self._apply_dither(src, hw_luts)
         else:
             hw = frame
         self._send_hw(hw)

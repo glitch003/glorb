@@ -264,7 +264,7 @@ def md():
              "and [led-wiring.md](led-wiring.md).")
     L.append("- **11 boards for the car:** 8 side boards × 14 tubes = 112 "
              "+ 3 back-style boards × 12 = 36 → **148 tubes** (zones A, B, D, E "
-             "are 2 side boards each; C is 2 back boards; **F is 1 back-left "
+             "are 2 side boards each; C is 2 back boards; **F is 1 front-right "
              "board**, added 2026-08).")
     L.append("")
     return "\n".join(L)

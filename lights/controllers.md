@@ -1,6 +1,6 @@
 # Driving the data lines — 148 LED tubes (open front)
 
-How to run data to **148 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md), [../broom/DESIGN.md](../broom/DESIGN.md)). Tubes wrap **3 sides** — left (56), rear (24), right (56), back-left (12) — with the **front-left short side open** for the driver's sightline.
+How to run data to **148 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md), [../broom/DESIGN.md](../broom/DESIGN.md)). Tubes wrap **3 sides** — left (56), rear (24), right (56), front-right (12) — with the **front-left short side open** for the driver's sightline.
 
 **Current design: one data line per tube.** A single [Kulp K128D-B](k128/README.md) drives all 148 tubes through differential receivers — no chaining, no serpentine, no per-tube flipping. See [k128/README.md](k128/README.md) for controller bring-up and [tube-map.md](tube-map.md) for the port/receiver/output map.
 
@@ -22,7 +22,7 @@ That is a *small* pixel count for a modern pixel controller. At WS2811-family ti
 | Controller | 1 × Kulp K128D-B (BeagleBone + FPP) |
 | RJ45 ports | **11 used of 32** — one per 2×4 hanger board |
 | Receivers | **11 × SRx4 v4.00 quad SmartReceiver** (16 outputs each) |
-| Tubes | **148**, one per receiver output — 14/board on the sides, 12/board on the back & back-left |
+| Tubes | **148**, one per receiver output — 14/board on the sides, 12/board on the back, plus 12 at the front-right (F) |
 | Busiest port | 574 px, against an 800 px @ 40 fps budget |
 
 Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver positions in one (output groups A–D of 4), so a whole 2×4's tubes hang off a single cat5 run with nothing chained after it. **Every board's ID dial is `A`, all 4 termination DIPs UP (Only/Last)** — see [tube-map.md](tube-map.md) for the board map and [k128/README.md](k128/README.md#the-receiver-boards-falconkulp-srx4-v400--read-this-first) for the dial/DIP traps.
@@ -34,9 +34,9 @@ Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver
 | C | Back | 24 | C1 (B01–B12), C2 (B13–B24) | 5, 6 |
 | D | Right-Back | 28 | D1 (R01–R14), D2 (R15–R28) | 7, 8 |
 | E | Right-Front | 28 | E1 (R29–R42), E2 (R43–R56) | 9, 10 |
-| F | Back-Left | 12 | F1 (F01–F12) | 11 |
+| F | Front-Right | 12 | F1 (F01–F12) | 11 |
 
-> **As-built (2026-08):** zone **F** is a new **12-tube back-left board** (F01–F12) on **port 11**, *left of the ladder*. And boards **B2** and **D1** are hung at **swapped back corners** — B2 (`L43–L56`) at the back-right, D1 (`R01–R14`) at the back-left. Ports/channels are unchanged; only physical location + cat5 length differ. See [tube-map.md](tube-map.md).
+> **As-built (2026-08):** zone **F** is a new **12-tube board** (F01–F12) on **port 11** at the **front-right corner**. All other boards follow the map order. See [tube-map.md](tube-map.md).
 
 21 RJ45 ports stay spare — plenty of room to re-split a zone, or to bring a dead port's tubes up elsewhere by editing `ZONES` in [tube_map.py](tube_map.py) and re-running it.
 

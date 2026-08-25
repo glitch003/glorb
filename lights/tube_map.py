@@ -12,7 +12,7 @@ Change the knobs at the top and re-run; everything downstream stays in sync.
 
 Topology (as-built 2026-08): ONE Kulp K128D-B controller (BeagleBone + FPP).
 The tubes hang from **2x4 boards** — two 2x4s per side zone, plus a single
-12-tube back-left board (zone F) — and every 2x4
+12-tube front-right corner board (zone F) — and every 2x4
 carries **one SRx4 v4.00 quad smart receiver** on its **own RJ45 port** (its
 own cat5 run, nothing chained after it). Side 2x4s carry 14 tubes, back 2x4s
 carry 12. Every tube gets its own data line from a receiver output.
@@ -70,7 +70,7 @@ ZONES = [
     ("C", "Back",        "B",  1, 24, (12, 12)),
     ("D", "Right-Back",  "R",  1, 28, (14, 14)),
     ("E", "Right-Front", "R", 29, 56, (14, 14)),
-    ("F", "Back-Left",   "F",  1, 12, (12,)),   # 12 NEW tubes, left of the ladder (2026-08)
+    ("F", "Front-Right", "F",  1, 12, (12,)),   # 12 NEW tubes, front-right corner (2026-08)
 ]
 
 # RJ45 ports on the K128D, assigned in ZONES order (one per board). Ten of
@@ -90,10 +90,9 @@ ZONE_COLORS = {
 CHAIN_LETTERS = "ABCDEF"
 
 # As-built physical swaps: the DATA map (labels/ports/channels) is unchanged;
-# each pair only swaps where the two 2x4 boards are DRAWN in the layout
-# diagram (and, in reality, where they physically hang + their cat5 length).
-# 2026-08: B2 (L43-L56) hung at the back-RIGHT, D1 (R01-R14) at the back-LEFT.
-PHYSICAL_SWAP = [("B2", "D1")]
+# each pair only swaps where the two 2x4 boards are DRAWN in the layout diagram.
+# Empty = every board is drawn in map order.
+PHYSICAL_SWAP = []
 
 
 # ---- build the map ---------------------------------------------------------
@@ -336,11 +335,9 @@ def write_md(data):
                  f"`{b['silkscreen']}` | **{b['rotary']}** | all UP | "
                  f"{groups} |")
     L.append("")
-    L.append("> **As-built swap:** boards **B2** (`L43–L56`) and **D1** "
-             "(`R01–R14`) are hung at **swapped back corners** — B2 at the "
-             "back-right, D1 at the back-left. Ports/channels are unchanged; "
-             "only the physical location (and cat5 length) moves. The diagram "
-             "reflects this.")
+    L.append("> **As-built (2026-08):** zone **F** (`F01–F12`, board F1, "
+             "port 11) is the new **front-right corner** board. All other "
+             "boards follow the map order.")
     L.append("")
     L.append("**Finding the right jack:** the K128D silkscreens each RJ45 "
              "with the *string range* it owns, not a port number — port 1 is "
@@ -510,11 +507,12 @@ def draw_overview(data):
     boards = data["boards"]
     by_id = {b["id"]: b for b in boards}
     left = [b for b in boards if b["zone"] in ("A", "B")]
-    back = [b for b in boards if b["zone"] in ("C", "F")]
+    back = [b for b in boards if b["zone"] == "C"]
     right = [b for b in boards if b["zone"] in ("D", "E")]
+    front_right = [b for b in boards if b["zone"] == "F"]
 
     top = 120
-    col_rows = max(len(left), len(right))
+    col_rows = max(len(left), len(front_right) + len(right))
     col_bottom = top + col_rows * (ch + gap)
     back_y = col_bottom + 24
     legend_y = back_y + ch + 76
@@ -536,22 +534,23 @@ def draw_overview(data):
     def tkey(b):
         return min(int(t[1:]) for t in b["tubes"])
 
-    # Compute each board's cell position, then apply as-built swaps.
     pos = {}
     for i, b in enumerate(sorted(left, key=tkey)):
         pos[b["id"]] = (col_x_left, top + i * (ch + gap))
-    for i, b in enumerate(sorted(right, key=tkey, reverse=True)):
+    # right column: F1 at the FRONT-RIGHT corner (top), then R56 -> R01 down
+    right_ordered = front_right + sorted(right, key=tkey, reverse=True)
+    for i, b in enumerate(right_ordered):
         pos[b["id"]] = (col_x_right, top + i * (ch + gap))
-    # back row: zone F (left of the ladder) first, then C left -> right
-    back_sorted = sorted(back, key=lambda b: (b["zone"] != "F", tkey(b)))
+    # back row: C, left -> right
+    back_sorted = sorted(back, key=tkey)
     nb = len(back_sorted)
     total_w = nb * cw + (nb - 1) * gap
     start_x = (W - total_w) / 2
     for i, b in enumerate(back_sorted):
         pos[b["id"]] = (start_x + i * (cw + gap), back_y)
 
-    # As-built physical swaps: DATA (labels/ports/channels) unchanged; only
-    # where the 2x4 hangs (and its cat5 length). See PHYSICAL_SWAP.
+    # As-built physical swaps (empty unless PHYSICAL_SWAP is set): only moves
+    # where a board is drawn; data/ports/channels unchanged.
     for a, bb in PHYSICAL_SWAP:
         if a in pos and bb in pos:
             pos[a], pos[bb] = pos[bb], pos[a]
@@ -565,13 +564,11 @@ def draw_overview(data):
            font=_font(16, bold=True), fill="white", anchor="mt")
     d.text((col_x_right + cw / 2, top - 26), "RIGHT (R01→R56)",
            font=_font(16, bold=True), fill="white", anchor="mt")
-    d.text((W / 2, back_y + ch + 10),
-           "BACK  (F01→F12 left of ladder · B01→B24)",
+    d.text((W / 2, back_y + ch + 10), "BACK (B01→B24)",
            font=_font(16, bold=True), fill="white", anchor="mt")
-    if PHYSICAL_SWAP:
-        swaps = ", ".join(f"{a}⇄{bb}" for a, bb in PHYSICAL_SWAP)
+    for a, bb in PHYSICAL_SWAP:
         d.text((W / 2, back_y + ch + 36),
-               f"AS-BUILT: {swaps} hung at swapped back corners "
+               f"AS-BUILT: {a}⇄{bb} drawn at swapped positions "
                f"(data/channels unchanged)",
                font=_font(15, bold=True), fill="#ffd166", anchor="mt")
 

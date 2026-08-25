@@ -8,24 +8,18 @@ this edits those files — please reconcile on your next pass.
 ## What changed on the car
 
 1. **11th board added — zone F, 12 new tubes.** A new 2×4 board (`F1`, tubes
-   `F01–F12`) with its own SRx4 receiver on **RJ45 port 11**, hung **left of the
-   ladder** (back-left). Total is now **148 tubes / 11 boards** (was 136 / 10).
+   `F01–F12`) with its own SRx4 receiver on **RJ45 port 11**, hung at the
+   **front-right corner**. Total is now **148 tubes / 11 boards** (was 136 / 10)
    → 6,068 px / 18,204 channels / 36 universes.
-   - ⚠️ *Confirm F's corner:* it was described both as "left of the ladder" and
-     "the front section" — the map currently places it **back-left**.
 
-2. **Two boards hung out of map order (physical swap).** The whole 2×4 boards —
-   tubes and receiver — are swapped: **B2 (`L43–L56`) hangs at the back-RIGHT**
-   and **D1 (`R01–R14`) at the back-LEFT**. The **data map is unchanged**
-   (same labels → ports → channels); only the physical location and cat5 length
-   move. The layout diagram reflects this; every other board follows the map.
+2. **All boards hang in map order.** (An earlier back-corner B2/D1 swap was
+   considered and then reverted — the layout diagram is back to the original
+   order, with F1 added at the front-right.)
 
-3. **Power trunk legs reassigned by board (the "split at the battery" topology).**
+3. **Power trunk legs assigned by board** (the "split at the battery" topology):
    - **Leg 1 — joins at B1:** A1, A2, B1, B2, C1  (tubes `L01–L56` + `B01–B12`)
    - **Leg 2 — joins at D2:** C2, D1, D2, E1, E2, F1  (tubes `B13–B24` + `R01–R56` + `F01–F12`)
-   - ⚠️ Because of the B2/D1 swap, Leg 1 powers B2 (physically back-right) and
-     Leg 2 powers D1 (physically back-left) — those two 24 V drops **cross the
-     back**. Route them across, or reassign B2↔D1 to the other leg.
+   - Each leg stays on its own side of the car — no crossing drops.
 
 (Earlier this session: the free-hang design was adopted — tubes hang loose at the
 bottom, male pigtail up, fed only at the top — and receiver/tube wiring notes
@@ -35,13 +29,13 @@ were corrected: data-only to SRx4, V/G from the bus bars, receivers powered
 ## Files changed
 
 **Modified**
-- [lights/tube_map.py](lights/tube_map.py) — added zone F; added `PHYSICAL_SWAP`
-  (B2⇄D1) so the diagram places the two boards at their real corners.
+- [lights/tube_map.py](lights/tube_map.py) — added zone F (front-right, port 11);
+  `PHYSICAL_SWAP` mechanism left empty (boards drawn in map order).
 - [lights/controllers.md](lights/controllers.md) — 148 tubes / 11 boards / 11
-  ports; F table row; as-built swap note.
+  ports; F table row (Front-Right).
 - [broom/DESIGN.md](broom/DESIGN.md) — 148-tube counts; power note (scale ~+9%).
 - [electrical/led-wiring.md](electrical/led-wiring.md) — board-based trunk legs
-  + the B2/D1 swap warning; receiver-power (5–13 V) note.
+  (Leg 1 @ B1, Leg 2 @ D2); receiver-power (5–13 V) note.
 - Regenerated: [lights/tube-map.png/.pdf/.json/.md](lights/tube-map.md).
 
 **New**
@@ -50,7 +44,7 @@ were corrected: data-only to SRx4, V/G from the bus bars, receivers powered
   [bus-bar-map.svg](electrical/bus-bar-map.svg) /
   [-back.svg](electrical/bus-bar-map-back.svg) / [.md](electrical/bus-bar-map.md)
   / [.pdf](electrical/bus-bar-map.pdf) — per-2×4 power bus-bar map (14-tube side
-  + 12-tube back variants).
+  + 12-tube back variants; F1 uses the 12-tube variant).
 - [broom/free-hanging-rewire.html](broom/free-hanging-rewire.html) — free-hang
   rewire explainer.
 - [lights/build-update-2026-08-08.md](lights/build-update-2026-08-08.md) —
@@ -58,8 +52,6 @@ were corrected: data-only to SRx4, V/G from the bus bars, receivers powered
 - IMG_4548.heic — source photo of those notes.
 
 ## Still open / to confirm
-- F's physical corner ("left of ladder" vs "front section").
-- B2/D1 power-leg crossing (above) — accept the cross, or swap legs.
 - Power-injection **zone count**: [led-wiring.md](electrical/led-wiring.md) still
   frames "~14 injection zones"; the bus-bar map is now **per-board (11)**.
 - [lights/labeling-progress.md](lights/labeling-progress.md) is stale (old Angio

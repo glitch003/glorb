@@ -14,9 +14,9 @@ Physical power wiring for the **136 × 2.5 m SM16703 tubes** ([../broom/DESIGN.m
 Split into two trunk pairs at the breaker (bottom, at the battery), run **both pairs up the riser together**, then part ways at the ceiling. **Leg assignment is by 2×4 board (updated 2026-08):**
 
 - **Leg 1 — joins at board B1** (left side + back-left): powers **A1, A2, B1, B2, C1** — tubes `L01–L56` + `B01–B12`.
-- **Leg 2 — joins at board D2** (right side + back-right + F): powers **C2, D1, D2, E1, E2, F1** — tubes `B13–B24` + `R01–R56` + `F01–F12`.
+- **Leg 2 — joins at board D2** (right side + back-right + front-right F): powers **C2, D1, D2, E1, E2, F1** — tubes `B13–B24` + `R01–R56` + `F01–F12`.
 
-> ⚠️ **Watch the B2/D1 physical swap.** B2 (`L43–L56`) is on **Leg 1** but physically hangs at the **back-right**; D1 (`R01–R14`) is on **Leg 2** but hangs at the **back-left** (see [../lights/tube-map.md](../lights/tube-map.md)). So each is powered by the *opposite* side's leg and its 24 V drop crosses the back. Either route those two drops across, or reassign B2↔D1 to the other leg to keep each leg on its own side.
+> Each leg stays on its own side of the car — no crossing drops. Leg 2 also feeds the new **F1** front-right board (`F01–F12`).
 
 ```
  front-left ◄──── left leg ────► back-left      (left ceiling covering)

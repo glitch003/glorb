@@ -24,9 +24,9 @@ Chip **SM16703**, color order **BRG**, **41 px/tube** → **6,068 px / 18,204 ch
 | **D2** | D Right-Back | `R15`–`R28` | 8 | `29-32` | **A** | all UP | A:4 B:4 C:4 D:2 |
 | **E1** | E Right-Front | `R29`–`R42` | 9 | `33-36` | **A** | all UP | A:4 B:4 C:4 D:2 |
 | **E2** | E Right-Front | `R43`–`R56` | 10 | `37-40` | **A** | all UP | A:4 B:4 C:4 D:2 |
-| **F1** | F Back-Left | `F01`–`F12` | 11 | `41-44` | **A** | all UP | A:4 B:4 C:4 |
+| **F1** | F Front-Right | `F01`–`F12` | 11 | `41-44` | **A** | all UP | A:4 B:4 C:4 |
 
-> **As-built swap:** boards **B2** (`L43–L56`) and **D1** (`R01–R14`) are hung at **swapped back corners** — B2 at the back-right, D1 at the back-left. Ports/channels are unchanged; only the physical location (and cat5 length) moves. The diagram reflects this.
+> **As-built (2026-08):** zone **F** (`F01–F12`, board F1, port 11) is the new **front-right corner** board. All other boards follow the map order.
 
 **Finding the right jack:** the K128D silkscreens each RJ45 with the *string range* it owns, not a port number — port 1 is the jack marked `1-4`, port 5 is `17-20`. Jacks run **right-to-left, bottom-to-top in columns of four**, so the rightmost column is strings 1–16. All ten ports we use are in the three rightmost columns.
 
@@ -283,7 +283,7 @@ Do it **one 2×4 board at a time**. For each board: set the rotary to `A` and DI
 - [ ] **E1** · port 9 (jack `33-36`) · dial `A` · tubes `R29`–`R42` · R31–R34 · ch 13285–15006
 - [ ] **E2** · port 10 (jack `37-40`) · dial `A` · tubes `R43`–`R56` · R35–R38 · ch 15007–16728
 
-### F — Back-Left (12 tubes)
+### F — Front-Right (12 tubes)
 - [ ] **F1** · port 11 (jack `41-44`) · dial `A` · tubes `F01`–`F12` · R39–R41 · ch 16729–18204
 
 ## Diagram

@@ -189,7 +189,7 @@
     },
     {
       "name": "F",
-      "location": "Back-Left",
+      "location": "Front-Right",
       "tube_count": 12,
       "boards": [
         "F1"
@@ -573,7 +573,7 @@
     {
       "id": "F1",
       "zone": "F",
-      "location": "Back-Left",
+      "location": "Front-Right",
       "port": 11,
       "silkscreen": "41-44",
       "rotary": "A",

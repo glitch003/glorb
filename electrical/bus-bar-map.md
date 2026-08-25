@@ -48,4 +48,4 @@ Wires run **under the 2×4, between the tubes**; terminal order matches the rail
 
 - **Build order:** strip V & G on each female pigtail → pair tubes into WAGOs / crimp spades → land all terminals on each bus.
 - Data is **separate**: each tube's data wire splices to a 20 AWG extension (marine butt connector) back to the SRx4 receiver — see [../lights/controllers.md](../lights/controllers.md) and [led-wiring.md](led-wiring.md).
-- **11 boards for the car:** 8 side boards × 14 tubes = 112 + 3 back-style boards × 12 = 36 → **148 tubes** (zones A, B, D, E are 2 side boards each; C is 2 back boards; **F is 1 back-left board**, added 2026-08).
+- **11 boards for the car:** 8 side boards × 14 tubes = 112 + 3 back-style boards × 12 = 36 → **148 tubes** (zones A, B, D, E are 2 side boards each; C is 2 back boards; **F is 1 front-right board**, added 2026-08).

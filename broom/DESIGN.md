@@ -2,9 +2,9 @@
 
 Glorb gets converted into a giant glowing broom.
 
-- **Bristles:** flexible 22 mm silicone neon tubes **hung free-hanging** (bottoms loose, bristle-style; **male pigtail up**, fed only at the top) around **3 sides of the car — front left open for the driver's sightline**. **Tube length 2.5 m, 148 tubes installed** (136 + a 12-tube back-left board, zone F) at **72 mm pitch / 50 mm gap**.
+- **Bristles:** flexible 22 mm silicone neon tubes **hung free-hanging** (bottoms loose, bristle-style; **male pigtail up**, fed only at the top) around **3 sides of the car — front left open for the driver's sightline**. **Tube length 2.5 m, 148 tubes installed** (136 + a 12-tube front-right board, zone F) at **72 mm pitch / 50 mm gap**.
   - **Inventory: 150 tubes ordered total** — 100 on 2026-07-02, **+50 on 2026-07-24** — leaving **~2 spare** after the 148-tube install.
-  - **Layout:** open-front U-run of **9 800 mm** (two 4 000 mm long sides + 1 800 mm rear; front 1 800 mm side left bare). Distribution ≈ **56 left + 24 rear + 56 right + 12 back-left (F) = 148**.
+  - **Layout:** open-front U-run of **9 800 mm** (two 4 000 mm long sides + 1 800 mm rear; front 1 800 mm side left bare). Distribution ≈ **56 left + 24 rear + 56 right + 12 front-right (F) = 148**.
   - **Length validated on the car (2026-07-01):** 2.5 m matches the existing side panels — **99 in ≈ 2 515 mm** — which are already the perfect size and mount without dragging. Hang the tubes to span the same vertical zone as the panels; the panels prove 2.5 m fits, so the earlier deck-vs-roof drag question is moot.
 - **Handle:** stripper pole mounted on the upper deck.
 
@@ -73,7 +73,7 @@ For comparison, theoretical tight pack (no gap):
 
 ## Power — managed in software
 
-> **Count update (2026-08): the build is now 148 tubes** — a 12-tube back-left board (zone F) was added. The tables below are computed for **136**; scale ~**+9%** for 148 (idle ~1.48 kW, typical chase ~4.44 kW, 100% white ~10.9 kW).
+> **Count update (2026-08): the build is now 148 tubes** — a 12-tube front-right board (zone F) was added. The tables below are computed for **136**; scale ~**+9%** for 148 (idle ~1.48 kW, typical chase ~4.44 kW, 100% white ~10.9 kW).
 
 Full-brightness, full-white numbers look scary, but the plan is to **dim aggressively in software** and lean on chase patterns. Software dimming **cannot get you below the idle floor** (10 W/tube at 2.5 m — see scaling note below), no matter how few pixels are lit. At **136 tubes the idle floor is 1.36 kW**; the binding question is the **power source** (own 24 V bank vs. shared pack — see below), not the tube count.
 

@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="1000" height="640" fill="#0d1b2a"/>
+<text x="500.0" y="30" fill="#e8eef5" font-size="22" font-weight="bold" text-anchor="middle">Glorb broom — power bus-bar map (one 14-tube SIDE board (2×4))</text>
+<text x="500.0" y="52" fill="#9db3c8" font-size="13" text-anchor="middle">V (+) &amp; G (−) off each female pigtail (22 AWG), run under the 2×4 between tubes · direct spades centered (shortest) · a WAGO pair at each end.</text>
+<rect x="40" y="66" width="920" height="16" rx="4" fill="#e63946"/>
+<text x="44" y="61" fill="#e63946" font-size="12" font-weight="bold">+ (V) BUS BAR</text>
+<rect x="40" y="478" width="920" height="16" rx="4" fill="#4f93c4"/>
+<text x="44" y="509" fill="#4f93c4" font-size="12" font-weight="bold">− (GND) BUS BAR</text>
+<rect x="57.0" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="70.0" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 70.0 295.0)">T1</text>
+<rect x="123.2" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="136.2" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 136.2 295.0)">T2</text>
+<rect x="189.3" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="202.3" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 202.3 295.0)">T3</text>
+<rect x="255.5" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="268.5" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 268.5 295.0)">T4</text>
+<rect x="321.6" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="334.6" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 334.6 295.0)">T5</text>
+<rect x="387.8" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="400.8" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 400.8 295.0)">T6</text>
+<rect x="453.9" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="466.9" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 466.9 295.0)">T7</text>
+<rect x="520.1" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="533.1" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 533.1 295.0)">T8</text>
+<rect x="586.2" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="599.2" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 599.2 295.0)">T9</text>
+<rect x="652.4" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="665.4" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 665.4 295.0)">T10</text>
+<rect x="718.5" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="731.5" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 731.5 295.0)">T11</text>
+<rect x="784.7" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="797.7" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 797.7 295.0)">T12</text>
+<rect x="850.8" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="863.8" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 863.8 295.0)">T13</text>
+<rect x="917.0" y="240" width="26" height="110" rx="8" fill="#22303f" stroke="#3d5266" stroke-width="1.5"/>
+<text x="930.0" y="299.0" fill="#e8eef5" font-size="12" text-anchor="middle" transform="rotate(-90 930.0 295.0)">T14</text>
+<circle cx="103.1" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="103.1" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">1</text>
+<line x1="103.1" y1="116.0" x2="103.1" y2="82.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="78.1" y="116.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="103.1" y="135.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="103.1" y="146.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="70.0" y1="240" x2="103.1" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="136.2" y1="240" x2="103.1" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="103.1" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="103.1" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">1</text>
+<line x1="103.1" y1="444.0" x2="103.1" y2="478.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="78.1" y="402.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="103.1" y="421.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="103.1" y="432.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="70.0" y1="350" x2="103.1" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="136.2" y1="350" x2="103.1" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="235.4" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="235.4" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">2</text>
+<line x1="235.4" y1="116.0" x2="235.4" y2="82.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="210.4" y="116.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="235.4" y="135.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="235.4" y="146.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="202.3" y1="240" x2="235.4" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="268.5" y1="240" x2="235.4" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="235.4" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="235.4" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">2</text>
+<line x1="235.4" y1="444.0" x2="235.4" y2="478.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="210.4" y="402.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="235.4" y="421.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="235.4" y="432.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="202.3" y1="350" x2="235.4" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="268.5" y1="350" x2="235.4" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="334.6" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="334.6" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3</text>
+<line x1="334.6" y1="116.0" x2="334.6" y2="82.0" stroke="#e9c46a" stroke-width="2.5"/>
+<rect x="309.6" y="116.0" width="50" height="42" rx="4" fill="#e9c46a"/>
+<text x="334.6" y="135.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">2-pin</text>
+<text x="334.6" y="146.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="334.6" y1="240" x2="334.6" y2="158.0" stroke="#e9c46a" stroke-width="2"/>
+<circle cx="334.6" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="334.6" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3</text>
+<line x1="334.6" y1="444.0" x2="334.6" y2="478.0" stroke="#e9c46a" stroke-width="2.5"/>
+<rect x="309.6" y="402.0" width="50" height="42" rx="4" fill="#e9c46a"/>
+<text x="334.6" y="421.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">2-pin</text>
+<text x="334.6" y="432.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="334.6" y1="350" x2="334.6" y2="402.0" stroke="#e9c46a" stroke-width="2"/>
+<circle cx="400.8" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="400.8" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">4</text>
+<line x1="400.8" y1="240" x2="400.8" y2="82.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="394.8" y="155.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="400.8" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="400.8" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">4</text>
+<line x1="400.8" y1="350" x2="400.8" y2="478.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="394.8" y="408.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="466.9" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="466.9" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">5</text>
+<line x1="466.9" y1="240" x2="466.9" y2="82.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="460.9" y="155.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="466.9" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="466.9" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">5</text>
+<line x1="466.9" y1="350" x2="466.9" y2="478.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="460.9" y="408.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="533.1" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="533.1" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">6</text>
+<line x1="533.1" y1="240" x2="533.1" y2="82.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="527.1" y="155.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="533.1" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="533.1" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">6</text>
+<line x1="533.1" y1="350" x2="533.1" y2="478.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="527.1" y="408.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="599.2" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="599.2" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">7</text>
+<line x1="599.2" y1="240" x2="599.2" y2="82.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="593.2" y="155.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="599.2" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="599.2" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">7</text>
+<line x1="599.2" y1="350" x2="599.2" y2="478.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="593.2" y="408.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="665.4" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="665.4" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">8</text>
+<line x1="665.4" y1="240" x2="665.4" y2="82.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="659.4" y="155.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="665.4" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="665.4" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">8</text>
+<line x1="665.4" y1="350" x2="665.4" y2="478.0" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="659.4" y="408.0" width="12" height="12" fill="#2a9d8f"/>
+<circle cx="764.6" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="764.6" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">9</text>
+<line x1="764.6" y1="116.0" x2="764.6" y2="82.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="739.6" y="116.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="764.6" y="135.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="764.6" y="146.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="731.5" y1="240" x2="764.6" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="797.7" y1="240" x2="764.6" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="764.6" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="764.6" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">9</text>
+<line x1="764.6" y1="444.0" x2="764.6" y2="478.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="739.6" y="402.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="764.6" y="421.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="764.6" y="432.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="731.5" y1="350" x2="764.6" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="797.7" y1="350" x2="764.6" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="896.9" cy="74.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="896.9" y="77.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">10</text>
+<line x1="896.9" y1="116.0" x2="896.9" y2="82.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="871.9" y="116.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="896.9" y="135.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="896.9" y="146.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="863.8" y1="240" x2="896.9" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="930.0" y1="240" x2="896.9" y2="158.0" stroke="#f4a261" stroke-width="2"/>
+<circle cx="896.9" cy="486.0" r="6" fill="#fff" stroke="#0d1b2a" stroke-width="1.5"/>
+<text x="896.9" y="489.5" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">10</text>
+<line x1="896.9" y1="444.0" x2="896.9" y2="478.0" stroke="#f4a261" stroke-width="2.5"/>
+<rect x="871.9" y="402.0" width="50" height="42" rx="4" fill="#f4a261"/>
+<text x="896.9" y="421.0" fill="#0d1b2a" font-size="9" font-weight="bold" text-anchor="middle">3-pin</text>
+<text x="896.9" y="432.0" fill="#0d1b2a" font-size="9" text-anchor="middle">WAGO</text>
+<line x1="863.8" y1="350" x2="896.9" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<line x1="930.0" y1="350" x2="896.9" y2="402.0" stroke="#f4a261" stroke-width="2"/>
+<text x="133.1" y="99.0" fill="#9db3c8" font-size="10">16 AWG</text>
+<text x="68.0" y="234.0" fill="#9db3c8" font-size="10" text-anchor="end">22 AWG</text>
+<rect x="60" y="549" width="16" height="16" rx="3" fill="#e63946"/>
+<text x="82" y="561" fill="#e8eef5" font-size="12">+ / − bus bar (10 terminals each)</text>
+<rect x="530" y="549" width="16" height="16" rx="3" fill="#f4a261"/>
+<text x="552" y="561" fill="#e8eef5" font-size="12">3-pin WAGO = 2 tubes → 1 terminal  (×4)</text>
+<rect x="60" y="575" width="16" height="16" rx="3" fill="#e9c46a"/>
+<text x="82" y="587" fill="#e8eef5" font-size="12">2-pin WAGO = 1 tube → 1 terminal  (×1)</text>
+<rect x="530" y="575" width="16" height="16" rx="3" fill="#2a9d8f"/>
+<text x="552" y="587" fill="#e8eef5" font-size="12">#8 spade = 1 tube direct → terminal  (×5)</text>
+<text x="60" y="620" fill="#9db3c8" font-size="12">14 tubes × (V + G) → two 10-terminal bus bars. One board = one 2×4 · side boards 14 tubes · back boards 12.</text>
+</svg>

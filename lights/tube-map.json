@@ -5,11 +5,11 @@
     "channels_per_pixel": 3,
     "px_per_universe": 170,
     "universe_size": 510,
-    "total_tubes": 136,
-    "total_boards": 10,
-    "total_receivers": 38,
-    "total_pixels": 5576,
-    "total_channels": 16728,
+    "total_tubes": 148,
+    "total_boards": 11,
+    "total_receivers": 41,
+    "total_pixels": 6068,
+    "total_channels": 18204,
     "chip": "SM16703",
     "protocol": "DDP (E1.31 fallback)",
     "color_order": "BRG",
@@ -22,10 +22,10 @@
     "ip": "192.168.8.124",
     "rj45_ports_total": 32,
     "strings_total": 128,
-    "rj45_ports_used": 10,
-    "receivers": 38,
+    "rj45_ports_used": 11,
+    "receivers": 41,
     "start_universe": 1,
-    "universe_count": 33,
+    "universe_count": 36,
     "universe_size": 510,
     "universes": [
       1,
@@ -60,10 +60,13 @@
       30,
       31,
       32,
-      33
+      33,
+      34,
+      35,
+      36
     ],
     "start_channel": 1,
-    "channel_count": 16728
+    "channel_count": 18204
   },
   "zones": [
     {
@@ -183,6 +186,23 @@
         10
       ],
       "pixels": 1148
+    },
+    {
+      "name": "F",
+      "location": "Back-Left",
+      "tube_count": 12,
+      "boards": [
+        "F1"
+      ],
+      "receivers": [
+        39,
+        40,
+        41
+      ],
+      "ports": [
+        11
+      ],
+      "pixels": 492
     }
   ],
   "boards": [
@@ -549,6 +569,40 @@
       "differential_type": "v2 smart x4",
       "start_channel": 15007,
       "end_channel": 16728
+    },
+    {
+      "id": "F1",
+      "zone": "F",
+      "location": "Back-Left",
+      "port": 11,
+      "silkscreen": "41-44",
+      "rotary": "A",
+      "termination": "all 4 DIPs UP = Only/Last RCVR",
+      "tubes": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12"
+      ],
+      "tube_count": 12,
+      "pixels": 492,
+      "receivers": [
+        39,
+        40,
+        41
+      ],
+      "groups": 3,
+      "differential_type": "v2 smart x3",
+      "start_channel": 16729,
+      "end_channel": 18204
     }
   ],
   "receivers": [
@@ -2245,6 +2299,150 @@
           "pixels": 41,
           "start_channel": 16606,
           "end_channel": 16728
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "zone": "F",
+      "board": "F1",
+      "port": 11,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "tubes": [
+        "F01",
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "tube_count": 4,
+      "pixels": 164,
+      "start_channel": 16729,
+      "end_channel": 17220,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "F01",
+          "pixels": 41,
+          "start_channel": 16729,
+          "end_channel": 16851
+        },
+        {
+          "output": 2,
+          "tube": "F02",
+          "pixels": 41,
+          "start_channel": 16852,
+          "end_channel": 16974
+        },
+        {
+          "output": 3,
+          "tube": "F03",
+          "pixels": 41,
+          "start_channel": 16975,
+          "end_channel": 17097
+        },
+        {
+          "output": 4,
+          "tube": "F04",
+          "pixels": 41,
+          "start_channel": 17098,
+          "end_channel": 17220
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "zone": "F",
+      "board": "F1",
+      "port": 11,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "tubes": [
+        "F05",
+        "F06",
+        "F07",
+        "F08"
+      ],
+      "tube_count": 4,
+      "pixels": 164,
+      "start_channel": 17221,
+      "end_channel": 17712,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "F05",
+          "pixels": 41,
+          "start_channel": 17221,
+          "end_channel": 17343
+        },
+        {
+          "output": 2,
+          "tube": "F06",
+          "pixels": 41,
+          "start_channel": 17344,
+          "end_channel": 17466
+        },
+        {
+          "output": 3,
+          "tube": "F07",
+          "pixels": 41,
+          "start_channel": 17467,
+          "end_channel": 17589
+        },
+        {
+          "output": 4,
+          "tube": "F08",
+          "pixels": 41,
+          "start_channel": 17590,
+          "end_channel": 17712
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "zone": "F",
+      "board": "F1",
+      "port": 11,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "tubes": [
+        "F09",
+        "F10",
+        "F11",
+        "F12"
+      ],
+      "tube_count": 4,
+      "pixels": 164,
+      "start_channel": 17713,
+      "end_channel": 18204,
+      "outputs": [
+        {
+          "output": 1,
+          "tube": "F09",
+          "pixels": 41,
+          "start_channel": 17713,
+          "end_channel": 17835
+        },
+        {
+          "output": 2,
+          "tube": "F10",
+          "pixels": 41,
+          "start_channel": 17836,
+          "end_channel": 17958
+        },
+        {
+          "output": 3,
+          "tube": "F11",
+          "pixels": 41,
+          "start_channel": 17959,
+          "end_channel": 18081
+        },
+        {
+          "output": 4,
+          "tube": "F12",
+          "pixels": 41,
+          "start_channel": 18082,
+          "end_channel": 18204
         }
       ]
     }
@@ -5271,6 +5469,273 @@
       "end_channel": 16728,
       "universes": [
         33
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F01",
+      "side": "F",
+      "pos": 0,
+      "index": 136,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 39,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 1,
+      "pixels": 41,
+      "px_offset": 5576,
+      "start_channel": 16729,
+      "end_channel": 16851,
+      "universes": [
+        33,
+        34
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F02",
+      "side": "F",
+      "pos": 1,
+      "index": 137,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 39,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 2,
+      "pixels": 41,
+      "px_offset": 5617,
+      "start_channel": 16852,
+      "end_channel": 16974,
+      "universes": [
+        34
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F03",
+      "side": "F",
+      "pos": 2,
+      "index": 138,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 39,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 3,
+      "pixels": 41,
+      "px_offset": 5658,
+      "start_channel": 16975,
+      "end_channel": 17097,
+      "universes": [
+        34
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F04",
+      "side": "F",
+      "pos": 3,
+      "index": 139,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 39,
+      "chain_pos": 1,
+      "chain_letter": "A",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 4,
+      "pixels": 41,
+      "px_offset": 5699,
+      "start_channel": 17098,
+      "end_channel": 17220,
+      "universes": [
+        34
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F05",
+      "side": "F",
+      "pos": 4,
+      "index": 140,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 40,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 1,
+      "pixels": 41,
+      "px_offset": 5740,
+      "start_channel": 17221,
+      "end_channel": 17343,
+      "universes": [
+        34,
+        35
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F06",
+      "side": "F",
+      "pos": 5,
+      "index": 141,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 40,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 2,
+      "pixels": 41,
+      "px_offset": 5781,
+      "start_channel": 17344,
+      "end_channel": 17466,
+      "universes": [
+        35
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F07",
+      "side": "F",
+      "pos": 6,
+      "index": 142,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 40,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 3,
+      "pixels": 41,
+      "px_offset": 5822,
+      "start_channel": 17467,
+      "end_channel": 17589,
+      "universes": [
+        35
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F08",
+      "side": "F",
+      "pos": 7,
+      "index": 143,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 40,
+      "chain_pos": 2,
+      "chain_letter": "B",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 4,
+      "pixels": 41,
+      "px_offset": 5863,
+      "start_channel": 17590,
+      "end_channel": 17712,
+      "universes": [
+        35
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F09",
+      "side": "F",
+      "pos": 8,
+      "index": 144,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 41,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 1,
+      "pixels": 41,
+      "px_offset": 5904,
+      "start_channel": 17713,
+      "end_channel": 17835,
+      "universes": [
+        35
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F10",
+      "side": "F",
+      "pos": 9,
+      "index": 145,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 41,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 2,
+      "pixels": 41,
+      "px_offset": 5945,
+      "start_channel": 17836,
+      "end_channel": 17958,
+      "universes": [
+        35,
+        36
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F11",
+      "side": "F",
+      "pos": 10,
+      "index": 146,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 41,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 3,
+      "pixels": 41,
+      "px_offset": 5986,
+      "start_channel": 17959,
+      "end_channel": 18081,
+      "universes": [
+        36
+      ],
+      "direction": "forward"
+    },
+    {
+      "label": "F12",
+      "side": "F",
+      "pos": 11,
+      "index": 147,
+      "zone": "F",
+      "board": "F1",
+      "receiver": 41,
+      "chain_pos": 3,
+      "chain_letter": "C",
+      "port": 11,
+      "port_silkscreen": "41-44",
+      "output": 4,
+      "pixels": 41,
+      "px_offset": 6027,
+      "start_channel": 18082,
+      "end_channel": 18204,
+      "universes": [
+        36
       ],
       "direction": "forward"
     }

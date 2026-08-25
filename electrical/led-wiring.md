@@ -11,10 +11,12 @@ Physical power wiring for the **136 × 2.5 m SM16703 tubes** ([../broom/DESIGN.m
 
 > ✏️ **Re-routed 2026-07-28.** Batteries are in the **bottom of the car**; all trunk runs use the **existing wire coverings**: up the **middle-right pole** (riser), **across the ceiling** middle-right → middle-left, along **both ceiling sides**, and across the **back-right portion only** of the back.
 
-Split into two trunk pairs at the breaker (bottom, at the battery), run **both pairs up the riser together**, then part ways at the ceiling:
+Split into two trunk pairs at the breaker (bottom, at the battery), run **both pairs up the riser together**, then part ways at the ceiling. **Leg assignment is by 2×4 board (updated 2026-08):**
 
-- **Right leg:** splits at the top of the pole — **forward** along the right ceiling covering (R29–R56) and **backward** (R01–R28), continuing through the back-right covering to a **mid-back bus bar**. That bar feeds the entire back: B13–B24 with normal drops, and **B01–B12 via longer 18 AWG drops (up to ~0.9 m, uncovered)** — there is no covering on the back-left. (Decided 2026-07-28 over running trunk to the back-left corner off the left leg.)
-- **Left leg:** crosses the ceiling middle-right → middle-left, then splits **forward** (L01–L28) / **backward** (L29–L56) along the left ceiling covering.
+- **Leg 1 — joins at board B1** (left side + back-left): powers **A1, A2, B1, B2, C1** — tubes `L01–L56` + `B01–B12`.
+- **Leg 2 — joins at board D2** (right side + back-right + F): powers **C2, D1, D2, E1, E2, F1** — tubes `B13–B24` + `R01–R56` + `F01–F12`.
+
+> ⚠️ **Watch the B2/D1 physical swap.** B2 (`L43–L56`) is on **Leg 1** but physically hangs at the **back-right**; D1 (`R01–R14`) is on **Leg 2** but hangs at the **back-left** (see [../lights/tube-map.md](../lights/tube-map.md)). So each is powered by the *opposite* side's leg and its 24 V drop crosses the back. Either route those two drops across, or reassign B2↔D1 to the other leg to keep each leg on its own side.
 
 ```
  front-left ◄──── left leg ────► back-left      (left ceiling covering)
@@ -73,7 +75,8 @@ Only ~8–10 lugged bus-bar landings are heavy joints — **no soldering to 4 AW
 
 Both the 4 AWG power trunk and the tube data lines share the coverings (riser, ceiling crossing, ceiling sides, back-right):
 
-- Keep each **data wire paired with its own ground return** back to its Angio, all grounds tied common at the controller (shared-ground requirement, [../lights/controllers.md](../lights/controllers.md)).
+- Run **only the data wire** to each tube — V/G come from the bus bars — as a **20 AWG extension** butt-spliced (marine) to the tube's female pigtail, back to the nearest **SRx4**. The tube's ground reference is the − bus, so **bond every SRx4 / K128D-B ground to the − bus** (shared-ground requirement, [../lights/controllers.md](../lights/controllers.md)).
+- **Power the receivers locally, never at 24 V.** Each SRx4 takes **5–13 V** on its power lugs (use a 12 V buck off the 24 V bus, one per 2×4 board) — the cat5 from the K128D carries data only. On the 3-pin receiver outputs use **D + G**; leave **V unconnected** (landing V on a 24 V tube back-feeds the board). See [../lights/controllers.md](../lights/controllers.md).
 - Give the data lines a few cm of separation from the high-current trunk over long parallel runs to keep switching noise off the signal. It's DC so coupling is mild; the DIN series resistor + short data pigtail at each tube matter more.
 
 ## Feet needed
@@ -127,7 +130,7 @@ Notes / decisions baked in:
 - **4 AWG is bare copper, not tinned** — accepted the corrosion trade for cost; keep an eye on the lugged joints for playa oxidation.
 - **Caps mount at each tube**, soldered across +24 V / GND, sleeved in the 3:1 adhesive heatshrink. Long lead (+) → +24 V, stripe (−) → GND.
 - **Fork terminals, not ferrules** — busbars are screw-down (single-node), so #8 forks land under the screws.
-- **Ground:** the black-trunk bars are the distributed common ground; tie them, all Angio grounds, and battery negative together — **shared ground is mandatory** for the data signal.
+- **Ground:** the black-trunk bars are the distributed common ground; tie them, all **SRx4 / K128D-B** grounds, and battery negative together — **shared ground is mandatory** for the data signal (only data runs to each tube; its return reference is the − bus).
 
 ## Related
 

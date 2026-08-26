@@ -45,6 +45,9 @@ were corrected: data-only to SRx4, V/G from the bus bars, receivers powered
   [-back.svg](electrical/bus-bar-map-back.svg) / [.md](electrical/bus-bar-map.md)
   / [.pdf](electrical/bus-bar-map.pdf) — per-2×4 power bus-bar map (14-tube side
   + 12-tube back variants; F1 uses the 12-tube variant).
+- [electrical/power_map.py](electrical/power_map.py) +
+  [power-map.svg](electrical/power-map.svg) — how the 24 V power is connected
+  (bank → breaker → two legs → per-board bus bars → tubes).
 - [broom/free-hanging-rewire.html](broom/free-hanging-rewire.html) — free-hang
   rewire explainer.
 - [lights/build-update-2026-08-08.md](lights/build-update-2026-08-08.md) —

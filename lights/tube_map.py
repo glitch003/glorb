@@ -512,8 +512,10 @@ def draw_overview(data):
     front_right = [b for b in boards if b["zone"] == "F"]
 
     top = 120
-    col_rows = max(len(left), len(front_right) + len(right))
-    col_bottom = top + col_rows * (ch + gap)
+    front_y = top
+    col_top = top + (ch + gap if front_right else 0)   # drop columns below F row
+    col_rows = max(len(left), len(right))
+    col_bottom = col_top + col_rows * (ch + gap)
     back_y = col_bottom + 24
     legend_y = back_y + ch + 76
     H = int(legend_y + 104)
@@ -535,12 +537,17 @@ def draw_overview(data):
         return min(int(t[1:]) for t in b["tubes"])
 
     pos = {}
+    # front row: zone F, centered at the front (top) — mirrors the C back row
+    nf = len(front_right)
+    if nf:
+        fw = nf * cw + (nf - 1) * gap
+        fx = (W - fw) / 2
+        for i, b in enumerate(sorted(front_right, key=tkey)):
+            pos[b["id"]] = (fx + i * (cw + gap), front_y)
     for i, b in enumerate(sorted(left, key=tkey)):
-        pos[b["id"]] = (col_x_left, top + i * (ch + gap))
-    # right column: F1 at the FRONT-RIGHT corner (top), then R56 -> R01 down
-    right_ordered = front_right + sorted(right, key=tkey, reverse=True)
-    for i, b in enumerate(right_ordered):
-        pos[b["id"]] = (col_x_right, top + i * (ch + gap))
+        pos[b["id"]] = (col_x_left, col_top + i * (ch + gap))
+    for i, b in enumerate(sorted(right, key=tkey, reverse=True)):
+        pos[b["id"]] = (col_x_right, col_top + i * (ch + gap))
     # back row: C, left -> right
     back_sorted = sorted(back, key=tkey)
     nb = len(back_sorted)
@@ -560,9 +567,12 @@ def draw_overview(data):
                     by_id[bid])
 
     # orientation labels
-    d.text((col_x_left + cw / 2, top - 26), "LEFT (L01→L56)",
+    if nf:
+        d.text((W / 2, front_y - 8), "FRONT  (front-left open · F = front-right)",
+               font=_font(16, bold=True), fill="white", anchor="mb")
+    d.text((col_x_left + cw / 2, col_top - 26), "LEFT (L01→L56)",
            font=_font(16, bold=True), fill="white", anchor="mt")
-    d.text((col_x_right + cw / 2, top - 26), "RIGHT (R01→R56)",
+    d.text((col_x_right + cw / 2, col_top - 26), "RIGHT (R01→R56)",
            font=_font(16, bold=True), fill="white", anchor="mt")
     d.text((W / 2, back_y + ch + 10), "BACK (B01→B24)",
            font=_font(16, bold=True), fill="white", anchor="mt")

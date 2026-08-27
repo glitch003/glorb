@@ -29,7 +29,9 @@ venv\Scripts\python meshspeak.py                 # auto-detects the port
 venv\Scripts\python meshspeak.py --port COM5     # or pick it explicitly
 ```
 
-On mac: `venv/bin/python meshspeak.py --port /dev/tty.usbmodem1101`
+On mac: `venv/bin/python meshspeak.py --port /dev/cu.usbmodem1101`
+(use the `/dev/cu.*` device, not `/dev/tty.*` — the tty device blocks on
+carrier detect and the connection hangs forever)
 
 On startup it says "mesh speak online" through the speaker so you know the
 audio path works (skip with `--no-hello`). Then every text message received

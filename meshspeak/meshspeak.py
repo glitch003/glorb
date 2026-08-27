@@ -29,6 +29,10 @@ DEFAULT_MODEL = HERE / "voices" / "en_US-lessac-medium.onnx"
 
 speech_queue = queue.Queue()
 
+# When True, broadcasts on the primary "everyone" channel (channel 0) are
+# spoken too. Default is to skip them; DMs and channel 1+ always play.
+speak_channel0 = False
+
 
 def play_wav(wav_path):
     """Play a wav file with whatever the OS has built in. Blocks until done."""
@@ -92,6 +96,11 @@ def on_receive(packet, interface):
     text = decoded.get("text", "").strip()
     if not text:
         return
+    is_broadcast = packet.get("toId") == "^all"
+    channel = packet.get("channel", 0)
+    if is_broadcast and channel == 0 and not speak_channel0:
+        print(f"[skip ch0] {sender_name(packet, interface)}: {text}")
+        return
     who = sender_name(packet, interface)
     print(f"[msg] {who}: {text}")
     speech_queue.put(f"Message from {who}: {text}")
@@ -105,7 +114,14 @@ def main():
                         help="path to Piper .onnx voice model")
     parser.add_argument("--no-hello", action="store_true",
                         help="skip the spoken startup announcement")
+    parser.add_argument("--all-channels", action="store_true",
+                        help="also speak broadcasts on the primary "
+                             "'everyone' channel (channel 0), which are "
+                             "skipped by default")
     args = parser.parse_args()
+
+    global speak_channel0
+    speak_channel0 = args.all_channels
 
     model_path = Path(args.model)
     if not model_path.exists():

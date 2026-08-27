@@ -39,6 +39,10 @@ on the mesh is spoken as "Message from <sender>: <text>", using the sender's
 long name when the node database knows it. Messages queue up and play one at
 a time, so bursts don't talk over each other.
 
+By default, broadcasts on the primary "everyone" channel (channel 0) are
+skipped — only DMs and channel 1+ messages are read aloud. Pass
+`--all-channels` to hear channel 0 broadcasts too.
+
 ## Autostart on the glorb laptop
 
 Task Scheduler → Create Task → trigger "At log on" → action:

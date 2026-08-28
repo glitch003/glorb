@@ -14,6 +14,7 @@ Firmware password: `QTHN6666`
 | Pack capacity | ~30 kWh (rough — depends on exact Tesla module variant) |
 | Cost (May 2023) | $4 800 total — see [../logistics/expenses.md](../logistics/expenses.md) |
 | BMS | EV Stealth cell-tap boards (custom Tesla-module BMS) + balance charger |
+| Charger | 2× Elcon UHF 6.6 kW CANbus (HK-LF-108-60), 90–265 VAC in, ~32 A each at 240 V — see [chargers.md](chargers.md) |
 | Bench measurement | 2023-05-02 with 3s Tesla modules — see [power-measurements.md](power-measurements.md) |
 
 The Tesla pack delivers far more current than the previous EG4 pack — the practical power bottleneck on the cart is now the [4 kW Giandel inverter](inverter.md) and the 72 V → 12 V converter for aux loads, not the cells.

@@ -1,5 +1,24 @@
 # Chargers
 
+## Drive pack (72 V Tesla 3s2p) — Elcon UHF 6.6 kW w/ CANbus × 2
+
+Model **HK-LF-108-60** (Elcon/TC Charger "UHF" 4th gen), two units on the cart.
+
+| Spec | Value |
+| --- | --- |
+| AC input | 90–265 VAC, 45–65 Hz (works on 120 V or 240 V) |
+| Max AC input current | **32 A** per charger at full 6.6 kW output |
+| Output | 45–177 VDC range (rated 65–140 V), 60 A max, 6.6 kW |
+| Efficiency | ~93–95 % |
+| Control | CANbus (250/500 kbps), needs BMS/EVCC to command voltage & current |
+| Enclosure | IP67, –40 to +65 °C |
+
+**240 V draw:** at full 6.6 kW, ≈ 6600 W ÷ 240 V ÷ 0.94 eff ≈ **29–32 A each → ~60–64 A for both** (needs a 40 A circuit each, or a 70–80 A feed for the pair). On 120 V the charger derates to roughly 2–3 kW (limited by the ~16–20 A input it will pull from a 120 V outlet), so 240 V is the only way to get full rate.
+
+Links: [EV Source](https://evsource.com/products/charger-elcon-uhf-6-6kw-w-canbus), [EV West](https://evwest.com/elcon-6-6kw-hk-lf-108-60-can-bus-charger-with-evcc), [Elcon 4th gen page](https://elconchargers.com/?page_id=93)
+
+## 12 V chargers (aux / EG4 pack)
+
 All units 12 V output. Efficiency = wall watts / output amp (lower is better).
 
 | Output A | Wall W | Eff (W/A) | Cost ea | Charge time | 240 V | Adj | Notes | Link |

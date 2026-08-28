@@ -8,14 +8,6 @@
 
 Glorb is a 4 m × 1.8 m two-story electric platform that rolls across the playa at walking pace, carrying a DJ rig, a dance floor, a rooftop deck, and an unspecified number of secrets. It runs entirely on salvaged Tesla Model S battery modules — a 72 V drive pack under the floor plus a dedicated 24 V bank for the lights — and is driven by remote control. Glorb does not have a driver's seat. Glorb does not believe in seats.
 
-> **No pooping on Glorb.**
->
-> This has been the only rule since January 2023. It was written as a joke.
->
-> It is no longer a joke. We know it was one of you. Glorb knows.
->
-> **No pooping on Glorb.**
-
 ## 2026: the broom
 
 This year the car becomes a broom. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
@@ -24,6 +16,7 @@ This year the car becomes a broom. Why a broom? The committee has asked that we 
 - **Dedicated 24 V LED bank:** six Tesla modules in parallel (6s6p, ~31.8 kWh) with its own BMS and charger, also feeding a 24 V inverter for the sound system.
 - Patterns are pushed over DDP from a laptop app; anyone on the camp's Meshtastic mesh can text the car and it will say what you wrote, out loud, in a voice it did not choose ([meshspeak](meshspeak/)).
 - The tubes are BRG, not RGB. Nobody knows why. The tubes will not tell us.
+- No pooping on Glorb.
 
 *Photos of the broom coming after the burn — until then, enjoy the 2023 op-art era below.*
 
@@ -57,6 +50,7 @@ More: [history.md](history.md)
 | Generators owned | 3 |
 | Generators that work | see [generators/](generators/) |
 | Beahemoth spelling | intentional, do not fix |
+| Pooping on Glorb | no |
 
 Details: [dimensions.md](dimensions.md)
 

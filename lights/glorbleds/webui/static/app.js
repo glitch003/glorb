@@ -64,6 +64,9 @@ function buildGeometry3D() {
     let x, y;
     if (t.side === "L") { x = -hw; y = -hl + (c + 0.5) / s.L * CAR.L; }
     else if (t.side === "R") { x = hw; y = hl - (c + 0.5) / s.R * CAR.L; }
+    // front-right board (zone F): continues the perimeter from R's front
+    // end toward the car's centre line; front-left stays open for the driver.
+    else if (t.side === "F") { x = hw - (c + 0.5) / (s.F * 2) * CAR.W; y = -hl; }
     else { x = -hw + (c + 0.5) / s.B * CAR.W; y = hl; }   // rear
     const base = ti * ppt;
     tubes3d.push({ x, y, base });
@@ -213,7 +216,7 @@ function buildGeometry2D() {
   const Hside = STEPV * Math.max(s.L, s.R);
   const Wback = STEPH * s.B;
   const LX = MARGIN + BRISTLE, RX = LX + Wback;
-  const TY = MARGIN, BY = TY + Hside;
+  const TY = MARGIN + (s.F ? BRISTLE : 0), BY = TY + Hside;
   const W = RX + BRISTLE + MARGIN, H = BY + BRISTLE + MARGIN;
 
   const spacing = BRISTLE / (ppt - 1);
@@ -222,6 +225,7 @@ function buildGeometry2D() {
     let x0, y0, dx = 0, dy = 0;
     if (t.side === "L") { x0 = LX; y0 = TY + (c + 0.5) * STEPV; dx = -spacing; }
     else if (t.side === "R") { x0 = RX; y0 = BY - (c + 0.5) * STEPV; dx = spacing; }
+    else if (t.side === "F") { x0 = RX - (c + 0.5) * STEPH; y0 = TY; dy = -spacing; }  // front-right
     else { x0 = LX + (c + 0.5) * STEPH; y0 = BY; dy = spacing; }
     return { x0, y0, dx, dy, base: ti * ppt, W, H };
   });
@@ -278,7 +282,7 @@ function setView(v) {
   document.getElementById("view3d").classList.toggle("active", v === "3d");
   document.getElementById("view2d").classList.toggle("active", v === "2d");
   document.getElementById("hint").textContent = v === "3d"
-    ? "3D view — drag to orbit. Tubes hang around 3 sides; front-left open for the driver."
+    ? "3D view — drag to orbit. Tubes hang around 3 sides + the front-right corner; front-left open for the driver."
     : "2D flat view — bristles unrolled from the U. Front (top) is open.";
 }
 

@@ -60,7 +60,7 @@ void setDefaultSettings()
     settings.UnderVSetpoint = 2.3f;
     settings.OverTSetpoint = 65.0f;
     settings.UnderTSetpoint = -10.0f;
-    settings.balanceVoltage = 3.5f;   //floor: never bleed a cell below this
+    settings.balanceVoltage = 3.9f;   //floor: never bleed a cell below this
     settings.balanceHyst = 0.04f;     //bleed cells more than this above the lowest cell
     settings.logLevel = 2;
 }

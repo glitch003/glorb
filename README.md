@@ -12,7 +12,7 @@ Glorb is a 4 m × 1.8 m two-story electric platform that rolls across the playa 
 
 This year the car becomes a broom. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
 
-- **5,576 pixels** on **136 independent data lines**, driven by a single Kulp K128D-B (BeagleBone + FPP) through ten SRx4 quad receivers — no chaining, no serpentine, no regrets (the regrets were 2026-08 and have been documented).
+- **5,576 pixels — about 65,000 physical LEDs** — on **136 independent data lines**, driven by a single Kulp K128D-B (BeagleBone + FPP) through ten SRx4 quad receivers — no chaining, no serpentine, no regrets (the regrets were 2026-08 and have been documented).
 - **Dedicated 24 V LED bank:** six Tesla modules in parallel (6s6p, ~31.8 kWh) with its own BMS and charger, also feeding a 24 V inverter for the sound system.
 - Patterns are pushed over DDP from a laptop app; anyone on the camp's Meshtastic mesh can text the car and it will say what you wrote, out loud, in a voice it did not choose ([meshspeak](meshspeak/)).
 - The tubes are BRG, not RGB. Nobody knows why. The tubes will not tell us.
@@ -45,6 +45,7 @@ More: [history.md](history.md)
 | Drive pack | 6× Tesla Model S modules, 3s2p, 72 V, ~30 kWh, 2× Elcon 6.6 kW chargers |
 | LED pack | 6× Tesla Model S modules, 6s6p, ~24 V, ~31.8 kWh |
 | Lights | 136 × 2.5 m SM16703 tubes, 5,576 px, Kulp K128D-B + 10 SRx4 |
+| Physical LEDs | **~65,280** (136 tubes × 2.5 m × 96 LEDs/m × 2 sides; 12 LEDs per addressable pixel) |
 | Sound | Pioneer XDJ-XZ → Mackie Mix8 → QSC KS118 sub + tops |
 | Trailer | needs 7 000 lb payload |
 | Generators owned | 3 |

@@ -16,10 +16,17 @@ class CarModelTests(unittest.TestCase):
 
     def test_layout_matches_physical_inventory(self):
         # 41 px/tube measured on the real strips 2026-08-21 (not nominal 40)
-        self.assertEqual(len(self.model.tubes), 136)
-        self.assertEqual(self.model.total_pixels, 136 * 41)
-        self.assertEqual(self.model.nbytes, 136 * 41 * 3)
-        self.assertEqual(self.model.sides_count(), {"L": 56, "B": 24, "R": 56})
+        # 148 tubes since the 12-tube front-right board (zone F) was added
+        # 2026-08 (was 136).
+        self.assertEqual(len(self.model.tubes), 148)
+        self.assertEqual(self.model.total_pixels, 148 * 41)
+        self.assertEqual(self.model.nbytes, 148 * 41 * 3)
+        self.assertEqual(self.model.sides_count(),
+                         {"L": 56, "B": 24, "R": 56, "F": 12})
+        # perimeter order L -> B -> R -> F
+        self.assertEqual(list(self.model.sides_count()), ["L", "B", "R", "F"])
+        self.assertEqual(self.model.side_offsets(),
+                         {"L": 0, "B": 56, "R": 80, "F": 136})
 
     def test_physical_conversion_returns_snapshot_without_mutating_input(self):
         logical = bytes(i % 251 for i in range(self.model.nbytes))
@@ -48,7 +55,7 @@ class CarModelTests(unittest.TestCase):
         channel n * px_per_tube * 3 + 1."""
         tubes = self.model.map["tubes"]
         ch = self.model.px_per_tube * 3
-        self.assertEqual(len(tubes), 136)
+        self.assertEqual(len(tubes), 148)
         for n, t in enumerate(tubes):
             self.assertEqual(t["start_channel"], n * ch + 1)
             self.assertEqual(t["end_channel"], n * ch + ch)

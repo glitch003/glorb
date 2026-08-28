@@ -1,8 +1,8 @@
-# Driving the data lines — 136 LED tubes (open front)
+# Driving the data lines — 148 LED tubes (open front)
 
-How to run data to **136 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md), [../broom/DESIGN.md](../broom/DESIGN.md)). Tubes wrap **3 sides** — left (56), rear (24), right (56) — with the **front-left short side open** for the driver's sightline.
+How to run data to **148 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md), [../broom/DESIGN.md](../broom/DESIGN.md)). Tubes wrap **3 sides** — left (56), rear (24), right (56), front-right (12) — with the **front-left short side open** for the driver's sightline.
 
-**Current design: one data line per tube.** A single [Kulp K128D-B](k128/README.md) drives all 136 tubes through differential receivers — no chaining, no serpentine, no per-tube flipping. See [k128/README.md](k128/README.md) for controller bring-up and [tube-map.md](tube-map.md) for the port/receiver/output map.
+**Current design: one data line per tube.** A single [Kulp K128D-B](k128/README.md) drives all 148 tubes through differential receivers — no chaining, no serpentine, no per-tube flipping. See [k128/README.md](k128/README.md) for controller bring-up and [tube-map.md](tube-map.md) for the port/receiver/output map.
 
 > **Superseded:** the five WLED Angio-8 boards with 4-tube chains per data line. What that bought us and what it cost is in [Why we moved off chaining](#why-we-moved-off-chaining) below. Zones A–E, tube labels, 2×4 hangers and busbars are all unchanged — only the data topology changed.
 
@@ -11,18 +11,18 @@ How to run data to **136 × 2.5 m SM16703 tubes** ([led-tubes.md](led-tubes.md),
 SM16703 groups **6 physical LEDs per IC → 16 addressable pixels/m per side** ([led-tubes.md](led-tubes.md)). At 2.5 m:
 
 - **41 pixels per tube** (measured; nominal 40 = 16 px/m × 2.5 m).
-- **136 tubes → 5,576 pixels / 16,728 channels total.**
+- **148 tubes → 6,068 pixels / 18,204 channels total.**
 
-That is a *small* pixel count for a modern pixel controller. At WS2811-family timing (800 kHz, ~30 µs/pixel) a 41-px tube refreshes in **~1.2 ms** — about 800 fps if it were the only thing on the wire. Bandwidth was never the design driver; **cable management for 136 physical tubes** is.
+That is a *small* pixel count for a modern pixel controller. At WS2811-family timing (800 kHz, ~30 µs/pixel) a 41-px tube refreshes in **~1.2 ms** — about 800 fps if it were the only thing on the wire. Bandwidth was never the design driver; **cable management for 148 physical tubes** is.
 
-## Topology: one K128D-B, ten SRx4 boards, 136 outputs
+## Topology: one K128D-B, eleven SRx4 boards, 148 outputs
 
 | | |
 |---|---|
 | Controller | 1 × Kulp K128D-B (BeagleBone + FPP) |
-| RJ45 ports | **10 used of 32** — one per 2×4 hanger board |
-| Receivers | **10 × SRx4 v4.00 quad SmartReceiver** (16 outputs each) |
-| Tubes | **136**, one per receiver output — 14/board on the sides, 12/board on the back |
+| RJ45 ports | **11 used of 32** — one per 2×4 hanger board |
+| Receivers | **11 × SRx4 v4.00 quad SmartReceiver** (16 outputs each) |
+| Tubes | **148**, one per receiver output — 14/board on the sides, 12/board on the back, plus 12 at the front-right (F) |
 | Busiest port | 574 px, against an 800 px @ 40 fps budget |
 
 Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver positions in one (output groups A–D of 4), so a whole 2×4's tubes hang off a single cat5 run with nothing chained after it. **Every board's ID dial is `A`, all 4 termination DIPs UP (Only/Last)** — see [tube-map.md](tube-map.md) for the board map and [k128/README.md](k128/README.md#the-receiver-boards-falconkulp-srx4-v400--read-this-first) for the dial/DIP traps.
@@ -34,8 +34,11 @@ Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver
 | C | Back | 24 | C1 (B01–B12), C2 (B13–B24) | 5, 6 |
 | D | Right-Back | 28 | D1 (R01–R14), D2 (R15–R28) | 7, 8 |
 | E | Right-Front | 28 | E1 (R29–R42), E2 (R43–R56) | 9, 10 |
+| F | Front-Right | 12 | F1 (F01–F12) | 11 |
 
-22 RJ45 ports stay spare — plenty of room to re-split a zone, or to bring a dead port's tubes up elsewhere by editing `ZONES` in [tube_map.py](tube_map.py) and re-running it.
+> **As-built (2026-08):** zone **F** is a new **12-tube board** (F01–F12) on **port 11** at the **front-right corner**. All other boards follow the map order. See [tube-map.md](tube-map.md).
+
+21 RJ45 ports stay spare — plenty of room to re-split a zone, or to bring a dead port's tubes up elsewhere by editing `ZONES` in [tube_map.py](tube_map.py) and re-running it.
 
 ### Layout — where the boards and tubes sit
 
@@ -54,7 +57,7 @@ Each RJ45 carries 4 differential strings. One SRx4 board = four chained receiver
                           C: C1, C2
 ```
 
-The K128D lives in one box; 10 cat5 runs fan out, one to the SRx4 on each 2×4 hanger board, and each board sits directly above the tubes it drives.
+The K128D lives in one box; 11 cat5 runs fan out, one to the SRx4 on each 2×4 hanger board, and each board sits directly above the tubes it drives.
 
 ### One board, one 2×4, up to 16 tubes
 

@@ -2,9 +2,9 @@
 
 Glorb gets converted into a giant glowing broom.
 
-- **Bristles:** flexible 22 mm silicone neon tubes hung vertically around **3 sides of the car — front left open for the driver's sightline**. **Tube length 2.5 m, 136 tubes installed** at **72 mm pitch / 50 mm gap**.
-  - **Inventory: 150 tubes ordered total** — 100 on 2026-07-02, **+50 on 2026-07-24** — leaving **~14 spare** after the 136-tube install.
-  - **Layout:** open-front U-run of **9 800 mm** (two 4 000 mm long sides + 1 800 mm rear; front 1 800 mm side left bare). Distribution ≈ **56 left + 24 rear + 56 right = 136**.
+- **Bristles:** flexible 22 mm silicone neon tubes **hung free-hanging** (bottoms loose, bristle-style; **male pigtail up**, fed only at the top) around **3 sides of the car — front left open for the driver's sightline**. **Tube length 2.5 m, 148 tubes installed** (136 + a 12-tube front-right board, zone F) at **72 mm pitch / 50 mm gap**.
+  - **Inventory: 150 tubes ordered total** — 100 on 2026-07-02, **+50 on 2026-07-24** — leaving **~2 spare** after the 148-tube install.
+  - **Layout:** open-front U-run of **9 800 mm** (two 4 000 mm long sides + 1 800 mm rear; front 1 800 mm side left bare). Distribution ≈ **56 left + 24 rear + 56 right + 12 front-right (F) = 148**.
   - **Length validated on the car (2026-07-01):** 2.5 m matches the existing side panels — **99 in ≈ 2 515 mm** — which are already the perfect size and mount without dragging. Hang the tubes to span the same vertical zone as the panels; the panels prove 2.5 m fits, so the earlier deck-vs-roof drag question is moot.
 - **Handle:** stripper pole mounted on the upper deck.
 
@@ -73,6 +73,8 @@ For comparison, theoretical tight pack (no gap):
 
 ## Power — managed in software
 
+> **Count update (2026-08): the build is now 148 tubes** — a 12-tube front-right board (zone F) was added. The tables below are computed for **136**; scale ~**+9%** for 148 (idle ~1.48 kW, typical chase ~4.44 kW, 100% white ~10.9 kW).
+
 Full-brightness, full-white numbers look scary, but the plan is to **dim aggressively in software** and lean on chase patterns. Software dimming **cannot get you below the idle floor** (10 W/tube at 2.5 m — see scaling note below), no matter how few pixels are lit. At **136 tubes the idle floor is 1.36 kW**; the binding question is the **power source** (own 24 V bank vs. shared pack — see below), not the tube count.
 
 > ⚠️ An earlier theoretical table here claimed a "30% bright + chase (~30% lit)" column reaching ~0.7 kW for 50 tubes. **That was wrong and physically impossible** — 50 tubes idle is already 1.0 kW, so nothing in software gets below that. Deleted; use the measured numbers below.
@@ -140,7 +142,7 @@ Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QS
 
 - Idle 1.36 kW, typical chase ~4.08 kW, worst dimmed-solid 4.49 kW. Typical sits at the 4.1 kW shared peak and worst-dimmed exceeds it → **plan on the dedicated 24 V LED bank.** 100%-white-solid (~10.0 kW) is genny-only; cap it in firmware.
 - 72 mm pitch / 50 mm gap — dense, clearly-bristled look; **front-left short side open** for driver sightline.
-- Install load: ~136 hangs, ~14 injection zones, 136 single-end 24 V injection points, 3 Angio-8s driving data (see [../lights/controllers.md](../lights/controllers.md)). Budget the labor.
+- Install load: ~148 hangs, 148 single-end 24 V injection points, data via a Kulp K128D-B (BeagleBone/FPP) + 11 SRx4 differential receivers (one per 2×4 board) (see [../lights/controllers.md](../lights/controllers.md)). Budget the labor.
 
 ## Order math
 
@@ -165,9 +167,9 @@ Pack ceiling is **14.4 kW**. Existing loads at peak draw ~10.3 kW (incl. real QS
 - [x] ~~Confirm 24 V~~ — bench-confirmed 24 V on sample (2026-06-19); still worth restating to seller on the bulk PO
 - [ ] Get a volume quote at 50 rolls / 250 m ($ per meter often still drops ~10%)
 - [x] ~~Decide LED power source~~ — **SETTLED 2026-07-24: 6× Tesla Model S modules in parallel (6s6p, ~24 V, ~31.8 kWh) as a dedicated LED + 24 V inverter bank.** Own BMS/charger. See [../electrical/led-power.md](../electrical/led-power.md).
-- [x] ~~Sketch the controller topology~~ — settled: 3 active Chroma-Tech Angio-8s (left / right / rear side, ~4–7 tubes/output, serpentine reverse in software) + 1 spare, data+ground only with separate 24 V injection, xLights/FPP master over wired Ethernet (sACN). See [../lights/controllers.md](../lights/controllers.md).
-- [ ] **Bench-test SM16703 on an Angio-8 output** — the Angio spec page doesn't list chipsets. Wire one tube to one output: confirm it lights, RGB color order, no flicker at length, and that the Angio drives 5 V data logic. Fall back to ESP32 + WLED per zone if it can't clock SM16703. See [../lights/controllers.md](../lights/controllers.md).
-- [ ] Specify how strips attach top + bottom (clip rail? grommets through corrugated plastic side panels?)
+- [x] ~~Sketch the controller topology~~ — settled (2026-08): **Kulp K128D-B (BeagleBone/FPP) + 10 SRx4 differential receivers (one per 2×4 board)**, free-hanging tubes (no serpentine), **data-only to the receivers with V/G off the bus bars**, xLights → FPP over wired Ethernet. See [../lights/controllers.md](../lights/controllers.md).
+- [ ] **Bench-test SM16703 on an SRx4 output** — wire one tube to one output: confirm it lights, RGB color order, no flicker at length, and that the SRx4 ground is bonded to the − bus (the single data wire has no reference otherwise). See [../lights/controllers.md](../lights/controllers.md).
+- [x] ~~Specify how strips attach top + bottom~~ — **free-hanging: fixed at the top only (male pigtail up, hung on the 2×4 section rails), bottoms loose like bristles.**
 - [ ] Stripper pole: source, mount plan, how it ties into the upper deck structurally
 
 ## Open questions

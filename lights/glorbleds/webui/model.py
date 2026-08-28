@@ -42,15 +42,13 @@ class CarModel:
         self.output_spans = [(c["start_universe"], 0, self.nbytes)]
 
         # Per-pixel static attributes patterns can read.
-        self.side = []            # 'L' / 'B' / 'R'
+        self.side = []            # 'L' / 'B' / 'R' / 'F'
         self.along = []           # 0..1 position along the tube
         self.perim = []           # 0..1 physical position around the perimeter
         self.tube_of = []         # index into self.tubes
         ppt = self.px_per_tube
-        counts = self.sides_count()
         ntubes = len(self.tubes)
-        side_off = {"L": 0, "B": counts["L"],
-                    "R": counts["L"] + counts["B"]}
+        side_off = self.side_offsets()
         for ti, t in enumerate(self.tubes):
             phys = side_off[t["side"]] + t["pos"]
             # Constant per tube: a tube is one vertical column at one spot on
@@ -77,10 +75,21 @@ class CarModel:
         return bytes(buf)
 
     def sides_count(self) -> dict:
-        c = {"L": 0, "B": 0, "R": 0}
+        """Tube count per side, keyed in perimeter order (first appearance
+        in the map). Sides are not hardcoded so a new zone (e.g. the 2026-08
+        front-right 'F' board) only has to appear in tube-map.json."""
+        c = {}
         for t in self.tubes:
-            c[t["side"]] += 1
+            c[t["side"]] = c.get(t["side"], 0) + 1
         return c
+
+    def side_offsets(self) -> dict:
+        """First physical perimeter slot of each side, in perimeter order."""
+        off, n = {}, 0
+        for side, cnt in self.sides_count().items():
+            off[side] = n
+            n += cnt
+        return off
 
     def layout(self) -> dict:
         """JSON payload the browser uses to place tubes + index frames."""

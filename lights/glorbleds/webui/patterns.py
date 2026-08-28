@@ -119,9 +119,7 @@ def _surface_grid(m):
     """
     cached = getattr(m, "_surface_grid_cache", None)
     if cached is None:
-        counts = m.sides_count()
-        offsets = {"L": 0, "B": counts["L"],
-                   "R": counts["L"] + counts["B"]}
+        offsets = m.side_offsets()
         width, height = len(m.tubes), m.px_per_tube
         pixel_of = [0] * (width * height)
         for ti, tube in enumerate(m.tubes):
@@ -2070,12 +2068,12 @@ class Lasers(Pattern):
                 "speed": 0.55, "density": 0.55}
 
     def render(self, m, p, t, buf):
-        sx, sid, _ = _side_unroll(m)
+        sx, sid, fracs = _side_unroll(m)
         count = 3 + int(p["density"] * 6.0)
         motion = t * (0.28 + p["speed"] * 1.55)
         c1, c2 = p["color1"], p["color2"]
         beams = []
-        for side in range(3):
+        for side in range(len(fracs)):
             side_beams = []
             for k in range(count):
                 x0 = (k + 0.5) / count
@@ -2144,12 +2142,12 @@ class Collider(Pattern):
         self.emission = 0
 
     @staticmethod
-    def _geometry(p, t):
+    def _geometry(p, t, nsides):
         count = 4 + int(p["density"] * 4.0)
         motion = t * (0.20 + p["speed"] * 0.92)
         c1, c2 = p["color1"], p["color2"]
         all_beams, all_hits = [], []
-        for side in range(3):
+        for side in range(nsides):
             beams = []
             for k in range(count):
                 phase = k * 1.83 + side * 0.74
@@ -2193,7 +2191,7 @@ class Collider(Pattern):
             self.ripples = self.ripples[-21:]
 
     def render(self, m, p, t, buf):
-        beams, hits = self._geometry(p, t)
+        beams, hits = self._geometry(p, t, len(_side_unroll(m)[2]))
         first = self.last_t is None
         dt = 0.0 if first else max(0.0, min(0.1, t - self.last_t))
         self.last_t = t
@@ -2218,7 +2216,7 @@ class Collider(Pattern):
         # Per-ripple geometry is a per-FRAME quantity: radius, widths, fade
         # and color were being recomputed for all 5,576 pixels.
         speed_r = 0.13 + p["speed"] * 0.29
-        by_side = [[], [], []]
+        by_side = [[] for _ in fracs]
         for side_r, cx, cy, age, tone in self.ripples:
             radius = age * speed_r
             width = 0.020 + age * 0.010
@@ -2306,7 +2304,7 @@ class Supernova(Pattern):
         rate = 0.045 + p["speed"] * 0.17
         c1, c2 = p["color1"], p["color2"]
         bursts = []
-        for side in range(3):
+        for side in range(len(fracs)):
             sb = []
             reach = 0.76 + aspects[side] * 0.45
             for k in range(count):
@@ -2319,7 +2317,7 @@ class Supernova(Pattern):
 
         # thickness/glow/fade/core-window depend only on the burst's phase —
         # per-frame quantities, hoisted out of the pixel loop.
-        for side in range(3):
+        for side in range(len(fracs)):
             bursts[side] = [(bx, by, radius, 0.022 + phase * 0.032,
                              (0.022 + phase * 0.032) * 4.5,
                              1.0 - phase * 0.70,

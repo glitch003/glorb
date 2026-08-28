@@ -11,7 +11,8 @@ Run this to (re)generate four artifacts next to it:
 Change the knobs at the top and re-run; everything downstream stays in sync.
 
 Topology (as-built 2026-08): ONE Kulp K128D-B controller (BeagleBone + FPP).
-The tubes hang from **2x4 boards** — two 2x4s per zone — and every 2x4
+The tubes hang from **2x4 boards** — two 2x4s per side zone, plus a single
+12-tube front-right corner board (zone F) — and every 2x4
 carries **one SRx4 v4.00 quad smart receiver** on its **own RJ45 port** (its
 own cat5 run, nothing chained after it). Side 2x4s carry 14 tubes, back 2x4s
 carry 12. Every tube gets its own data line from a receiver output.
@@ -69,6 +70,7 @@ ZONES = [
     ("C", "Back",        "B",  1, 24, (12, 12)),
     ("D", "Right-Back",  "R",  1, 28, (14, 14)),
     ("E", "Right-Front", "R", 29, 56, (14, 14)),
+    ("F", "Front-Right", "F",  1, 12, (12,)),   # 12 NEW tubes, front-right corner (2026-08)
 ]
 
 # RJ45 ports on the K128D, assigned in ZONES order (one per board). Ten of
@@ -78,7 +80,7 @@ FIRST_RJ45_PORT = 1
 
 ZONE_COLORS = {
     "A": "#E63946", "B": "#F4A261", "C": "#2A9D8F",
-    "D": "#457B9D", "E": "#9D4EDD",
+    "D": "#457B9D", "E": "#9D4EDD", "F": "#E9C46A",
 }
 
 # FPP smart-receiver chain positions are labeled A-F in the UI and map to the
@@ -86,6 +88,11 @@ ZONE_COLORS = {
 # SRx4 they are the four output groups ID..ID+3, so a board dialed to A owns
 # groups A, B, C, D.
 CHAIN_LETTERS = "ABCDEF"
+
+# As-built physical swaps: the DATA map (labels/ports/channels) is unchanged;
+# each pair only swaps where the two 2x4 boards are DRAWN in the layout diagram.
+# Empty = every board is drawn in map order.
+PHYSICAL_SWAP = []
 
 
 # ---- build the map ---------------------------------------------------------
@@ -328,6 +335,10 @@ def write_md(data):
                  f"`{b['silkscreen']}` | **{b['rotary']}** | all UP | "
                  f"{groups} |")
     L.append("")
+    L.append("> **As-built (2026-08):** zone **F** (`F01–F12`, board F1, "
+             "port 11) is the new **front-right corner** board. All other "
+             "boards follow the map order.")
+    L.append("")
     L.append("**Finding the right jack:** the K128D silkscreens each RJ45 "
              "with the *string range* it owns, not a port number — port 1 is "
              "the jack marked `1-4`, port 5 is `17-20`. Jacks run "
@@ -494,16 +505,20 @@ def draw_overview(data):
     W = 1500
     cw, ch, gap = 240, 132, 16
     boards = data["boards"]
+    by_id = {b["id"]: b for b in boards}
     left = [b for b in boards if b["zone"] in ("A", "B")]
     back = [b for b in boards if b["zone"] == "C"]
     right = [b for b in boards if b["zone"] in ("D", "E")]
+    front_right = [b for b in boards if b["zone"] == "F"]
 
     top = 120
+    front_y = top
+    col_top = top + (ch + gap if front_right else 0)   # drop columns below F row
     col_rows = max(len(left), len(right))
-    col_bottom = top + col_rows * (ch + gap)
+    col_bottom = col_top + col_rows * (ch + gap)
     back_y = col_bottom + 24
-    legend_y = back_y + ch + 48
-    H = int(legend_y + 76)
+    legend_y = back_y + ch + 76
+    H = int(legend_y + 104)
 
     img = Image.new("RGB", (W, H), "#0d1b2a")
     d = ImageDraw.Draw(img)
@@ -518,47 +533,66 @@ def draw_overview(data):
     col_x_left = 140
     col_x_right = W - 140 - cw
 
-    # Place cells by *physical* tube position (labels are positional).
     def tkey(b):
         return min(int(t[1:]) for t in b["tubes"])
 
-    # left column: front (top, L01) -> back (bottom, L56)
+    pos = {}
+    # front row: zone F, centered at the front (top) — mirrors the C back row
+    nf = len(front_right)
+    if nf:
+        fw = nf * cw + (nf - 1) * gap
+        fx = (W - fw) / 2
+        for i, b in enumerate(sorted(front_right, key=tkey)):
+            pos[b["id"]] = (fx + i * (cw + gap), front_y)
     for i, b in enumerate(sorted(left, key=tkey)):
-        y = top + i * (ch + gap)
-        _board_cell(d, col_x_left, y, cw, ch, ZONE_COLORS[b["zone"]], b)
-
-    # right column: front (top, R56) -> back (bottom, R01)
+        pos[b["id"]] = (col_x_left, col_top + i * (ch + gap))
     for i, b in enumerate(sorted(right, key=tkey, reverse=True)):
-        y = top + i * (ch + gap)
-        _board_cell(d, col_x_right, y, cw, ch, ZONE_COLORS[b["zone"]], b)
-
-    # back row: left (B01) -> right (B24), along the bottom
-    n = len(back)
-    total_w = n * cw + (n - 1) * gap
+        pos[b["id"]] = (col_x_right, col_top + i * (ch + gap))
+    # back row: C, left -> right
+    back_sorted = sorted(back, key=tkey)
+    nb = len(back_sorted)
+    total_w = nb * cw + (nb - 1) * gap
     start_x = (W - total_w) / 2
-    for i, b in enumerate(sorted(back, key=tkey)):
-        x = start_x + i * (cw + gap)
-        _board_cell(d, x, back_y, cw, ch, ZONE_COLORS[b["zone"]], b)
+    for i, b in enumerate(back_sorted):
+        pos[b["id"]] = (start_x + i * (cw + gap), back_y)
 
-    # side labels
-    d.text((col_x_left + cw / 2, top - 26), "LEFT (L01→L56)",
+    # As-built physical swaps (empty unless PHYSICAL_SWAP is set): only moves
+    # where a board is drawn; data/ports/channels unchanged.
+    for a, bb in PHYSICAL_SWAP:
+        if a in pos and bb in pos:
+            pos[a], pos[bb] = pos[bb], pos[a]
+
+    for bid, (x, y) in pos.items():
+        _board_cell(d, x, y, cw, ch, ZONE_COLORS[by_id[bid]["zone"]],
+                    by_id[bid])
+
+    # orientation labels
+    if nf:
+        d.text((W / 2, front_y - 8), "FRONT  (front-left open · F = front-right)",
+               font=_font(16, bold=True), fill="white", anchor="mb")
+    d.text((col_x_left + cw / 2, col_top - 26), "LEFT (L01→L56)",
            font=_font(16, bold=True), fill="white", anchor="mt")
-    d.text((col_x_right + cw / 2, top - 26), "RIGHT (R01→R56)",
+    d.text((col_x_right + cw / 2, col_top - 26), "RIGHT (R01→R56)",
            font=_font(16, bold=True), fill="white", anchor="mt")
     d.text((W / 2, back_y + ch + 10), "BACK (B01→B24)",
            font=_font(16, bold=True), fill="white", anchor="mt")
+    for a, bb in PHYSICAL_SWAP:
+        d.text((W / 2, back_y + ch + 36),
+               f"AS-BUILT: {a}⇄{bb} drawn at swapped positions "
+               f"(data/channels unchanged)",
+               font=_font(15, bold=True), fill="#ffd166", anchor="mt")
 
-    # legend
+    # legend (3 per row so 6 zones fit)
     ly = legend_y
     d.text((60, ly), "Zones:", font=_font(16, bold=True), fill="white")
-    lx = 150
-    for z in data["zones"]:
+    for idx, z in enumerate(data["zones"]):
+        lx = 150 + (idx % 3) * 440
+        ly2 = ly + (idx // 3) * 28
         c = ZONE_COLORS[z["name"]]
-        d.rounded_rectangle([lx, ly - 2, lx + 22, ly + 18], radius=4, fill=c)
+        d.rounded_rectangle([lx, ly2 - 2, lx + 22, ly2 + 18], radius=4, fill=c)
         ports = "/".join(str(p) for p in z["ports"])
-        d.text((lx + 30, ly), f"{z['name']} {z['location']} (port {ports})",
+        d.text((lx + 30, ly2), f"{z['name']} {z['location']} (port {ports})",
                font=_font(15), fill="white")
-        lx += 250
     return img
 
 
@@ -571,7 +605,7 @@ def draw_zone_page(data, zone, size):
     d.rectangle([0, 0, W, 96], fill=zc)
     d.text((40, 26), f"Zone {zone['name']} — {zone['location']}",
            font=_font(38, bold=True), fill="white")
-    d.text((W - 40, 34), f"{zone['tube_count']} tubes · 2 boards",
+    d.text((W - 40, 34), f"{zone['tube_count']} tubes · {len(zone['boards'])} boards",
            font=_font(24), fill="white", anchor="rt")
 
     boards = [b for b in data["boards"] if b["zone"] == zone["name"]]

@@ -1,0 +1,494 @@
+<title>Glorb Broom — Free-Hanging Bristle Rewire</title>
+<style>
+  :root {
+    --ground: #ECEEF1;
+    --surface: #FBFBFD;
+    --surface-2: #F1F3F6;
+    --ink: #191D28;
+    --muted: #5A6172;
+    --hair: #D6DAE2;
+    --data: #12905A;      /* signal / data path */
+    --power: #B9770F;     /* 24V power */
+    --alert: #C4362F;     /* the problem */
+    --glow: rgba(18,144,90,0.16);
+    --measure: 66ch;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12141C;
+      --surface: #1B1E28;
+      --surface-2: #20242F;
+      --ink: #E7EAF1;
+      --muted: #9AA2B4;
+      --hair: #2C3040;
+      --data: #3EDC97;
+      --power: #F2B14C;
+      --alert: #FF6B6B;
+      --glow: rgba(62,220,151,0.18);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #ECEEF1; --surface: #FBFBFD; --surface-2: #F1F3F6;
+    --ink: #191D28; --muted: #5A6172; --hair: #D6DAE2;
+    --data: #12905A; --power: #B9770F; --alert: #C4362F; --glow: rgba(18,144,90,0.16);
+  }
+  :root[data-theme="dark"] {
+    --ground: #12141C; --surface: #1B1E28; --surface-2: #20242F;
+    --ink: #E7EAF1; --muted: #9AA2B4; --hair: #2C3040;
+    --data: #3EDC97; --power: #F2B14C; --alert: #FF6B6B; --glow: rgba(62,220,151,0.18);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .page {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(20px, 5vw, 72px) 20px 96px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .prose { max-width: var(--measure); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--data);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-size: clamp(30px, 5.4vw, 46px);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  .lede { font-size: 19px; color: var(--ink); max-width: var(--measure); margin: 0 0 8px; }
+  .lede .soft { color: var(--muted); }
+
+  h2 {
+    font-size: clamp(21px, 3.4vw, 27px);
+    letter-spacing: -0.01em;
+    font-weight: 750;
+    text-wrap: balance;
+    margin: 56px 0 6px;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.62em;
+    color: var(--data);
+    margin-right: 0.55em;
+    font-weight: 600;
+    vertical-align: 0.12em;
+  }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 4px; letter-spacing: -0.005em; }
+  p { margin: 12px 0; }
+  .prose p, .prose li { color: var(--ink); }
+  strong { font-weight: 680; }
+  a { color: var(--data); }
+
+  .rule { height: 1px; background: var(--hair); border: 0; margin: 34px 0 0; }
+
+  /* Callouts */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 22px 0;
+  }
+  .tldr {
+    border-left: 3px solid var(--data);
+    background: var(--surface);
+  }
+  .tldr h3 { margin-top: 0; color: var(--data); font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .flag {
+    border-left: 3px solid var(--power);
+  }
+  .flag h3 { margin-top: 0; color: var(--power); }
+  .verdict { border-left: 3px solid var(--data); }
+  .verdict h3 { margin-top: 0; }
+
+  ul, ol { margin: 12px 0; padding-left: 22px; }
+  li { margin: 7px 0; }
+  li::marker { color: var(--muted); }
+
+  .tag { font-family: var(--mono); font-size: 0.86em; padding: 1px 6px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--hair); white-space: nowrap; }
+  .k-data { color: var(--data); }
+  .k-power { color: var(--power); }
+  .k-alert { color: var(--alert); }
+
+  /* Stat strip */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 22px 0;
+  }
+  .stat { background: var(--surface); padding: 14px 16px; }
+  .stat .v { font-family: var(--mono); font-size: 20px; font-weight: 650; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Figures */
+  figure { margin: 26px 0; }
+  .figframe {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 20px 20px 6px;
+    overflow-x: auto;
+  }
+  figure svg { display: block; width: 100%; height: auto; color: var(--ink); }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 12px; max-width: var(--measure); }
+  figcaption b { color: var(--ink); font-weight: 640; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); margin: 4px 2px 0; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 22px; height: 3px; border-radius: 2px; display: inline-block; }
+  .swatch.dash { background: none; border-top: 3px dashed var(--data); height: 0; }
+
+  /* Two-up */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px 0; }
+  @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+  .mini { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 16px 18px; }
+  .mini h3 { margin-top: 0; }
+  .mini.no h3 { color: var(--alert); }
+  .mini.yes h3 { color: var(--data); }
+
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 18px 0; }
+  .steps li {
+    position: relative; padding: 14px 16px 14px 54px; margin: 10px 0;
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 10px;
+  }
+  .steps li::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 14px; top: 13px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--surface-2); border: 1px solid var(--hair);
+    color: var(--data); font-family: var(--mono); font-weight: 650; font-size: 13px;
+    display: grid; place-items: center;
+  }
+  .steps li b { display: block; }
+
+  footer.foot { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--hair); font-size: 13px; color: var(--muted); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bristle-free { animation: sway 4.5s ease-in-out infinite; transform-origin: top center; }
+    @keyframes sway { 0%,100% { transform: rotate(-1.2deg);} 50% { transform: rotate(1.2deg);} }
+  }
+</style>
+
+<div class="page">
+<div class="wrap">
+
+  <p class="eyebrow">Glorb · Broom LED · design change</p>
+  <h1>Letting the bristles hang free</h1>
+  <p class="lede">You want the 136 tube "bristles" to dangle loose at the bottom like a real broom. Right now they're chained in a zig-zag that ties every bottom to its neighbor. <span class="soft">Here's exactly what's tying them, how to free them, and whether it's a job you can take on yourself.</span></p>
+
+  <div class="card tldr">
+    <h3>The short version</h3>
+    <p style="margin-top:8px"><strong>Only the data wiring ties the bottoms — and the data wiring is the safe, low-voltage part of the whole build.</strong> The 24&nbsp;V power is already designed to feed each tube from the top only. To free the bottoms you stop the data from ever dipping down there: run each tube's data back <em>up</em> to the top and hop to the next tube at the top. Your instinct is right; the honest cost is <strong>one thin return wire per tube</strong>, not zero.</p>
+  </div>
+
+  <div class="prose">
+    <h2><span class="num">01</span>Why the bottoms are tied today</h2>
+    <p>Each tube is a <strong>one-way street for data</strong>. The signal enters one end (<span class="tag k-data">DIN</span>, data-in), flows through every pixel, and leaves the other end (<span class="tag k-power" style="color:var(--power)">DOUT</span>, data-out). To light the next tube, <span class="tag k-data">DOUT</span> of one tube must reach <span class="tag k-data">DIN</span> of the next.</p>
+    <p>The current layout is a <strong>serpentine</strong> (a "boustrophedon" — the way an ox plows a field, back and forth). Data goes <em>down</em> tube&nbsp;1, crosses along the <strong>bottom</strong> to tube&nbsp;2, back <em>up</em> tube&nbsp;2, crosses along the <strong>top</strong> to tube&nbsp;3, down again… Half of those crossings happen at the bottom — and each one is a jumper wire physically linking two bristles at their free ends.</p>
+  </div>
+
+  <figure>
+    <div class="figframe">
+      <svg viewBox="0 0 720 350" role="img" aria-label="Serpentine wiring: data snakes down and up through tubes, with jumper wires crossing along the bottom that tie neighboring tubes together.">
+        <defs>
+          <marker id="ad" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--data)"/></marker>
+          <marker id="aa" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--alert)"/></marker>
+        </defs>
+
+        <!-- rail -->
+        <rect x="40" y="16" width="640" height="9" rx="3" fill="var(--muted)" opacity="0.55"/>
+        <text x="40" y="12" font-family="var(--mono)" font-size="11" fill="var(--muted)">upper-deck rail  ·  data + 24V both enter here</text>
+
+        <!-- tubes: centers 120 240 360 480 600 -->
+        <g fill="var(--surface-2)" stroke="var(--hair)" stroke-width="1.5">
+          <rect x="108" y="66" width="24" height="196" rx="12"/>
+          <rect x="228" y="66" width="24" height="196" rx="12"/>
+          <rect x="348" y="66" width="24" height="196" rx="12"/>
+          <rect x="468" y="66" width="24" height="196" rx="12"/>
+          <rect x="588" y="66" width="24" height="196" rx="12"/>
+        </g>
+
+        <!-- feed into T1 -->
+        <path d="M120,25 L120,60" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/>
+
+        <!-- internal flows -->
+        <path d="M120,76 L120,250" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/><!--T1 down-->
+        <path d="M240,252 L240,78" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/><!--T2 up-->
+        <path d="M360,76 L360,250" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/><!--T3 down-->
+        <path d="M480,252 L480,78" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/><!--T4 up-->
+        <path d="M600,76 L600,250" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/><!--T5 down-->
+
+        <!-- top jumps (fine): T2->T3, T4->T5 -->
+        <path d="M240,64 C240,44 360,44 360,64" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/>
+        <path d="M480,64 C480,44 600,44 600,64" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#ad)"/>
+
+        <!-- bottom jumps (the problem): T1->T2, T3->T4 -->
+        <path d="M120,264 C120,300 240,300 240,266" stroke="var(--alert)" stroke-width="3" fill="none" marker-end="url(#aa)"/>
+        <path d="M360,264 C360,300 480,300 480,266" stroke="var(--alert)" stroke-width="3" fill="none" marker-end="url(#aa)"/>
+
+        <!-- exit -->
+        <path d="M600,264 L600,300" stroke="var(--data)" stroke-width="2.5" stroke-dasharray="3 4" fill="none"/>
+        <text x="608" y="300" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">…next group</text>
+
+        <!-- problem labels -->
+        <circle cx="180" cy="292" r="4" fill="none" stroke="var(--alert)" stroke-width="1.5"/>
+        <text x="180" y="330" text-anchor="middle" font-family="var(--mono)" font-size="11.5" fill="var(--alert)">bottom jumper — ties two bristles</text>
+        <text x="420" y="330" text-anchor="middle" font-family="var(--mono)" font-size="11.5" fill="var(--alert)">×68 of these around the broom</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--data)"></i> data path (one-way)</span>
+      <span><i class="swatch" style="background:var(--alert)"></i> bottom jumper — the thing tying your bristles</span>
+    </div>
+    <figcaption><b>Now:</b> the data snake crosses along the bottom every other tube. Those red crossings are the only reason the bottoms can't swing free.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2><span class="num">02</span>"So only 68 need work, right?" — almost</h2>
+    <p>There are <strong>68 bottom jumpers</strong>, and each one links a <em>pair</em> of tubes. So counting junctions, 68 is exactly right. But because every tube sits on one side of a bottom pair, <strong>all 136 bottoms are currently tied to something</strong>. Freeing them means reworking all 68 junctions, which means putting hands on essentially every tube.</p>
+    <p>The reason you can't get away with touching only half comes back to that one-way street: to keep <em>all</em> the hops at the top, the leftover signal at each tube's bottom has to travel back up somehow. A straight tube has its two data ends 2.5&nbsp;m apart, so there's no topology trick that avoids a wire — the signal physically has to climb back up. That climb is the return wire.</p>
+  </div>
+
+  <div class="card flag" style="border-left-color:var(--alert)">
+    <h3 style="color:var(--alert)">The easy thing to miss</h3>
+    <p style="margin-top:8px">It looks like the top-hop between tube 2 and tube 3 leaves tube 3 free at the bottom. It doesn't — because data has to flow through the <em>whole length</em> of tube 3 and then leave to feed tube 4. That top-hop is tube 3's <strong>input</strong>; its <strong>output</strong> still exits at the bottom. Every middle tube receives on one end and sends on the other, so it's always tied at both ends. Only the last tube in a chain has a free bottom.</p>
+  </div>
+
+  <figure>
+    <div class="figframe">
+      <svg viewBox="0 0 720 340" role="img" aria-label="Tube-by-tube trace showing each tube receives data at one end and sends it out the other, so every middle tube including tube 3 is connected at the bottom.">
+        <defs>
+          <marker id="td" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--data)"/></marker>
+          <marker id="ta" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--alert)"/></marker>
+          <marker id="tm" markerWidth="8" markerHeight="8" refX="5.5" refY="4" orient="auto"><path d="M1,1 L6,4 L1,7 Z" fill="var(--muted)"/></marker>
+        </defs>
+
+        <!-- rail -->
+        <rect x="40" y="16" width="640" height="9" rx="3" fill="var(--muted)" opacity="0.55"/>
+        <text x="40" y="12" font-family="var(--mono)" font-size="11" fill="var(--muted)">controller feed</text>
+
+        <!-- tubes centers 120 290 460 630 -->
+        <g fill="var(--surface-2)" stroke="var(--hair)" stroke-width="1.5">
+          <rect x="108" y="72" width="24" height="180" rx="12"/>
+          <rect x="278" y="72" width="24" height="180" rx="12"/>
+          <rect x="448" y="72" width="24" height="180" rx="12"/>
+          <rect x="618" y="72" width="24" height="180" rx="12"/>
+        </g>
+        <g font-family="var(--mono)" font-size="12" fill="var(--muted)" text-anchor="middle">
+          <text x="120" y="166">1</text><text x="290" y="166">2</text><text x="460" y="166">3</text><text x="630" y="166">4</text>
+        </g>
+
+        <!-- internal travel arrows (muted) -->
+        <path d="M120,86 L120,238" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 5" fill="none" marker-end="url(#tm)" opacity="0.8"/>
+        <path d="M290,238 L290,86" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 5" fill="none" marker-end="url(#tm)" opacity="0.8"/>
+        <path d="M460,86 L460,238" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 5" fill="none" marker-end="url(#tm)" opacity="0.8"/>
+        <path d="M630,238 L630,86" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 5" fill="none" marker-end="url(#tm)" opacity="0.8"/>
+
+        <!-- feed into T1 -->
+        <path d="M120,28 L120,66" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#td)"/>
+
+        <!-- IN dots (green) / OUT dots (orange) -->
+        <!-- T1 IN top, OUT bottom -->
+        <circle cx="120" cy="72" r="4.5" fill="var(--data)"/><text x="120" y="60" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--data)">IN</text>
+        <circle cx="120" cy="252" r="4.5" fill="var(--power)"/><text x="120" y="272" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--power)">OUT</text>
+        <!-- T2 IN bottom, OUT top -->
+        <circle cx="290" cy="252" r="4.5" fill="var(--data)"/><text x="290" y="272" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--data)">IN</text>
+        <circle cx="290" cy="72" r="4.5" fill="var(--power)"/><text x="290" y="60" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--power)">OUT</text>
+        <!-- T3 IN top, OUT bottom -->
+        <circle cx="460" cy="72" r="4.5" fill="var(--data)"/><text x="460" y="60" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--data)">IN</text>
+        <circle cx="460" cy="252" r="7" fill="none" stroke="var(--alert)" stroke-width="2"/><circle cx="460" cy="252" r="4.5" fill="var(--power)"/><text x="460" y="272" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--power)">OUT</text>
+        <!-- T4 IN bottom, OUT top -->
+        <circle cx="630" cy="252" r="4.5" fill="var(--data)"/><text x="630" y="272" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--data)">IN</text>
+        <circle cx="630" cy="72" r="4.5" fill="var(--power)"/><text x="630" y="60" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--power)">OUT</text>
+
+        <!-- jumpers -->
+        <path d="M120,258 C120,292 290,292 290,258" stroke="var(--alert)" stroke-width="3" fill="none" marker-end="url(#ta)"/><!--bottom 1-2-->
+        <path d="M290,66 C290,44 460,44 460,66" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#td)"/><!--top 2-3-->
+        <path d="M460,258 C460,292 630,292 630,258" stroke="var(--alert)" stroke-width="3" fill="none" marker-end="url(#ta)"/><!--bottom 3-4-->
+        <path d="M630,66 L630,34" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+        <text x="638" y="40" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">…tube 5</text>
+
+        <!-- callout on T3 -->
+        <text x="460" y="322" text-anchor="middle" font-family="var(--mono)" font-size="11.5" fill="var(--alert)">tube 3's OUT is at the bottom → still tied to tube 4</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--data)"></i> data IN (receives)</span>
+      <span><i class="swatch" style="background:var(--power)"></i> data OUT (sends onward)</span>
+      <span><i class="swatch" style="background:var(--alert)"></i> bottom jumper</span>
+    </div>
+    <figcaption><b>The catch:</b> the top-hop into tube 3 is only its <em>input</em>. Data runs the full length of tube 3 and exits at the <b>bottom</b> to reach tube 4 — a second jumper. So tube 3 is tied at the bottom just like the rest; only the last tube in a chain is truly free.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2><span class="num">03</span>The fix: bounce the data back to the top</h2>
+    <p>Orient <strong>every tube the same way</strong>: <span class="tag k-data">DIN</span> at the top, data flowing down, <span class="tag" style="color:var(--power)">DOUT</span> at the bottom. Then, instead of hopping sideways to the neighbor's bottom, run a <strong>thin data wire from the bottom back up the hidden side of the tube</strong> to the top, and hop to the next tube's <span class="tag k-data">DIN</span> up there. The tube's own bottom now connects to <em>nothing beside it</em> — just its own little wire heading up — so it swings free like a bristle.</p>
+  </div>
+
+  <figure>
+    <div class="figframe">
+      <svg viewBox="0 0 720 360" role="img" aria-label="The fix: each tube takes data in at the top, flows down, and a return wire carries the leftover signal back up the side to the top of the next tube. Power feeds in at the top. Bottoms hang free.">
+        <defs>
+          <marker id="gd" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--data)"/></marker>
+          <marker id="gp" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M1,1 L7,4.5 L1,8 Z" fill="var(--power)"/></marker>
+        </defs>
+
+        <!-- rail -->
+        <rect x="40" y="16" width="640" height="9" rx="3" fill="var(--muted)" opacity="0.55"/>
+        <text x="40" y="12" font-family="var(--mono)" font-size="11" fill="var(--muted)">upper-deck rail — every connection lives up here</text>
+
+        <!-- tubes centers 170 360 550 -->
+        <g class="bristle-free">
+          <rect x="158" y="66" width="24" height="200" rx="12" fill="var(--surface-2)" stroke="var(--hair)" stroke-width="1.5"/>
+        </g>
+        <g class="bristle-free" style="animation-delay:-1.5s">
+          <rect x="348" y="66" width="24" height="200" rx="12" fill="var(--surface-2)" stroke="var(--hair)" stroke-width="1.5"/>
+        </g>
+        <g class="bristle-free" style="animation-delay:-3s">
+          <rect x="538" y="66" width="24" height="200" rx="12" fill="var(--surface-2)" stroke="var(--hair)" stroke-width="1.5"/>
+        </g>
+
+        <!-- power in (amber) at each top -->
+        <path d="M150,30 L164,60" stroke="var(--power)" stroke-width="2.5" fill="none" marker-end="url(#gp)"/>
+        <path d="M340,30 L354,60" stroke="var(--power)" stroke-width="2.5" fill="none" marker-end="url(#gp)"/>
+        <path d="M530,30 L544,60" stroke="var(--power)" stroke-width="2.5" fill="none" marker-end="url(#gp)"/>
+
+        <!-- DIN dots -->
+        <circle cx="170" cy="70" r="4.5" fill="var(--data)"/>
+        <circle cx="360" cy="70" r="4.5" fill="var(--data)"/>
+        <circle cx="550" cy="70" r="4.5" fill="var(--data)"/>
+
+        <!-- internal data DOWN (dashed) -->
+        <path d="M170,80 L170,238" stroke="var(--data)" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#gd)"/>
+        <path d="M360,80 L360,238" stroke="var(--data)" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#gd)"/>
+        <path d="M550,80 L550,238" stroke="var(--data)" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#gd)"/>
+
+        <!-- DOUT dots -->
+        <circle cx="170" cy="252" r="4.5" fill="var(--power)"/>
+        <circle cx="360" cy="252" r="4.5" fill="var(--power)"/>
+        <circle cx="550" cy="252" r="4.5" fill="var(--power)"/>
+
+        <!-- return wires up to next DIN -->
+        <path d="M170,252 C196,252 200,252 200,236 L200,54 C200,44 336,44 350,64" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#gd)"/>
+        <path d="M360,252 C386,252 390,252 390,236 L390,54 C390,44 526,44 540,64" stroke="var(--data)" stroke-width="2.5" fill="none" marker-end="url(#gd)"/>
+        <path d="M550,252 C576,252 580,252 580,236 L580,40" stroke="var(--data)" stroke-width="2.5" stroke-dasharray="3 4" fill="none"/>
+        <text x="588" y="44" font-family="var(--mono)" font-size="10.5" fill="var(--muted)">…next tube</text>
+
+        <!-- return wire label -->
+        <text x="212" y="150" font-family="var(--mono)" font-size="11" fill="var(--data)">return wire</text>
+        <text x="212" y="166" font-family="var(--mono)" font-size="11" fill="var(--data)">(runs up the</text>
+        <text x="212" y="182" font-family="var(--mono)" font-size="11" fill="var(--data)">hidden back)</text>
+
+        <!-- free-bottom indicators -->
+        <path d="M150,286 C160,292 180,292 190,286" stroke="var(--muted)" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <path d="M340,286 C350,292 370,292 380,286" stroke="var(--muted)" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <path d="M520,286 C530,292 550,292 560,286" stroke="var(--muted)" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <text x="360" y="326" text-anchor="middle" font-family="var(--mono)" font-size="11.5" fill="var(--ink)">nothing tied here → each bristle swings free</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="swatch dash"></i> data flowing down the tube</span>
+      <span><i class="swatch" style="background:var(--data)"></i> return wire &amp; hops (all at top)</span>
+      <span><i class="swatch" style="background:var(--power)"></i> 24V power in (already the plan)</span>
+    </div>
+    <figcaption><b>The fix:</b> data comes in at the top, runs down, and a single thin wire carries the leftover signal back up to the next tube — so every hop lives on the rail and the bottoms are free. As a bonus, since every tube now runs the same direction, you can delete the "flip every other tube" logic (<span class="tag">REVERSED_LINES</span> in <span class="tag">tube_map.py</span>) — the software gets simpler too.</figcaption>
+  </figure>
+
+  <div class="card flag">
+    <h3>⚑ Check this on a real tube before you commit</h3>
+    <p style="margin-top:8px">Find the little <strong>arrow</strong> printed on the strip, or the <span class="tag k-data">DIN</span>/<span class="tag" style="color:var(--power)">DOUT</span> labels, and confirm which end is which. Two cases:</p>
+    <ul style="margin-bottom:4px">
+      <li><strong>Data-in and data-out are at opposite ends</strong> (most likely — a normal straight strip): use the return-wire method above. One return wire per tube.</li>
+      <li><strong>Both data ends come out at the top</strong> (some "double-sided" tubes are a strip folded at the bottom): you're in luck — just hop top-to-top, <em>no return wires and no bottom work at all</em>. Your tubes are spec'd "double-sided," so it's worth a two-minute look to find out which world you're in.</li>
+    </ul>
+  </div>
+
+  <div class="prose">
+    <h2><span class="num">04</span>What you're getting into</h2>
+    <p>This is a genuinely big rig. Not to scare you off — to set expectations honestly, because "never done LEDs before" plus "this scale" deserves a straight answer.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">136</div><div class="l">tubes / bristles</div></div>
+    <div class="stat"><div class="v">~340 m</div><div class="l">of LED tube</div></div>
+    <div class="stat"><div class="v">5,440</div><div class="l">addressable pixels</div></div>
+    <div class="stat"><div class="v">5</div><div class="l">controllers (A–E)</div></div>
+    <div class="stat"><div class="v">24 V</div><div class="l">LED battery bank</div></div>
+    <div class="stat"><div class="v">~170 A</div><div class="l">typical current draw</div></div>
+  </div>
+
+  <div class="prose">
+    <p>Here's the crucial split for a first-timer — <strong>this project has two very different halves</strong>, and they carry very different risk:</p>
+  </div>
+
+  <div class="two">
+    <div class="mini yes">
+      <h3>The data side — friendly</h3>
+      <p style="margin:6px 0 0; font-size:15px">The rewire you're asking about. Signal is <strong>5&nbsp;V</strong>, currents are tiny. Worst case you mis-wire it and a tube doesn't light — you fix it. Repetitive soldering and routing, but nothing here can hurt you.</p>
+    </div>
+    <div class="mini no">
+      <h3>The power side — respect it</h3>
+      <p style="margin:6px 0 0; font-size:15px">The 24&nbsp;V Tesla bank pushes <strong>170–400+ amps</strong>. That much current welds tools, melts wire, and starts fires; the battery modules store serious energy. This half is not a beginner-solo job.</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2><span class="num">05</span>Can you do it on your own?</h2>
+  </div>
+
+  <div class="card verdict">
+    <h3><strong>Yes — for the part you're actually asking about.</strong></h3>
+    <p style="margin-top:8px">The free-hanging rewire is data work: low-voltage, safe, and repetitive rather than tricky. It's a great first real LED project <em>if</em> you learn on a prototype before touching the installed broom. What you should <strong>not</strong> solo is anything on the 24&nbsp;V bank, the 250&nbsp;A breaker, or the busbars — pair with whoever's leading power (the repo has Chris and Mike on that) for the high-current side.</p>
+  </div>
+
+  <div class="prose">
+    <p>Skills you'll pick up along the way: soldering to fine LED pads, heat-shrink and strain relief, neat wire routing, and driving the tubes from xLights/FPP. None are hard alone; the challenge is <strong>patience across 136 repetitions</strong> and staying organized (label everything).</p>
+
+    <h3>A prototype-first path that de-risks the whole thing</h3>
+    <p>Don't start on the car. Prove the method small, then scale — each step is cheap and teaches the next:</p>
+  </div>
+
+  <ol class="steps">
+    <li><b>One tube on the bench.</b> A small 24&nbsp;V supply, one controller output, and xLights. Goal: make it light and find <span class="tag k-data">DIN</span> vs <span class="tag" style="color:var(--power)">DOUT</span>, the ground, the series resistor at DIN, and the injection cap.</li>
+    <li><b>Two tubes with a return wire.</b> Prove the core idea: data down tube 1, back up the wire, into tube 2, bottoms free. If this works, the whole design works.</li>
+    <li><b>One group of four.</b> The real unit of the build (34 groups of 4). Time yourself — this tells you the hours for all 136.</li>
+    <li><b>One full controller line.</b> Confirms signal stays clean over the longer return runs and the mapping in software is right.</li>
+    <li><b>Roll out to all 136.</b> Now it's just repeating a proven, boring process — the good kind of boring.</li>
+  </ol>
+
+  <div class="prose">
+    <h3>A few things to keep in mind</h3>
+    <ul>
+      <li><strong>Common ground is non-negotiable.</strong> The data return only makes sense if its ground reference is shared with the power system. It already is (single ground bus) — just don't break that.</li>
+      <li><strong>Keep the series resistor at each <span class="tag k-data">DIN</span></strong> (the ~330–470&nbsp;Ω you already spec). It tames reflections on the longer return-wire runs.</li>
+      <li><strong>Run return wires on the hidden back</strong> of each tube, clipped tidy — out of sight from the viewing side, and short as the geometry allows.</li>
+      <li><strong>Power doesn't change.</strong> Each tube is already fed 24&nbsp;V from the top (single-end injection), so the whole tube — bottom included — stays lit with no bottom power connection. You're only moving data.</li>
+    </ul>
+  </div>
+
+  <footer class="foot">
+    Glorb broom · free-hanging bristle rewire · a data-wiring change, not a power change. Verify DIN/DOUT on a real tube before ordering wire or cutting anything.
+  </footer>
+
+</div>
+</div>

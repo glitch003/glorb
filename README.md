@@ -61,7 +61,7 @@ Details: [dimensions.md](dimensions.md)
 | --- | --- |
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |
-| [electrical/](electrical/) | Tesla packs, BMS, chargers, inverter, power budget |
+| [electrical/](electrical/) | Tesla packs, BMS, chargers, inverter, power budget, drive-by-wire chassis manual |
 | [sound/](sound/) | DJ signal chain and PA gear |
 | [meshspeak/](meshspeak/) | Offline Meshtastic → text-to-speech so the mesh can talk through the car |
 | [generators/](generators/) | The generator fleet and its ongoing state of repair |

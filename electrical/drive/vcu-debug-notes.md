@@ -5,6 +5,17 @@ beeping" a few days before the burn. Companion to the
 [translated chassis manual](manual-en.md). Status at time of writing: **root
 cause isolated to the VCU's supply feed being dead; exact break not yet found.**
 
+## RESOLVED — 2026-08-29
+
+**Root cause: the main wire labeled "car" on the 12 V bus. Its positive had
+wiggled out of the breaker — but tape wrapped around the connection hid the
+loose wire, so it looked fine on visual inspection.** Re-landing the positive
+in the breaker restored the 12 V feed to the VCU.
+
+This matches the "chase the dead supply" list below (loose/hidden connection
+upstream of the harness connector) — the tape is exactly why "unwrap and
+inspect" beats eyeballing. Chris flew to Idaho to help track it down.
+
 ## What the control chain actually is
 
 Transmitter (FlySky-style, dual power buttons) → 2.4 GHz →

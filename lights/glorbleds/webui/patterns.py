@@ -684,6 +684,96 @@ class Horses(Pattern):
                 buf[j] = buf[j + 1] = buf[j + 2] = 0
 
 
+# 5x7 marquee font, row 0 = tube top. Only the glyphs the message needs.
+_MARQUEE_FONT = {
+    "A": (".###.", "#...#", "#...#", "#####", "#...#", "#...#", "#...#"),
+    "B": ("####.", "#...#", "#...#", "####.", "#...#", "#...#", "####."),
+    "C": (".###.", "#...#", "#....", "#....", "#....", "#...#", ".###."),
+    "D": ("####.", "#...#", "#...#", "#...#", "#...#", "#...#", "####."),
+    "H": ("#...#", "#...#", "#...#", "#####", "#...#", "#...#", "#...#"),
+    "I": ("###", ".#.", ".#.", ".#.", ".#.", ".#.", "###"),
+    "N": ("#...#", "##..#", "#.#.#", "#.#.#", "#..##", "#...#", "#...#"),
+    "P": ("####.", "#...#", "#...#", "####.", "#....", "#....", "#...."),
+    "R": ("####.", "#...#", "#...#", "####.", "#.#..", "#..#.", "#...#"),
+    "T": ("#####", "..#..", "..#..", "..#..", "..#..", "..#..", "..#.."),
+    "Y": ("#...#", "#...#", ".#.#.", "..#..", "..#..", "..#..", "..#.."),
+    "♥": (".##.##.", "#######", "#######", ".#####.", "..###..", "...#...",
+          "......."),
+    " ": ("...", "...", "...", "...", "...", "...", "..."),
+}
+
+
+class Bianca(Pattern):
+    """HAPPY BIRTHDAY BIANCA marquee scrolling around the car.
+
+    The message is rendered from a 5x7 bitmap font onto the unrolled sheet
+    (x = perim, y = along) with square cells on the physical car, and marches
+    around the perimeter like a stock ticker. The strip is ~2.5 perimeters
+    long, so one pass shows the whole message with a gap before it repeats.
+    Letters tint color1 (top) -> color2 (bottom); bilinear sampling of the
+    font bitmap so edges glide between tubes instead of popping (house rule:
+    coverage, not booleans). speed = scroll rate, density = letter height.
+    """
+    name = "bianca"
+    defaults = {"color1": (255, 60, 170), "color2": (255, 210, 60)}
+
+    MESSAGE = "HAPPY BIRTHDAY BIANCA ♥   "
+    TUBE_M = 2.5
+    PERIM_M = 9.8
+
+    def __init__(self):
+        # Flatten the message into one 7-row column strip, one blank column
+        # between glyphs. alpha[row * W + col] in 0.0/1.0.
+        cols = []
+        for ch in self.MESSAGE:
+            glyph = _MARQUEE_FONT[ch]
+            for x in range(len(glyph[0])):
+                cols.append(tuple(1.0 if row[x] == "#" else 0.0
+                                  for row in glyph))
+            cols.append((0.0,) * 7)
+        self.W = len(cols)
+        self.alpha = [cols[x][y] for y in range(7) for x in range(self.W)]
+
+    def render(self, m, p, t, buf):
+        buf[:] = bytes(len(buf))
+        W, alpha = self.W, self.alpha
+        c1, c2 = p["color1"], p["color2"]
+        sh = 0.35 + p["density"] * 0.45          # text height (along units)
+        top = 0.5 - sh / 2.0
+        # Square cells on the car: a font cell spans sh/7 of a tube, so the
+        # same span of the (much longer) perimeter per column.
+        cw = (sh / 7.0) * (self.TUBE_M / self.PERIM_M)
+        scroll = t * (0.5 + p["speed"] * 4.0)    # columns per second
+        perim, along = m.perim, m.along
+        for i in range(m.total_pixels):
+            v = (along[i] - top) / sh
+            if not 0.0 <= v < 1.0:
+                continue
+            fy = v * 7.0 - 0.5
+            y0 = int(fy) if fy > 0.0 else 0
+            if y0 > 5:
+                y0 = 5
+            ty = fy - y0
+            if ty < 0.0:
+                ty = 0.0
+            elif ty > 1.0:
+                ty = 1.0
+            fx = (perim[i] / cw + scroll) % W
+            x0 = int(fx)
+            tx = fx - x0
+            x1 = x0 + 1 if x0 + 1 < W else 0     # strip wraps around
+            q0, q1 = y0 * W, (y0 + 1) * W
+            a = (alpha[q0 + x0] * (1 - tx) * (1 - ty)
+                 + alpha[q0 + x1] * tx * (1 - ty)
+                 + alpha[q1 + x0] * (1 - tx) * ty
+                 + alpha[q1 + x1] * tx * ty)
+            if a > 0.0:
+                j = i * 3
+                buf[j] = int((c1[0] * (1 - v) + c2[0] * v) * a)
+                buf[j + 1] = int((c1[1] * (1 - v) + c2[1] * v) * a)
+                buf[j + 2] = int((c1[2] * (1 - v) + c2[2] * v) * a)
+
+
 class PacMan(Pattern):
     """Pac-Man chomps a boustrophedon path down the car eating a trail of dots,
     a ghost hot on his tail. The three lit sides are an unrolled sheet: he runs
@@ -3286,7 +3376,7 @@ _BASE = [
     Plasma(), RainbowSnake(),
     Meteors(), Storm(), Stripes(), Cubes(),
     Breathe(), RainbowBreathe(), Wave(), Comet(), Rain(), Sparkle(), Confetti(),
-    BroomStroke(), PacMan(), Horses(), Fireworks(),
+    BroomStroke(), PacMan(), Horses(), Bianca(), Fireworks(),
     Matrix(), Disco(), EKG(), DVD(), DVDPenis(), Police(), Butthole(), Boobs(), Penis(),
     Twerk(), Poop(), UFO(), GooglyEyes(), Sperm(), Lava(), Hypno(), Solid(),
     EmojiSprite(),

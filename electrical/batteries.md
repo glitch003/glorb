@@ -2,6 +2,14 @@
 
 Firmware password: `QTHN6666`
 
+**Live monitoring:** [glorbmon](glorbmon/) reads all three battery systems at
+once (12 V EG4 chain, 24 V LED bank, 72 V drive pack), replacing the three
+separate vendor programs. It is normally run as part of the combined
+dashboard — double-click [start.bat](../start.bat) in the repo root and open
+<http://localhost:8080/>, which shows the battery meters alongside the LED
+controls. To run the monitor on its own instead, use
+[start-monitor.bat](start-monitor.bat) (port 8081).
+
 ## Current setup (post 2023-05 swap)
 
 **Main pack:** Tesla modules — 6 modules wired **3s2p** for **72 V nominal**.

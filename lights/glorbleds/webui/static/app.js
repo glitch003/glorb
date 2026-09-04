@@ -27,6 +27,14 @@ const GAMMA = (() => {
   return t;
 })();
 
+// The power monitor runs as its own process on 8081. Point at whatever host
+// this page was loaded from, so the link works from a phone on the glorb
+// network and not just from the laptop.
+{
+  const link = document.getElementById("powerlink");
+  if (link) link.href = `http://${location.hostname || "localhost"}:8081/`;
+}
+
 const canvas = document.getElementById("car");
 const ctx = canvas.getContext("2d");
 

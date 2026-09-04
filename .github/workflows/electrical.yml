@@ -1,0 +1,37 @@
+name: Electrical tests
+
+on:
+  pull_request:
+    paths:
+      - "electrical/**"
+      - ".github/workflows/electrical.yml"
+  push:
+    branches: [main]
+    paths:
+      - "electrical/**"
+      - ".github/workflows/electrical.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    defaults:
+      run:
+        working-directory: electrical
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: python -m pip install --quiet pyserial
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: CLI smoke test
+        run: python -m glorbmon ports

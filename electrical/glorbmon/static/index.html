@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Glorb — power monitor</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Glorb <span>power monitor</span></h1>
+  <div class="hdr-right">
+    <span id="overallPill" class="pill s-unknown">connecting…</span>
+    <a id="ledlink" class="ledlink" href="http://localhost:8080/">LED control</a>
+  </div>
+</header>
+<script>
+// The LED server runs as its own process on 8080. Point at whatever host this
+// page was loaded from, so the link works from a phone on the glorb network.
+document.getElementById("ledlink").href =
+  "http://" + (location.hostname || "localhost") + ":8080/";
+</script>
+
+<div id="banner" class="banner hidden" role="status" aria-live="polite"></div>
+
+<nav class="viewtabs" id="tabs" aria-label="Sections"></nav>
+
+<main id="content"></main>
+
+<script src="app.js"></script>
+</body>
+</html>

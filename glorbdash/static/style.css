@@ -1,0 +1,218 @@
+:root {
+  --bg: #0b1017; --panel: #141c28; --line: #22303f;
+  --text: #e6eef7; --muted: #8aa0b6; --accent: #34c3ff;
+  --ok: #48d17a; --warn: #ffc14d; --bad: #ff6b6b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.4 -apple-system, Segoe UI, Roboto, sans-serif;
+}
+.hidden { display: none !important; }
+
+/* ---- pinned battery bar ------------------------------------------------ */
+/* Sticky so the packs stay on screen while the lights are being driven --
+   the whole point of merging the two dashboards. */
+#topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding: 10px 18px; background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
+h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: .2px; }
+.stat { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
+.stat span { color: var(--accent); }
+
+.meters {
+  flex: 1 1 420px; display: grid; gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.meter {
+  background: var(--panel); border: 1px solid var(--line);
+  border-left: 4px solid var(--muted);
+  border-radius: 9px; padding: 7px 11px 8px; min-width: 0;
+  cursor: pointer;
+}
+.meter.s-ok   { border-left-color: var(--ok); }
+.meter.s-warn { border-left-color: var(--warn); }
+.meter.s-bad  { border-left-color: var(--bad); }
+.meter-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px;
+}
+.meter-name {
+  font-size: 12px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .6px; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meter-soc {
+  font-size: 30px; font-weight: 700; line-height: 1.05;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.meter-soc .pct { font-size: 15px; font-weight: 600; margin-left: 1px; }
+.meter-soc .est {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  margin-left: 5px; letter-spacing: .5px; vertical-align: 3px;
+}
+.s-ok   .meter-soc { color: var(--ok); }
+.s-warn .meter-soc { color: var(--warn); }
+.s-bad  .meter-soc { color: var(--bad); }
+.s-unknown .meter-soc { color: var(--muted); font-size: 22px; }
+
+.meter-bar {
+  height: 8px; margin: 6px 0 5px; border-radius: 5px;
+  background: #0a1119; border: 1px solid var(--line); overflow: hidden;
+}
+.meter-fill { height: 100%; width: 0; transition: width .5s ease; }
+.s-ok   .meter-fill { background: var(--ok); }
+.s-warn .meter-fill { background: var(--warn); }
+.s-bad  .meter-fill { background: var(--bad); }
+
+.meter-sub {
+  font-size: 12px; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.meter-sub b { color: var(--text); font-weight: 600; }
+.meter-sub .alarm { color: var(--bad); font-weight: 600; }
+
+/* ---- main split -------------------------------------------------------- */
+main { display: flex; gap: 18px; padding: 16px 18px 24px; align-items: flex-start; }
+.viz { order: 1; flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+
+.viewtabs { display: flex; gap: 6px; align-self: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+.viewtabs button {
+  padding: 6px 14px; border: 1px solid var(--line); border-radius: 7px;
+  background: #0e1622; color: var(--text); cursor: pointer; font-size: 13px;
+}
+.viewtabs button:hover { border-color: var(--accent); }
+.viewtabs button.active { background: var(--accent); color: #041018; border-color: var(--accent); font-weight: 600; }
+canvas {
+  width: auto; height: auto; max-width: 100%; max-height: 68vh;
+  background: #05080c; touch-action: none;
+  border: 1px solid var(--line); border-radius: 10px;
+  filter: blur(0.4px) brightness(1.12);
+}
+.hint { color: var(--muted); font-size: 13px; margin: 8px 2px 0; align-self: flex-start; }
+
+.controls {
+  order: 2; flex: 0 0 310px;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.group > label, .group > summary {
+  display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px;
+}
+.group output { color: var(--accent); float: right; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+
+summary { cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "\25B8  "; color: var(--muted); }
+details[open] > summary::before { content: "\25BE  "; }
+details > summary { margin-bottom: 10px; }
+
+/* The pattern list is 52 entries long. Capping its height is what keeps the
+   sliders on screen instead of pushed off the bottom. */
+.patterngroup { border-top: 1px solid var(--line); padding-top: 12px; }
+.patterngroup > label { display: flex; align-items: center; gap: 8px; }
+#patternFilter {
+  flex: 1; min-width: 0; padding: 5px 8px; font-size: 13px;
+  background: #0e1622; color: var(--text);
+  border: 1px solid var(--line); border-radius: 7px;
+}
+.patterns {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
+  max-height: 34vh; overflow-y: auto; overscroll-behavior: contain;
+  padding-right: 4px;
+}
+.patterns button {
+  padding: 9px 6px; border: 1px solid var(--line); border-radius: 7px;
+  background: #0e1622; color: var(--text); cursor: pointer;
+  font-size: 13px; text-transform: capitalize;
+}
+.patterns button:hover { border-color: var(--accent); }
+.patterns button.active { background: var(--accent); color: #041018; border-color: var(--accent); font-weight: 600; }
+
+.emojis { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-bottom: 8px; }
+.emojis button {
+  padding: 4px 0; border: 1px solid var(--line); border-radius: 7px;
+  background: #0e1622; cursor: pointer; font-size: 18px; line-height: 1.3;
+}
+.emojis button:hover { border-color: var(--accent); }
+.emojis button.active { background: var(--accent); border-color: var(--accent); }
+.emoji-current { color: var(--accent); }
+#emojiCustom {
+  width: 100%; padding: 7px 8px; background: #0e1622; color: var(--text);
+  border: 1px solid var(--line); border-radius: 7px;
+}
+
+.colors { display: flex; gap: 14px; }
+.colors > div { flex: 1; }
+input[type=color] { width: 100%; height: 34px; border: 1px solid var(--line);
+  border-radius: 7px; background: none; cursor: pointer; }
+
+.hw .row { display: flex; align-items: center; gap: 8px; color: var(--text) !important; }
+.hwfields { display: flex; gap: 8px; margin: 10px 0; }
+.hwfields input { flex: 1; min-width: 0; }
+.hwfields input, .hwfields select {
+  padding: 7px 8px; background: #0e1622; color: var(--text);
+  border: 1px solid var(--line); border-radius: 7px;
+}
+.hwstatus { font-size: 13px; color: var(--muted); }
+.hwstatus.on { color: var(--ok); }
+.hwstatus.err { color: var(--bad); }
+
+/* ---- battery detail dialog --------------------------------------------- */
+#batteryDialog {
+  width: min(860px, 94vw); max-height: 86vh; padding: 0;
+  background: var(--panel); color: var(--text);
+  border: 1px solid var(--line); border-radius: 12px;
+}
+#batteryDialog::backdrop { background: rgba(0, 0, 0, .6); }
+.dlg-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; background: var(--panel);
+}
+.dlg-head button {
+  padding: 5px 12px; border: 1px solid var(--line); border-radius: 7px;
+  background: #0e1622; color: var(--text); cursor: pointer;
+}
+.dlg-body { padding: 14px 16px 18px; overflow-y: auto; max-height: 74vh; }
+.sys { border-top: 1px solid var(--line); padding: 12px 0 4px; }
+.sys:first-child { border-top: 0; padding-top: 0; }
+.sys h3 { margin: 0 0 2px; font-size: 15px; }
+.sys .sub { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+.kvgrid {
+  display: grid; gap: 6px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  font-variant-numeric: tabular-nums; font-size: 13px;
+}
+.kvgrid div span { color: var(--muted); }
+.kvgrid div b { font-weight: 600; }
+.notes { color: var(--muted); font-size: 12px; margin: 10px 0 0; padding-left: 18px; }
+.notes li { margin-bottom: 5px; }
+
+@media (max-width: 900px) {
+  /* Phone in hand while driving: meters pinned, then the sliders, then the
+     pattern list, with the car preview last. */
+  main { flex-direction: column; padding: 12px; }
+  .viz { order: 2; width: 100%; }
+  .controls { order: 1; flex-basis: auto; width: 100%; }
+  .meters { gap: 7px; }
+  .meter { padding: 6px 8px 7px; border-left-width: 3px; }
+  .meter-soc { font-size: 25px; }
+  .patterns { max-height: 30vh; }
+  canvas { max-height: 46vh; }
+}
+@media (max-width: 560px) {
+  #topbar { padding: 8px 10px; gap: 10px; }
+  .brand { width: 100%; justify-content: space-between; }
+  .meters { flex-basis: 100%; }
+  .meter-name { font-size: 10px; letter-spacing: .3px; }
+  .meter-soc { font-size: 22px; }
+  .meter-sub { font-size: 11px; }
+}

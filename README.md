@@ -20,6 +20,11 @@ This year the car becomes a broom. Why a broom? The committee has asked that we 
 
 *Photos of the broom coming after the burn — until then, enjoy the 2023 op-art era below.*
 
+**Running the car:** double-click [start.bat](start.bat), or
+`python -m glorbdash serve --host 0.0.0.0`, then open <http://localhost:8080/> (or `http://<car ip>:8080/` from a phone). One
+page with the LED controls and live state of charge for all three battery
+systems — see [glorbdash/](glorbdash/).
+
 Full design: [broom/DESIGN.md](broom/DESIGN.md) · lighting build: [lights/](lights/)
 
 ## 2023: the origin
@@ -61,7 +66,8 @@ Details: [dimensions.md](dimensions.md)
 | --- | --- |
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |
-| [electrical/](electrical/) | Tesla packs, BMS, chargers, inverter, power budget, drive-by-wire chassis manual |
+| [glorbdash/](glorbdash/) | **The dashboard you actually run** — LED control and live battery meters on one page |
+| [electrical/](electrical/) | Tesla packs, BMS, chargers, inverter, power budget, drive-by-wire chassis manual, [battery protocol drivers](electrical/glorbmon/) |
 | [sound/](sound/) | DJ signal chain and PA gear |
 | [meshspeak/](meshspeak/) | Offline Meshtastic → text-to-speech so the mesh can talk through the car |
 | [generators/](generators/) | The generator fleet and its ongoing state of repair |

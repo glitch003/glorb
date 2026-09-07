@@ -24,6 +24,8 @@ Everything here is a read: function code 0x03 only.
 
 import time
 
+from .soc import estimate_soc_lfp
+
 BAUD = 9600
 FUNC_READ = 0x03
 # Read 39 registers from 0 -- the block holding cells, current, SOC and temps.
@@ -37,6 +39,29 @@ O_MOS_TEMP, O_CAP_REMAIN, O_MAX_CHARGE_A = 39, 45, 47
 O_SOH, O_SOC = 49, 51
 O_STATUS, O_WARNING, O_PROTECTION, O_ERROR = 54, 55, 57, 59
 O_CYCLES, O_CAPACITY, O_TEMPS, O_CELL_COUNT = 61, 65, 69, 75
+
+# Full-charge watermark. A charger holding the cells at or above float voltage
+# while essentially no current flows means the pack has stopped accepting
+# charge -- the standard LiFePO4 charge-termination signal, and the one moment
+# voltage-based SOC is unambiguous. Observed on 2026-09-07: charger on,
+# zero amps, so the packs were full while their own counters read low.
+FULL_HOLD_CELL_V = 3.35
+FULL_TAIL_A = 2.0
+
+
+def estimate_pack_soc(cells, current):
+    """Voltage-derived SOC for one pack, ignoring the BMS's own counter.
+
+    The counter drifts (a pack resting near 3.37 V/cell reported 22%), so SOC
+    comes from the LiFePO4 voltage curve, with the full watermark pinned by
+    charge-termination: held at float with no current flowing means 100%.
+    """
+    if not cells:
+        return None
+    avg = sum(cells) / len(cells)
+    if avg >= FULL_HOLD_CELL_V and abs(current) <= FULL_TAIL_A:
+        return 100.0
+    return estimate_soc_lfp(avg)
 
 
 def crc16(data):
@@ -104,13 +129,17 @@ def parse_status(frame):
         if value:
             alarms.append(f"{name} word {value:#06x}")
 
+    current = s16(O_CURRENT) / 100.0
     reading = {
         "addr": frame[0],
         "online": True,
         "voltage": u16(O_VOLTAGE) / 100.0,
         # Positive is charging; confirmed by remaining-Ah counting upward.
-        "current": s16(O_CURRENT) / 100.0,
+        "current": current,
+        # The BMS's own counter, kept for comparison but not trusted -- the
+        # dashboard shows soc_estimate instead.
         "soc": float(u16(O_SOC)),
+        "soc_estimate": estimate_pack_soc(cells, current),
         "soh": float(u16(O_SOH)),
         "capacity_ah": u16(O_CAP_REMAIN) * 1.0,
         "capacity_full_ah": int.from_bytes(frame[O_CAPACITY:O_CAPACITY + 4],
@@ -198,23 +227,39 @@ class EG4Bus:
 
     def _summarise(self, packs):
         live = [p for p in packs if p.get("online")]
-        summary = []
+        summary, notes = [], []
         if live:
             # The packs sit in parallel on one 12 V bus: voltage is shared, so
-            # average it; current is the total. Bank SOC comes from summed
-            # amp-hours rather than averaged percentages, which is the same
-            # thing only while every pack is the same size.
+            # average it; current is the total. Bank SOC is the average of the
+            # per-pack voltage estimates (all three packs are 400 Ah); the
+            # BMS's own amp-hour counter is shown alongside for comparison but
+            # not believed -- see estimate_pack_soc.
             volts = sum(p["voltage"] for p in live) / len(live)
             amps = sum(p["current"] for p in live)
             remaining = sum(p["capacity_ah"] for p in live)
             full = sum(p["capacity_full_ah"] for p in live)
+            estimates = [p["soc_estimate"] for p in live
+                         if p.get("soc_estimate") is not None]
+            estimate = (sum(estimates) / len(estimates)) if estimates else None
             summary = [
                 {"label": "Bus", "value": f"{volts:.2f}", "unit": "V"},
                 {"label": "Current", "value": f"{amps:+.1f}", "unit": "A"},
-                {"label": "SOC", "unit": "%",
+                {"label": "SOC (est)", "unit": "%",
+                 "value": "—" if estimate is None else f"{estimate:.0f}"},
+                {"label": "BMS SOC", "unit": "%",
                  "value": f"{(remaining / full * 100) if full else 0:.0f}"},
-                {"label": "Remaining", "value": f"{remaining:.0f}", "unit": "Ah"},
+                {"label": "BMS Ah", "value": f"{remaining:.0f}", "unit": "Ah"},
             ]
+            if estimate is not None:
+                notes.append(
+                    "SOC is estimated from the LiFePO4 voltage curve, not the "
+                    "BMS's own counter -- a pack resting near full has "
+                    "reported 22%. It reads high while charging and low under "
+                    "load, and the mid-range is coarse because LiFePO4's "
+                    "voltage curve is flat. A charger holding "
+                    f"≥{FULL_HOLD_CELL_V:.2f} V/cell with under "
+                    f"{FULL_TAIL_A:.0f} A flowing pins it at 100%: that is "
+                    "charge termination, the one unambiguous point.")
         alarms = [f"pack {p['addr']}: {a}" for p in live for a in p["alarms"]]
         offline = [p["addr"] for p in packs if not p.get("online")]
 
@@ -230,4 +275,4 @@ class EG4Bus:
             state, text = "ok", f"{len(live)} of {len(packs)} responding"
 
         return {"state": state, "status_text": text, "summary": summary,
-                "packs": packs}
+                "packs": packs, "notes": notes}

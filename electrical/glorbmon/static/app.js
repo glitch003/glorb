@@ -334,7 +334,8 @@
       html += '<div class="stats">' +
         statHTML('Voltage', fmt(p.voltage, 2), 'V') +
         statHTML('Current', fmt(p.current, 1), 'A') +
-        statHTML('SOC', fmt(p.soc, 0), '%') +
+        statHTML('SOC (est)', fmt(p.soc_estimate, 0), '%') +
+        statHTML('BMS SOC', fmt(p.soc, 0), '%') +
         statHTML('Cycles', fmt(p.cycles, 0), '') +
         statHTML('Capacity', fmt(p.capacity_ah, 0), 'Ah') +
         '</div>';
@@ -350,7 +351,7 @@
 
       html += '</div>';
     }
-    return html;
+    return html + notesHTML(sys.notes);
   }
 
   function render24v(sys) {

@@ -84,6 +84,32 @@ class TestEG4Parse(unittest.TestCase):
             ratio = reading["capacity_ah"] / reading["capacity_full_ah"] * 100
             self.assertAlmostEqual(ratio, reading["soc"], delta=0.5)
 
+    def test_soc_is_estimated_from_voltage_not_the_bms_counter(self):
+        # Captured while charging at 10 A: cells averaged 3.3665 V, which the
+        # LiFePO4 curve places in the mid-90s. The BMS counter said 22%, and
+        # a pack resting that close to full is not at 22% -- the counter is
+        # what this field exists to ignore.
+        reading = eg4.parse_status(EG4_PACK1)
+        self.assertAlmostEqual(reading["soc_estimate"], 94.1, delta=1.0)
+        self.assertEqual(reading["soc"], 22.0)
+
+    def test_charger_holding_voltage_with_no_amps_means_full(self):
+        # The high watermark: same cell voltages, but current at 0.5 A means
+        # charge termination, so the pack is pinned at exactly 100%.
+        reading = eg4.parse_status(eg4_with(EG4_PACK1, O_CURRENT=50))
+        self.assertEqual(reading["soc_estimate"], 100.0)
+
+    def test_real_charge_current_is_not_mistaken_for_termination(self):
+        # 10.19 A flowing is charging, not termination -- no 100% pin.
+        self.assertLess(eg4.parse_status(EG4_PACK1)["soc_estimate"], 100.0)
+
+    def test_low_voltage_is_never_pinned_full(self):
+        # No current flowing but cells at 3.28 V: that is just a resting pack
+        # around half charge, not a charger holding it full.
+        self.assertAlmostEqual(eg4.estimate_pack_soc([3.28] * 4, 0.0),
+                               50.0, delta=1.0)
+        self.assertIsNone(eg4.estimate_pack_soc([], 0.0))
+
     def test_current_is_signed_and_positive_means_charging(self):
         self.assertAlmostEqual(eg4.parse_status(EG4_PACK1)["current"],
                                10.19, places=2)
@@ -198,7 +224,7 @@ class TestEG4Bus(unittest.TestCase):
         online = [p["addr"] for p in payload["packs"] if p.get("online")]
         self.assertEqual(online, [1, 3])
 
-    def test_bank_soc_comes_from_summed_amp_hours(self):
+    def test_bank_soc_is_voltage_derived_with_the_bms_counter_demoted(self):
         ser = FakeSerial()
         replies = {1: EG4_PACK1, 2: EG4_PACK2, 3: EG4_PACK3}
 
@@ -210,12 +236,30 @@ class TestEG4Bus(unittest.TestCase):
         payload, _ = eg4.EG4Bus(lambda **kw: ser, gap_s=0).poll()
         self.assertEqual(payload["state"], "ok")
         values = {s["label"]: s["value"] for s in payload["summary"]}
-        # 88 + 264 + 168 = 520 Ah of 1200 Ah
-        self.assertEqual(values["Remaining"], "520")
-        self.assertEqual(values["SOC"], "43")
+        # Cells all sit around 3.36-3.37 V: mid-90s on the LiFePO4 curve.
+        self.assertEqual(values["SOC (est)"], "94")
+        # The BMS's own counter (88 + 264 + 168 = 520 Ah of 1200 Ah) stays
+        # visible for comparison, clearly labelled as its opinion.
+        self.assertEqual(values["BMS SOC"], "43")
+        self.assertEqual(values["BMS Ah"], "520")
         # 10.19 + 28.21 + 17.87 A, all three charging
         self.assertEqual(values["Current"], "+56.3")
         self.assertEqual(values["Bus"], "13.46")
+        self.assertTrue(any("voltage curve" in n for n in payload["notes"]))
+
+    def test_bank_reads_100_when_the_charger_tail_current_dies(self):
+        ser = FakeSerial()
+        replies = {addr: eg4_with(frame, O_CURRENT=10) for addr, frame in
+                   ((1, EG4_PACK1), (2, EG4_PACK2), (3, EG4_PACK3))}
+
+        def write(data):
+            ser.buffer += replies.get(data[0], b"")
+            return len(data)
+
+        ser.write = write
+        payload, _ = eg4.EG4Bus(lambda **kw: ser, gap_s=0).poll()
+        values = {s["label"]: s["value"] for s in payload["summary"]}
+        self.assertEqual(values["SOC (est)"], "100")
 
 
 TESLA_LINE = ("INV,1,24.4418,4.0896,4.0930,4.0930,4.0934,4.0930,4.0923,"
@@ -342,6 +386,35 @@ class TestSocCurve(unittest.TestCase):
         # A dead channel reading 0 V must not be reported as an empty cell.
         for bad in (0.0, 5.0, None, -1.0):
             self.assertIsNone(soc.estimate_soc(bad))
+
+
+class TestLfpSocCurve(unittest.TestCase):
+    def test_endpoints(self):
+        self.assertEqual(soc.estimate_soc_lfp(3.40), 100.0)
+        self.assertEqual(soc.estimate_soc_lfp(2.50), 0.0)
+        self.assertEqual(soc.estimate_soc_lfp(2.30), 0.0)
+
+    def test_absorption_charge_voltage_is_accepted_as_full(self):
+        # A LiFePO4 charger legitimately holds up to 3.65 V/cell during
+        # absorption; that must read as full, not as a broken sensor.
+        self.assertEqual(soc.estimate_soc_lfp(3.65), 100.0)
+
+    def test_monotonic_across_the_whole_curve(self):
+        previous = -1.0
+        voltage = 2.50
+        while voltage <= 3.40001:
+            value = soc.estimate_soc_lfp(voltage)
+            self.assertIsNotNone(value)
+            self.assertGreaterEqual(value, previous)
+            previous = value
+            voltage += 0.005
+
+    def test_the_flat_middle_lands_near_half(self):
+        self.assertAlmostEqual(soc.estimate_soc_lfp(3.28), 50.0, delta=1.0)
+
+    def test_implausible_readings_return_nothing_rather_than_clamping(self):
+        for bad in (0.0, 5.0, None, 3.80):
+            self.assertIsNone(soc.estimate_soc_lfp(bad))
 
 
 class TestOrion(unittest.TestCase):
@@ -581,12 +654,35 @@ class TestHubHelpers(unittest.TestCase):
         exc = serial.SerialException("could not open port 'COM9'")
         self.assertIn("USB", hub.explain(exc))
 
+    def test_a_wedged_adapter_is_explained(self):
+        import serial
+        self.assertIn("unplug", hub.explain(serial.SerialTimeoutException(
+            "Write timeout")))
+
     def test_other_errors_pass_through(self):
         self.assertEqual(hub.explain(ValueError("only 3 groups")),
                          "only 3 groups")
 
     def test_nameless_exception_still_says_something(self):
         self.assertEqual(hub.explain(TimeoutError()), "TimeoutError")
+
+
+class TestSerialFactory(unittest.TestCase):
+    def test_ports_are_opened_with_a_finite_write_timeout(self):
+        # Without this a wedged adapter blocks the poller thread in the
+        # kernel forever, and the process cannot even be killed while it
+        # still holds the COM port.
+        factory = hub._serial_factory("COM_FAKE")
+        self.assertEqual(factory.keywords.get("write_timeout"),
+                         hub.WRITE_TIMEOUT_S)
+        self.assertIsNotNone(hub.WRITE_TIMEOUT_S)
+
+    def test_every_driver_gets_that_factory(self):
+        for system in ("12v", "24v", "72v"):
+            driver = hub.build_driver(system, "COM_FAKE")
+            opener = getattr(driver, "_open", None) or driver.port._open
+            self.assertEqual(opener.keywords.get("write_timeout"),
+                             hub.WRITE_TIMEOUT_S, system)
 
 
 class TestHubSnapshot(unittest.TestCase):

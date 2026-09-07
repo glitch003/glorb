@@ -99,6 +99,18 @@ four cell voltages sum to exactly the reported pack voltage (13.466 V vs
 offset 5 fluctuating independently per pack while remaining-Ah climbs, which is
 what current does and what an SOC-derived field would not.
 
+**The BMS's SOC counter is shown but not believed.** On 2026-09-07, with the
+charger on and no current flowing (i.e. the packs full), the counters still
+read low — a pack resting near 3.37 V/cell had reported 22 %, which for
+LiFePO4 is nearly-full voltage at a nearly-empty reading. So the dashboard's
+"SOC (est)" is derived from cell voltage via a LiFePO4 OCV curve in
+[soc.py](soc.py) (2.5 V empty, 3.4 V full per cell), and the counter is
+demoted to a "BMS SOC" field kept for comparison. Two caveats: the LiFePO4
+curve is flat mid-range, so mid values are coarse, and like any OCV estimate
+it reads high while charging and low under load. The unambiguous point is
+full: a charger holding ≥ 3.35 V/cell while under 2 A flows is charge
+termination, and pins the estimate at 100 %.
+
 The warning/protection/error words are surfaced as hex rather than decoded —
 the published driver's bit definitions for them contradict each other, and all
 three read zero on healthy packs, so any non-zero value is worth a look in the

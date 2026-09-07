@@ -48,12 +48,19 @@
     if (sys.id === "72v") {
       return { pct: num(pack.soc), estimated: false };
     }
-    // The 12 V chain reports per-pack SOC; the bank figure is the summary's.
-    var entry = arr(sys.summary).filter(function (s) {
-      return s && String(s.label).toUpperCase() === "SOC";
-    })[0];
-    var parsed = entry ? parseFloat(entry.value) : NaN;
-    return { pct: isFinite(parsed) ? parsed : null, estimated: false };
+    // The 12 V packs carry a voltage-derived estimate each (their own SOC
+    // counters drift); the bank figure is their average, same as the
+    // monitor's summary. Read the field directly rather than fishing the
+    // summary list for a label -- a relabel there must not blank this tile.
+    var pcts = [];
+    arr(sys.packs).forEach(function (p) {
+      var pct = num(obj(p).soc_estimate);
+      if (pct !== null) pcts.push(pct);
+    });
+    if (!pcts.length) return { pct: null, estimated: true };
+    var total = 0;
+    pcts.forEach(function (v) { total += v; });
+    return { pct: total / pcts.length, estimated: true };
   }
 
   function bandFor(sys, pct) {
@@ -114,8 +121,13 @@
     // README: this bank has no current sensor, so it sags under load.
     var tip = sys.status_text || "";
     if (soc.estimated) {
-      tip = "Estimated from resting cell voltage (no current sensor on this "
-        + "bank), so it reads low under load and high on charge. " + tip;
+      tip = (sys.id === "12v"
+        ? "Estimated from the LiFePO4 voltage curve; the packs' own SOC "
+          + "counters have drifted and are not trusted. A charger holding "
+          + "voltage with no current flowing reads 100% (charge "
+          + "termination). "
+        : "Estimated from resting cell voltage (no current sensor on this "
+          + "bank), so it reads low under load and high on charge. ") + tip;
     }
     var value = soc.pct === null
       ? "—"
@@ -207,8 +219,9 @@
         html += '<div class="kvgrid" style="margin-top:6px">' +
           kv("Pack " + fmt(p.addr, 0), fmt(p.voltage, 2), "V") +
           kv("current", fmt(p.current, 1), "A") +
-          kv("SOC", fmt(p.soc, 0), "%") +
-          kv("remaining", fmt(p.capacity_ah, 0), "Ah") +
+          kv("SOC est", fmt(p.soc_estimate, 0), "%") +
+          kv("BMS SOC", fmt(p.soc, 0), "%") +
+          kv("BMS Ah", fmt(p.capacity_ah, 0), "Ah") +
           kv("cycles", fmt(p.cycles, 0), "") +
           kv("spread", fmt(p.cell_delta_mv, 1), "mV") + "</div>";
       });

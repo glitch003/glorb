@@ -28,6 +28,21 @@ def cmd_ports(args):
     print("\nassigned:")
     for system in ("12v", "24v", "72v"):
         print(f"  {system:>4}  {resolved.get(system, '-- not found --')}")
+
+    # A replacement adapter built around a different USB-serial chip matches
+    # no signature. Say which ports are going spare and how to point at one,
+    # rather than just reporting the system as missing.
+    claimed = set(resolved.values())
+    spare = [e for e in ports_mod.describe() if e["device"] not in claimed]
+    missing = [s for s in ("12v", "24v", "72v") if s not in resolved]
+    if spare and missing:
+        print("\nunrecognised ports, not matched to any system:")
+        for entry in spare:
+            print(f"  {entry['device']:<6} {entry['vid_pid']}  "
+                  f"{entry['description']}")
+        print(f"\nif one of those is the {missing[0]} adapter, point at it:")
+        print(f"  python -m glorbmon probe {missing[0]} "
+              f"--port-{missing[0]} {spare[0]['device']} --once")
     return 0
 
 

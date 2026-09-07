@@ -25,10 +25,17 @@ INTERVALS = {"12v": 2.0, "24v": 3.0, "72v": 1.0}
 STALE_AFTER_S = 12.0
 RECONNECT_MIN_S = 2.0
 RECONNECT_MAX_S = 30.0
+# A USB serial adapter can wedge so that it stops draining its transmit
+# endpoint. pyserial's default write_timeout is None, which blocks in the
+# driver forever: the poller thread stops, and because the thread is parked
+# in a kernel wait the whole process becomes unkillable while still holding
+# the COM port. A finite timeout turns that into an exception the worker can
+# report and back off from.
+WRITE_TIMEOUT_S = 2.0
 
 
 def _serial_factory(device):
-    return partial(serial.Serial, device)
+    return partial(serial.Serial, device, write_timeout=WRITE_TIMEOUT_S)
 
 
 def build_driver(system, device):
@@ -101,6 +108,9 @@ ORDER = ["12v", "24v", "72v"]
 def explain(exc):
     """Turn a driver exception into something readable at 3am in the dust."""
     text = str(exc) or exc.__class__.__name__
+    if isinstance(exc, serial.SerialTimeoutException):
+        return ("adapter stopped accepting data -- unplug it and plug it "
+                "back in")
     if isinstance(exc, serial.SerialException):
         if "Access is denied" in text or "PermissionError" in text:
             return "port is held by another program -- close the vendor tool"

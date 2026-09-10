@@ -2,15 +2,17 @@
 
 **G**alactic **L**ight **O**perated **R**ecreational **B**eahemoth
 
-*An electric, remote-controlled art car for Burning Man — and for 2026, a giant glowing broom.*
+*An electric, remote-controlled art car for Burning Man. Now in giant glowing broom form.*
 
-![Glorb on the playa, 2023](glorb-2023.jpeg)
+[![Glorb at night, with rainbow-lit hanging tubes around the wheeled platform](docs/gallery-2026/glorb-2026-3525.jpg)](docs/gallery-2026/)
+
+*The broom, illuminated. [See all 12 owner-supplied photos in the 2026 gallery →](docs/gallery-2026/)*
 
 Glorb is a 4 m × 1.8 m two-story electric platform that rolls across the playa at walking pace, carrying a DJ rig, a dance floor, a rooftop deck, and an unspecified number of secrets. It runs entirely on salvaged Tesla Model S battery modules — a 72 V drive pack under the floor plus a dedicated 24 V bank for the lights — and is driven by remote control. Glorb does not have a driver's seat. Glorb does not believe in seats.
 
 ## 2026: the broom
 
-This year the car becomes a broom. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
+The broom is no longer just a design render: the owner-supplied 2026 photo collection shows the built car lit up at night. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
 
 - **5,576 pixels — about 65,000 physical LEDs** — on **136 independent data lines**, driven by a single Kulp K128D-B (BeagleBone + FPP) through ten SRx4 quad receivers — no chaining, no serpentine, no regrets (the regrets were 2026-08 and have been documented).
 - **Dedicated 24 V LED bank:** six Tesla modules in parallel (6s6p, ~31.8 kWh) with its own BMS and charger, also feeding a 24 V inverter for the sound system.
@@ -18,7 +20,11 @@ This year the car becomes a broom. Why a broom? The committee has asked that we 
 - The tubes are BRG, not RGB. Nobody knows why. The tubes will not tell us.
 - No pooping on Glorb.
 
-*Photos of the broom coming after the burn — until then, enjoy the 2023 op-art era below.*
+| The bristles, up close | Around the ladder side |
+| --- | --- |
+| ![Close view of hanging tubes with scattered white and green light](docs/gallery-2026/glorb-2026-3520.jpg) | ![Ladder-side view with pink, blue and green illuminated tubes](docs/gallery-2026/glorb-2026-3527.jpg) |
+
+[Full 2026 photo gallery, captions and source notes](docs/gallery-2026/) · [2023 op-art era below](#2023-the-origin)
 
 **Running the car:** double-click [start.bat](start.bat), or
 `python -m glorbdash serve --host 0.0.0.0`, then open <http://localhost:8080/> (or `http://<car ip>:8080/` from a phone). One
@@ -64,6 +70,7 @@ Details: [dimensions.md](dimensions.md)
 
 | Folder | What's in it |
 | --- | --- |
+| [docs/gallery-2026/](docs/gallery-2026/) | 12 owner-supplied photos of the illuminated broom, with captions and source manifest |
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |
 | [glorbdash/](glorbdash/) | **The dashboard you actually run** — LED control and live battery meters on one page |

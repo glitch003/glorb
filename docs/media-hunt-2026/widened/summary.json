@@ -1,0 +1,41 @@
+{
+  "input_source_records": 16,
+  "deduplicated_source_records": 15,
+  "confirmed_2026_glorb_media": 0,
+  "query_counts": {
+    "flickr": 10,
+    "videos": 19,
+    "social": 8
+  },
+  "unique_query_strings": 37,
+  "query_status_counts": {
+    "returned": 34,
+    "failed": 3
+  },
+  "result_url_occurrences": 214,
+  "unique_result_urls_exact": 191,
+  "flickr_unique_photo_ids": 1178,
+  "flickr_unique_thumbnail_hashes": 1178,
+  "flickr_contact_sheets": 30,
+  "sfgate_unique_image_urls": 32,
+  "jurvetson_photos": 1,
+  "still_image_screenings": 1211,
+  "flickr_enlarged_checks": 3,
+  "video_frames": 130,
+  "sampled_clips": 4,
+  "frames_by_source": {
+    "edm": 16,
+    "vich": 72,
+    "tiktok": 10,
+    "instagram": 32
+  },
+  "source_status_counts": {
+    "screened_no_match": 3,
+    "no_2026_gallery_discovered": 2,
+    "year_unverified": 3,
+    "excluded_pre_event": 1,
+    "blocked_uninspected": 2,
+    "approval_pending_uninspected": 3,
+    "uninspected_lead": 1
+  }
+}

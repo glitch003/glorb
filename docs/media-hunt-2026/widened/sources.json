@@ -1,0 +1,245 @@
+[
+  {
+    "url": "https://flickr.com/photos/flight0001/sets/72177720335406158/",
+    "title": "Burning Man BMwebcast 2026",
+    "creator_credit": "goflight001 / flight0001; visible underlying watermark BMwebcast.online",
+    "status": "screened_no_match",
+    "kind": "album",
+    "reported_total": 1178,
+    "reported_photos": 1178,
+    "reported_videos": 0,
+    "unique_photo_ids_screened": 1178,
+    "contact_sheets": 30,
+    "full_resolution_review": false,
+    "year_evidence": {
+      "album_title": "2026",
+      "flickr_taken_min": "2026-08-30 07:39:45",
+      "flickr_taken_max": "2026-09-07 09:45:42",
+      "limitation": "Mostly screenshots. Flickr taken dates and filenames date screenshots; no independent original stream date verification."
+    },
+    "visual_assessment": "All 1178 public entries at this snapshot visually screened in 30 contact sheets. No design-specific Glorb match recognized. Repetitive webcast panoramas, dust, static installations, camps and assorted art cars. Three images enlarged for lookalike checks. Does not establish absence in small backgrounds or unsampled original video frames.",
+    "confirmed_2026_glorb_media": false,
+    "retrieved_at": "2026-09-10T01:44:34.161966+00:00",
+    "research_lanes": [
+      "flickr"
+    ]
+  },
+  {
+    "url": "https://www.sfgate.com/travel/burningman/article/photos-burning-man-2026-22414672.php",
+    "retrieved_url": "https://cmf.s.sfgate.com/travel/burningman/article/photos-burning-man-2026-22414672.php",
+    "title": "The best photos of Burning Man 2026",
+    "creator_credit": "Jane Hu / For SFGATE; article Dan Gentile",
+    "status": "screened_no_match",
+    "kind": "gallery",
+    "image_count_screened": 32,
+    "year_evidence": "September 8, 2026 publication and 32 individual Burning Man 2026 photo captions.",
+    "visual_assessment": "32 article images inspected in three contact sheets: sculpture-focused gallery, bunny and dragon cars; no broom vehicle. Apotheneum LED cube excluded as named different installation.",
+    "blockers": "Canonical www host returned JS challenge; publicly indexed same-publisher cmf.s.sfgate.com variant served real article HTML and image URLs.",
+    "confirmed_2026_glorb_media": false,
+    "retrieved_at": "2026-09-10T01:44:34.161966+00:00",
+    "research_lanes": [
+      "flickr"
+    ]
+  },
+  {
+    "url": "https://www.flickr.com/photos/jurvetson/55513405597/",
+    "title": "Burning Man Sunrise",
+    "creator_credit": "Steve Jurvetson uploader; caption credits UK friend Charlie",
+    "kind": "photo",
+    "status": "screened_no_match",
+    "image_count_screened": 1,
+    "year_evidence": "Primary page states taken September 4, 2026; uploaded September 7, 2026.",
+    "visual_assessment": "Sunrise playa photograph visually checked; no reference broom vehicle recognized.",
+    "confirmed_2026_glorb_media": false,
+    "retrieved_at": "2026-09-10T01:44:34.161966+00:00",
+    "research_lanes": [
+      "flickr",
+      "social"
+    ],
+    "secondary_access_note": "Social extractor recheck blocked; Flickr lane visually inspected this same photo. Count once."
+  },
+  {
+    "url": "https://www.scottlondon.com/photography/burningman",
+    "title": "Scott London Burning Man gallery index",
+    "kind": "photographer_index",
+    "status": "no_2026_gallery_discovered",
+    "year_evidence": "Index contains historic annual links; 2026 in general site footer not capture-year evidence.",
+    "visual_assessment": "Index metadata inspected only; no current 2026 gallery located. No photo screening counted.",
+    "confirmed_2026_glorb_media": false,
+    "retrieved_at": "2026-09-10T01:44:34.161966+00:00",
+    "research_lanes": [
+      "flickr"
+    ]
+  },
+  {
+    "url": "https://www.flickr.com/photos/jamenpercy/albums/",
+    "title": "Jamen Percy albums",
+    "kind": "photographer_index",
+    "status": "no_2026_gallery_discovered",
+    "year_evidence": "Latest album in retrieved embedded model is Burning Man 2025: Tomorrow Today.",
+    "visual_assessment": "Index metadata inspected only; older gallery not counted or relabeled.",
+    "confirmed_2026_glorb_media": false,
+    "retrieved_at": "2026-09-10T01:44:34.161966+00:00",
+    "research_lanes": [
+      "flickr"
+    ]
+  },
+  {
+    "id": "edm",
+    "url": "https://www.facebook.com/EDMHouseNetwork/videos/1647876596914615/",
+    "title": "Day/night transformation",
+    "creator": "EDMHouseNetwork",
+    "upload_date": "20260906",
+    "status": "year_unverified",
+    "screening_result": "sampled_no_match",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "September 6 upload, but caption says Every year and gives no capture year. No independent 2026 evidence.",
+    "visual_assessment": "Aerial day/night panorama, crowds, a flame-emitting octopus-shaped vehicle; no target broom recognized. Tiny distant objects cannot be excluded.",
+    "sample_count": 16,
+    "sample_interval_seconds": 1,
+    "sample_first_pts": 0.0,
+    "sample_last_pts": 15.0,
+    "duration_seconds": 15.36,
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "vich",
+    "url": "https://www.facebook.com/thevichfam/videos/1048034064882387/",
+    "title": "Day 3 Burning man",
+    "creator": "The Vich’s Fam",
+    "upload_date": "20260903",
+    "status": "year_unverified",
+    "screening_result": "sampled_no_match",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "September 3 upload and Day 3 caption are consistent with current event but neither explicitly establishes capture year; no independent 2026 anchor verified.",
+    "visual_assessment": "Mostly daytime ground-level walk among installations, temple interiors and people; some light-up installation footage near the end. No hanging-tube broom vehicle recognized.",
+    "sample_count": 72,
+    "sample_interval_seconds": 5,
+    "sample_first_pts": 0.0,
+    "sample_last_pts": 355.0,
+    "duration_seconds": 355.1,
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "tiktok",
+    "url": "https://www.tiktok.com/@burningman/video/7673671671865232658",
+    "title": "My other car is a Mutant Vehicle",
+    "creator": "burningman",
+    "upload_date": "20260814",
+    "status": "excluded_pre_event",
+    "screening_result": "sampled_no_match",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Direct metadata upload August 14, 2026, before event. Hashtag burningman2026 is promotional, not current-event capture evidence.",
+    "visual_assessment": "Several night mutant vehicles, including mushroom, tentacled/cephalopod and angular outlined cars. No broom recognized. Last samples are TikTok endcard.",
+    "sample_count": 10,
+    "sample_interval_seconds": 2,
+    "sample_first_pts": 0.0,
+    "sample_last_pts": 18.0,
+    "duration_seconds": 19.611,
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "instagram",
+    "url": "https://www.instagram.com/reel/DdA0AwduhAx/",
+    "title": "Art cars at Burning Man",
+    "creator": "Borys Grabar",
+    "upload_date": "20260908",
+    "status": "year_unverified",
+    "screening_result": "sampled_no_match",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Direct caption only says Art cars at Burning Man; downloader upload_date September 8 conflicts with indexed September 7. Neither proves capture year.",
+    "visual_assessment": "Night art-car lineup: lighthouse, boat, ram, bull, multiarmed vehicle, bus, sculptural animal and other decorated vehicles. No hanging LED tube broom recognized.",
+    "sample_count": 32,
+    "sample_interval_seconds": 1,
+    "sample_first_pts": 0.0,
+    "sample_last_pts": 31.0,
+    "duration_seconds": 31.6,
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "short",
+    "url": "https://www.youtube.com/shorts/WNQqpNOsDOY",
+    "title": "Burning Man 2026 Art Cars",
+    "status": "blocked_uninspected",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Title/prior ledger only; capture year not verified.",
+    "sample_count": 0,
+    "blockers": "YouTube sign-in/bot challenge; short browser also says Video unavailable. No cookies supplied.",
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "night",
+    "url": "https://www.youtube.com/watch?v=uMJzVmSMNCI",
+    "title": "Breeze Offroad prior night-footage lead",
+    "status": "blocked_uninspected",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Title/prior ledger only; capture year not verified.",
+    "sample_count": 0,
+    "blockers": "YouTube sign-in/bot challenge; short browser also says Video unavailable. No cookies supplied.",
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "radiofg",
+    "url": "https://www.facebook.com/radiofg/videos/2163539317838208/",
+    "title": "Burning Man 2026 s’achève dans le désert du Nevada",
+    "status": "approval_pending_uninspected",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Search discovery only; title is not independently verified capture year.",
+    "sample_count": 0,
+    "blockers": "Batched downloader execution approval pending. Not executed; do not infer success or footage.",
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "bmreels",
+    "url": "https://www.facebook.com/burningman/videos/1385434320355410/",
+    "title": "Burning Man Project on Reels",
+    "status": "approval_pending_uninspected",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Search discovery only; title is not independently verified capture year.",
+    "sample_count": 0,
+    "blockers": "Batched downloader execution approval pending. Not executed; do not infer success or footage.",
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "id": "abc",
+    "url": "https://www.facebook.com/ABCNews/videos/1604106251408913/",
+    "title": "Burning Man effigy lit for festival’s 2026 edition",
+    "status": "approval_pending_uninspected",
+    "confirmed_2026_glorb_media": false,
+    "year_evidence": "Search discovery only; title is not independently verified capture year.",
+    "sample_count": 0,
+    "blockers": "Batched downloader execution approval pending. Not executed; do not infer success or footage.",
+    "research_lanes": [
+      "videos"
+    ]
+  },
+  {
+    "url": "https://www.instagram.com/reel/DXz7XfSznnL/",
+    "creator_credit": "Jamen Percy / @jamenpercy.burn (public browser signup dialog and search title)",
+    "title": "Photographer art-car reel; exact caption/title not fully retrieved",
+    "status": "uninspected_lead",
+    "date_evidence": "Visible background caption says 'Wallpapers coming soon! Sorry its been a wild 2026 so far!' This dates commentary, not footage capture. Search query 2026 is not capture-year evidence.",
+    "visual_evidence": "Browser screenshot inspected, but signup/login modal obscures most reel. Small visible margins show streaked/radial imagery, insufficient to identify Glorb. No visual match established.",
+    "blocker": "Extractor returned upstream Firecrawl 403. Browser reached public Instagram but displayed signup/login modal; stopped without login or bypass.",
+    "confirmed_2026_glorb_media": false,
+    "research_lanes": [
+      "social"
+    ]
+  }
+]

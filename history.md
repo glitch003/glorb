@@ -1,10 +1,14 @@
 # Project history
 
-Origin story and per-year build notes. Sourced from the docx files preserved at [archive/org/](archive/org/).
+Origin story and per-year build notes. The 2022 attendance correction comes directly from Chris; the 2023 build notes below are sourced from the docx files preserved at [archive/org/](archive/org/).
 
-## Origin: Project Glory to Glorb (Jan 2023 kickoff)
+## 2022: the original Glorb
 
-Glorb began as a redesign / rebuild of an existing 2022 art car platform ("Glory"). The 2023 effort was the first big push toward the current vehicle.
+**Glorb attended Burning Man in 2022.** Chris confirmed this and supplied an archive of original-version photos, now in the [2022 gallery](docs/gallery-2022/). The photos show the two-level platform in daylight, at sunset and illuminated at night. The year and attendance come from Chris's correction, not an inference from image metadata; no exact build or capture dates are established here.
+
+## 2023: the redesign (Jan 2023 kickoff)
+
+The January 2023 archival notes describe a redesign / rebuild of the existing 2022 art car platform and use the name "Glory." That archival wording is retained here as context, not as evidence that Glorb began in 2023 or as a claim about when the car was named. The kickoff marks the 2023 rebuild, not its first attendance.
 
 **Original project values:** friendship, adaptability, adventure, "no pooping." Hence the half-joking "Easily-poopable design" anti-goal and the running joke `DO NOT POOP ON THIS CAR OR ELSE` sign.
 
@@ -66,9 +70,11 @@ Originally captured pre-build:
 
 ## Earlier renderings & DMV apps
 
-- 2020, 2022, 2023, 2024 DMV applications + render packs preserved at [archive/dmv/](archive/dmv/)
-- 2023 panel takeoffs (Cinema 4D, AI vector, render JPGs/PSDs) at [archive/design/](archive/design/)
-- 1.4 GB of build photos at [archive/pics/](archive/pics/) (not git-tracked)
+These large-binary directories are not git-tracked; see the [archive inventory](archive/README.md).
+
+- 2020, 2022, 2023, 2024 DMV applications + render packs preserved at `archive/dmv/`
+- 2023 panel takeoffs (Cinema 4D, AI vector, render JPGs/PSDs) at `archive/design/`
+- 1.4 GB of build photos at `archive/pics/` (not git-tracked)
 
 ## Original 2023 budget vs. actual
 

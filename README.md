@@ -24,7 +24,7 @@ The broom is no longer just a design render: the owner-supplied 2026 photo colle
 | --- | --- |
 | ![Close view of hanging tubes with scattered white and green light](docs/gallery-2026/glorb-2026-3520.jpg) | ![Ladder-side view with pink, blue and green illuminated tubes](docs/gallery-2026/glorb-2026-3527.jpg) |
 
-[Full 2026 photo gallery, captions and source notes](docs/gallery-2026/) · [2023 op-art era below](#2023-the-origin)
+[Full 2026 photo gallery, captions and source notes](docs/gallery-2026/) · [2022 original below](#2022-the-original) · [2023 op-art era](#2023-the-rebuild)
 
 Seen the broom in someone else's photos or video? The [public media search notebook](docs/media-hunt-2026/)
 tracks unconfirmed leads and screening limits; no public 2026 Glorb match has been visually confirmed.
@@ -37,9 +37,23 @@ systems — see [glorbdash/](glorbdash/).
 
 Full design: [broom/DESIGN.md](broom/DESIGN.md) · lighting build: [lights/](lights/)
 
-## 2023: the origin
+## 2022: the original
 
-Glorb was born in January 2023 as a rebuild of "Glory," a 2022 art car platform, with a few hard-won goals: a permanent shape (no more on-playa builds), floor-mounted batteries, open sides for sightlines, and a big *WOWww* factor day and night. Founding values: friendship, adaptability, adventure, and — we cannot stress this enough — no pooping. "ONE BIG HAND" was seriously considered as a design direction and has never been formally ruled out.
+Glorb went to Burning Man in **2022** — not just from 2023 onward. Chris confirmed that history and supplied these photos of the original version. Before the op-art box, before the broom: a two-level platform, bright wrapped uprights, crossed supports, and absolutely no shortage of ambition.
+
+[![The original Glorb at sunset, with white fabric around the upper railing and yellow fabric along the base](docs/gallery-2022/glorb-2022-2580.jpg)](docs/gallery-2022/)
+
+*Original Glorb, sunset edition. The broom would come later.*
+
+| Daylight: the frame | Night: the glow |
+| --- | --- |
+| ![Corner view of the wheeled platform, pink uprights and yellow crossed supports](docs/gallery-2022/glorb-2022-2568.jpg) | ![Elevated nighttime view of the illuminated original car, people and bicycles](docs/gallery-2022/glorb-2022-2591.jpg) |
+
+[All 8 original-version photos, captions and source notes →](docs/gallery-2022/)
+
+## 2023: the rebuild
+
+The January 2023 kickoff documented a rebuild of the existing 2022 car, with a few hard-won goals: a permanent shape (no more on-playa builds), floor-mounted batteries, open sides for sightlines, and a big *WOWww* factor day and night. Founding values: friendship, adaptability, adventure, and — we cannot stress this enough — no pooping. "ONE BIG HAND" was seriously considered as a design direction and has never been formally ruled out.
 
 In May 2023 the original battery pack was swapped for Tesla modules. The 2023 skin was a vinyl-wrapped op-art box under a white rooftop cage with QSC tops on every corner. If you stare at the side panels long enough you will see either a tunnel or the face of God. Results vary.
 
@@ -47,7 +61,7 @@ In May 2023 the original battery pack was swapped for Tesla modules. The 2023 sk
 | --- | --- |
 | ![Glorb 2023, corner view](glorb-2023.jpeg) | ![Glorb 2023, side view](glorb-2023-2.jpeg) |
 
-More: [history.md](history.md)
+The older kickoff notes use the name "Glory"; they document the 2023 redesign, not Glorb's first trip. More: [history.md](history.md)
 
 ## Quick stats
 
@@ -74,6 +88,7 @@ Details: [dimensions.md](dimensions.md)
 
 | Folder | What's in it |
 | --- | --- |
+| [docs/gallery-2022/](docs/gallery-2022/) | 8 owner-supplied photos of the original version, with captions and source manifest |
 | [docs/gallery-2026/](docs/gallery-2026/) | 12 owner-supplied photos of the illuminated broom, with captions and source manifest |
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |

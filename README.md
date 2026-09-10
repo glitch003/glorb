@@ -2,15 +2,17 @@
 
 **G**alactic **L**ight **O**perated **R**ecreational **B**eahemoth
 
-*An electric, remote-controlled art car for Burning Man — and for 2026, a giant glowing broom.*
+*An electric, remote-controlled art car for Burning Man. Now in giant glowing broom form.*
 
-![Glorb on the playa, 2023](glorb-2023.jpeg)
+[![Glorb at night, with rainbow-lit hanging tubes around the wheeled platform](docs/gallery-2026/glorb-2026-3525.jpg)](docs/gallery-2026/)
+
+*The broom, illuminated. [See all 12 owner-supplied photos in the 2026 gallery →](docs/gallery-2026/)*
 
 Glorb is a 4 m × 1.8 m two-story electric platform that rolls across the playa at walking pace, carrying a DJ rig, a dance floor, a rooftop deck, and an unspecified number of secrets. It runs entirely on salvaged Tesla Model S battery modules — a 72 V drive pack under the floor plus a dedicated 24 V bank for the lights — and is driven by remote control. Glorb does not have a driver's seat. Glorb does not believe in seats.
 
 ## 2026: the broom
 
-This year the car becomes a broom. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
+The broom is no longer just a design render: the owner-supplied 2026 photo collection shows the built car lit up at night. Why a broom? The committee has asked that we not ask. **136 flexible silicone LED tubes**, each 2.5 m long and individually addressable, hang like bristles around three sides of the car (the front-left side stays open so the driver can see where the broom is sweeping). A stripper pole on the upper deck is the handle. It is a very large broom. It sweeps nothing. It is perfect.
 
 - **5,576 pixels — about 65,000 physical LEDs** — on **136 independent data lines**, driven by a single Kulp K128D-B (BeagleBone + FPP) through ten SRx4 quad receivers — no chaining, no serpentine, no regrets (the regrets were 2026-08 and have been documented).
 - **Dedicated 24 V LED bank:** six Tesla modules in parallel (6s6p, ~31.8 kWh) with its own BMS and charger, also feeding a 24 V inverter for the sound system.
@@ -18,7 +20,15 @@ This year the car becomes a broom. Why a broom? The committee has asked that we 
 - The tubes are BRG, not RGB. Nobody knows why. The tubes will not tell us.
 - No pooping on Glorb.
 
-*Photos of the broom coming after the burn — until then, enjoy the 2023 op-art era below.*
+| The bristles, up close | Around the ladder side |
+| --- | --- |
+| ![Close view of hanging tubes with scattered white and green light](docs/gallery-2026/glorb-2026-3520.jpg) | ![Ladder-side view with pink, blue and green illuminated tubes](docs/gallery-2026/glorb-2026-3527.jpg) |
+
+[Full 2026 photo gallery, captions and source notes](docs/gallery-2026/) · [2022 original below](#2022-the-original) · [2023 op-art era](#2023-the-rebuild)
+
+Seen the broom in someone else's photos or video? The [public media search notebook](docs/media-hunt-2026/)
+tracks unconfirmed leads and screening limits; no public 2026 Glorb match has been visually confirmed.
+[Contribute a source link, timecode and capture-year evidence](docs/media-hunt-2026/README.md#contribute-a-sighting).
 
 **Running the car:** double-click [start.bat](start.bat), or
 `python -m glorbdash serve --host 0.0.0.0`, then open <http://localhost:8080/> (or `http://<car ip>:8080/` from a phone). One
@@ -27,9 +37,23 @@ systems — see [glorbdash/](glorbdash/).
 
 Full design: [broom/DESIGN.md](broom/DESIGN.md) · lighting build: [lights/](lights/)
 
-## 2023: the origin
+## 2022: the original
 
-Glorb was born in January 2023 as a rebuild of "Glory," a 2022 art car platform, with a few hard-won goals: a permanent shape (no more on-playa builds), floor-mounted batteries, open sides for sightlines, and a big *WOWww* factor day and night. Founding values: friendship, adaptability, adventure, and — we cannot stress this enough — no pooping. "ONE BIG HAND" was seriously considered as a design direction and has never been formally ruled out.
+Glorb went to Burning Man in **2022** — not just from 2023 onward. Chris confirmed that history and supplied these photos of the original version. Before the op-art box, before the broom: a two-level platform, bright wrapped uprights, crossed supports, and absolutely no shortage of ambition.
+
+[![The original Glorb at sunset, with white fabric around the upper railing and yellow fabric along the base](docs/gallery-2022/glorb-2022-2580.jpg)](docs/gallery-2022/)
+
+*Original Glorb, sunset edition. The broom would come later.*
+
+| Daylight: the frame | Night: the glow |
+| --- | --- |
+| ![Corner view of the wheeled platform, pink uprights and yellow crossed supports](docs/gallery-2022/glorb-2022-2568.jpg) | ![Elevated nighttime view of the illuminated original car, people and bicycles](docs/gallery-2022/glorb-2022-2591.jpg) |
+
+[All 8 original-version photos, captions and source notes →](docs/gallery-2022/)
+
+## 2023: the rebuild
+
+The January 2023 kickoff documented a rebuild of the existing 2022 car, with a few hard-won goals: a permanent shape (no more on-playa builds), floor-mounted batteries, open sides for sightlines, and a big *WOWww* factor day and night. Founding values: friendship, adaptability, adventure, and — we cannot stress this enough — no pooping. "ONE BIG HAND" was seriously considered as a design direction and has never been formally ruled out.
 
 In May 2023 the original battery pack was swapped for Tesla modules. The 2023 skin was a vinyl-wrapped op-art box under a white rooftop cage with QSC tops on every corner. If you stare at the side panels long enough you will see either a tunnel or the face of God. Results vary.
 
@@ -37,7 +61,7 @@ In May 2023 the original battery pack was swapped for Tesla modules. The 2023 sk
 | --- | --- |
 | ![Glorb 2023, corner view](glorb-2023.jpeg) | ![Glorb 2023, side view](glorb-2023-2.jpeg) |
 
-More: [history.md](history.md)
+The older kickoff notes use the name "Glory"; they document the 2023 redesign, not Glorb's first trip. More: [history.md](history.md)
 
 ## Quick stats
 
@@ -64,6 +88,8 @@ Details: [dimensions.md](dimensions.md)
 
 | Folder | What's in it |
 | --- | --- |
+| [docs/gallery-2022/](docs/gallery-2022/) | 8 owner-supplied photos of the original version, with captions and source manifest |
+| [docs/gallery-2026/](docs/gallery-2026/) | 12 owner-supplied photos of the illuminated broom, with captions and source manifest |
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |
 | [glorbdash/](glorbdash/) | **The dashboard you actually run** — LED control and live battery meters on one page |

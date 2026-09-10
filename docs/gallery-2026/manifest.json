@@ -1,0 +1,308 @@
+{
+  "credit": "Photos supplied by the project owner; photographer not specified.",
+  "collection": "Glorb 2026 (owner-supplied archive label; not capture-date verification)",
+  "source_counts": {
+    ".heic": 12,
+    ".mov": 2,
+    ".mp4": 12
+  },
+  "conversion": {
+    "Pillow": "12.3.0",
+    "pillow_heif": "1.7.0",
+    "max_edge": 1920,
+    "jpeg_quality": 82,
+    "progressive": true,
+    "subsampling": 2,
+    "metadata": "pixel-only; EXIF/GPS/XMP/ICC omitted"
+  },
+  "media": [
+    {
+      "source": "IMG_3520.HEIC",
+      "source_bytes": 2063632,
+      "source_sha256": "ca73aacd2162c116e9aa8e7bf4893439bad081773d78622ecbade9c6057cbe9d",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3520.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 379978,
+      "sha256": "19ce2463a647b53f4b0771ea83b2cb5344527fa93c9e09bf3a8afa7fd753dcce"
+    },
+    {
+      "source": "IMG_3520.MP4",
+      "source_bytes": 3181722,
+      "source_sha256": "19b0162389a4a0c3a9344899c45a3b58ed73e3604e8e0bf7bd4e48c6b061a366",
+      "published": false
+    },
+    {
+      "source": "IMG_3521.HEIC",
+      "source_bytes": 2652003,
+      "source_sha256": "0fefad6b529f6744ae1697c17c1ffd7bdafed3572e17859dd1b8ff2d8bf91319",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3521.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 422520,
+      "sha256": "ee83786faf30344f447ec7306596e0f031aa9ee9ecab1b5071021c307cd10f7b"
+    },
+    {
+      "source": "IMG_3521.MP4",
+      "source_bytes": 5008531,
+      "source_sha256": "1404bfa84257025706c879f3ac8f26f35690a2bb87d6a325afbee1f788c69831",
+      "published": false
+    },
+    {
+      "source": "IMG_3522.HEIC",
+      "source_bytes": 2644761,
+      "source_sha256": "16ebf441a53b7881a9531eaa4e686a0c05b0d9e260d8b9b70926a5524b8b1ae5",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3522.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 454759,
+      "sha256": "42819cea617e109c62b8b5363d30289de2cc5c036a0be4f6cc729d76ebbf4921"
+    },
+    {
+      "source": "IMG_3522.MP4",
+      "source_bytes": 4646811,
+      "source_sha256": "1614f1f5d86c0d3c487b22083894e86df1b1522ef15c5139a7df5620d432d8e5",
+      "published": false
+    },
+    {
+      "source": "IMG_3523.HEIC",
+      "source_bytes": 2606545,
+      "source_sha256": "225301460bcb79bae0f2f6593d4d33e5c07d1c87c0c06273a5d65fcd86436767",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3523.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 448001,
+      "sha256": "b8c3d6b15962705ef4c33f6632557bc7007e1000dea7671eef5f9f9d6a59eabc"
+    },
+    {
+      "source": "IMG_3523.MP4",
+      "source_bytes": 4229032,
+      "source_sha256": "9b00753b98fbf820150846292f2740a6b19bbfe89c84e368ac2e36161999bae0",
+      "published": false
+    },
+    {
+      "source": "IMG_3524(1).MOV",
+      "source_bytes": 180641911,
+      "source_sha256": "7b56587b2a14028416ccc09359a24e011c0da525504f72a400760f79bc280f86",
+      "published": false
+    },
+    {
+      "source": "IMG_3524.MOV",
+      "source_bytes": 204932606,
+      "source_sha256": "45c1fe62534c46b658272b19301dfb69630f0b1d62ee88745c75281c9b092a46",
+      "published": false
+    },
+    {
+      "source": "IMG_3525.HEIC",
+      "source_bytes": 3280127,
+      "source_sha256": "810336c5f214f2b8758b7e563173ae25cac9c8d5648d72c84d616abc730ac18e",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3525.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 494281,
+      "sha256": "ea98c748ca93f96d55b644c96e9845b895d9cceecddf94f42b045b604ecbac22"
+    },
+    {
+      "source": "IMG_3525.MP4",
+      "source_bytes": 4519688,
+      "source_sha256": "fcc11396d90d6e7e7b920b34e44affde106fa22f7ee4d5671b95aa304e87d490",
+      "published": false
+    },
+    {
+      "source": "IMG_3526.HEIC",
+      "source_bytes": 2424964,
+      "source_sha256": "911af0f8642227117b815db105dc5a7c2c743e36c829f682421fbae075f3c1a2",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3526.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 385393,
+      "sha256": "43cb6ba52fa0609159e922e2cd0d533edc45eebb30cc2a65fe22eee917862d26"
+    },
+    {
+      "source": "IMG_3526.MP4",
+      "source_bytes": 4461126,
+      "source_sha256": "b2c0f5cec2928e659e87d18055b6800d7b49e0e5fbf3f13dad7d35c48918a13e",
+      "published": false
+    },
+    {
+      "source": "IMG_3527.HEIC",
+      "source_bytes": 2511265,
+      "source_sha256": "93c2ca06961a98b5fe848c41835ecb62644622473de260923c7dfcce398a9bea",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3527.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 380822,
+      "sha256": "f106f2af446615dd86e0500803be4de55d28f9f9f33f7f0ac446416454438fda"
+    },
+    {
+      "source": "IMG_3527.MP4",
+      "source_bytes": 4463907,
+      "source_sha256": "0bf11e7fda0846684943aa575f9f6d2acf1455d89c1f6b4fff0c9335a72bb03c",
+      "published": false
+    },
+    {
+      "source": "IMG_3528.HEIC",
+      "source_bytes": 2997617,
+      "source_sha256": "8a0112715aad47ad72c62f7e8467af80f5fc103c4d9ee3afb74e9e94e61f5bd7",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3528.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 485119,
+      "sha256": "aa91c23c6d15fa84f10a0cf9eb5fec96313a806b7ca719d060678c4b00977982"
+    },
+    {
+      "source": "IMG_3528.MP4",
+      "source_bytes": 4373338,
+      "source_sha256": "f6a09ef43204baed2c4dab0b2958cf09365bab28382c24956a6aa04108cd0e49",
+      "published": false
+    },
+    {
+      "source": "IMG_3529.HEIC",
+      "source_bytes": 2721055,
+      "source_sha256": "0a769e70a71bc6b374985ab572863038bd91aeb61387a7d089894a48d4f76489",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3529.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 421141,
+      "sha256": "49e1ea530b4eed8ce3c1f66bdeafd9b9610a5ddff0e3748c26d6aa1df91b27cb"
+    },
+    {
+      "source": "IMG_3529.MP4",
+      "source_bytes": 4390715,
+      "source_sha256": "b75d9824eda55d74937374bd704549c43ac658b85262a23c0e5a72836010f210",
+      "published": false
+    },
+    {
+      "source": "IMG_3530.HEIC",
+      "source_bytes": 2832264,
+      "source_sha256": "6f84da84d44bf547be212eadf81a944d89a7feead07accab68086b58895b84ce",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3530.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 432023,
+      "sha256": "173fc20a3ddebc7bbf8835e4ddc359cb5bdfa9ed148424ddc34901169e7932c7"
+    },
+    {
+      "source": "IMG_3530.MP4",
+      "source_bytes": 4450720,
+      "source_sha256": "6a54afb4b1fc70bfaf223684d0e6e40bb92e319265aafc2b9b4e9bb436ac0263",
+      "published": false
+    },
+    {
+      "source": "IMG_3531.HEIC",
+      "source_bytes": 2546342,
+      "source_sha256": "3f580dbd3d6191e852a77e7da66afb6c4dd43ac07f8c69fc6d74fb20b94c209d",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3531.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 460302,
+      "sha256": "2811c2399f126d80ed010b7bcbc9fa30e5de99b6e8f8eb6c87656489df73ec62"
+    },
+    {
+      "source": "IMG_3531.MP4",
+      "source_bytes": 4186372,
+      "source_sha256": "640c23ce05832d45797e32f503c290b479cef33e2bc786cb8da3337259157daa",
+      "published": false
+    },
+    {
+      "source": "IMG_3532.HEIC",
+      "source_bytes": 3009030,
+      "source_sha256": "871bf31bce705a50c8b53c3901101b553f8fd5d0a7eb9b5bfea0f7e9da964b7b",
+      "oriented_source_dimensions": [
+        5712,
+        4284
+      ],
+      "published": true,
+      "output": "glorb-2026-3532.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 570033,
+      "sha256": "4c28f43b7528b8505596fc434bc657e3980c39953930fbd35c8d024ed49374d7"
+    },
+    {
+      "source": "IMG_3532.MP4",
+      "source_bytes": 4258239,
+      "source_sha256": "b3f3d67907549eaa07544dd24a6c0f1896933209028eb6ce2e31f8486eb55547",
+      "published": false
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "credit": "Photos supplied by the project owner; photographer not specified.",
+  "collection": "Glorb original version, 2022 (owner-supplied archive; attendance confirmed by Chris, not inferred from metadata)",
+  "source_counts": {
+    ".heic": 8,
+    ".mp4": 6
+  },
+  "conversion": {
+    "Pillow": "12.3.0",
+    "pillow_heif": "1.7.0",
+    "max_edge": 1920,
+    "jpeg_quality": 82,
+    "progressive": true,
+    "subsampling": 2,
+    "metadata": "pixel-only; EXIF/GPS/XMP/ICC omitted"
+  },
+  "media": [
+    {
+      "source": "IMG_2566.HEIC",
+      "source_bytes": 1655811,
+      "source_sha256": "7d4f781314efbcad4bb6aa504754a2993f1ecd89b92a20c49be52d16c3214b19",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2566.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 420256,
+      "sha256": "b0b681707e69ac14a877ec774631f9dbe18f788bca62cf1636124c16a04c3647"
+    },
+    {
+      "source": "IMG_2566.MP4",
+      "source_bytes": 4206899,
+      "source_sha256": "74b8072197506fd857971379dd05e7aedf434665e89d0520b3e801587de96f77",
+      "published": false
+    },
+    {
+      "source": "IMG_2567.HEIC",
+      "source_bytes": 2486103,
+      "source_sha256": "379de7c39761c4db70ce52525da096759d2b37effd6b29c14febcf2682b865e7",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2567.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 433862,
+      "sha256": "bbf2685d282d2a005afa4f9d506850ace566481cc3e88462627dfd5b1ebf204e"
+    },
+    {
+      "source": "IMG_2567.MP4",
+      "source_bytes": 4433321,
+      "source_sha256": "b4eb5a986e2151c51458449c593c0bf93d3dbdf4f56c1a806f25a923452fd0b6",
+      "published": false
+    },
+    {
+      "source": "IMG_2568.HEIC",
+      "source_bytes": 2529878,
+      "source_sha256": "802144e18e15401190daa6b79f2b7245bfd8a387a4b0f641f99588786fa3bfca",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2568.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 428923,
+      "sha256": "e316b50885e1ff902eb80cc5bfa3b575cc7c0c85f8caaff1ad75a67b00dbea0c"
+    },
+    {
+      "source": "IMG_2568.MP4",
+      "source_bytes": 4425759,
+      "source_sha256": "38bce4a382e56e0246c7bfdf14427d6bad27503ef831c14e4c17ff7abd9dfe09",
+      "published": false
+    },
+    {
+      "source": "IMG_2572.HEIC",
+      "source_bytes": 2159831,
+      "source_sha256": "085c92025500963db5f390cbdcc4f3384921f73dde68c4815d38db9e507e6595",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2572.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 421501,
+      "sha256": "cc746413ed3f5d3cfc240d7c1ca3101a4ae772bbdcfa0655030bca649dd8d25e"
+    },
+    {
+      "source": "IMG_2572.MP4",
+      "source_bytes": 3724091,
+      "source_sha256": "185f7410aca5586ca66360ff7fd3020dfe00c63f651176c98347ac25c4f33532",
+      "published": false
+    },
+    {
+      "source": "IMG_2573.HEIC",
+      "source_bytes": 2525003,
+      "source_sha256": "b85c979ca6c19b1f7b667c99fa3545060541104eb1cbb8ae786c4f791e9fc675",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2573.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 411554,
+      "sha256": "a1a439c051313e3381302472b9868e8bece975b0746c34c3907da4c37bdd54fd"
+    },
+    {
+      "source": "IMG_2573.MP4",
+      "source_bytes": 4241888,
+      "source_sha256": "c55cf99dff76fac312a5d75b89a7f14088f89e71cea1b685b58b91428d072fc9",
+      "published": false
+    },
+    {
+      "source": "IMG_2580.HEIC",
+      "source_bytes": 1482673,
+      "source_sha256": "167da6386d9839b23c67d4d308724275c223cfe91f5d53dc8e4bd8451cc358ad",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2580.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 275808,
+      "sha256": "4193343e0b0b3c3cd571a0dfff58a14e2a1b44ec7d2b6b7a0eb8d1e2bdb15b74"
+    },
+    {
+      "source": "IMG_2580.MP4",
+      "source_bytes": 4147026,
+      "source_sha256": "9b6d41b4848feeec715ca83f3b41c69713291e1b04392b85d418ea869bca1ce6",
+      "published": false
+    },
+    {
+      "source": "IMG_2591.HEIC",
+      "source_bytes": 1429697,
+      "source_sha256": "2df9c5ab5941b206ccb20e1fba4cb79cf4dff272ee279dca1b12869bb5278403",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2591.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 350304,
+      "sha256": "37722df0704247749404aa29df2218f696714b85247e3ea51632598f1f8865ac"
+    },
+    {
+      "source": "IMG_2594.HEIC",
+      "source_bytes": 1458954,
+      "source_sha256": "88ddde4d5375406b23e07b7e6ef517cf41fad2af974b20e7003e7a1b8a0cf9f4",
+      "oriented_source_dimensions": [
+        4032,
+        3024
+      ],
+      "published": true,
+      "output": "glorb-2022-2594.jpg",
+      "dimensions": [
+        1920,
+        1440
+      ],
+      "bytes": 365274,
+      "sha256": "a40056a4b80ec49c091c450968450a1b04f181c35d7c09b01da4eaf6c6dabbf8"
+    }
+  ]
+}

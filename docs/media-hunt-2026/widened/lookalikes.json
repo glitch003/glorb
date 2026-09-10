@@ -1,0 +1,49 @@
+[
+  {
+    "url": "https://www.flickr.com/photos/flight0001/55504576052/",
+    "flickr_id": "55504576052",
+    "index": 548,
+    "status": "screened_no_match",
+    "candidate_reason": "Warm lit rectangular forms and tall foreground poles warranted enlargement.",
+    "visual_assessment": "Enlarged webcast screenshot shows structures, railings and ornamental pole lights; does not resolve Glorb hanging LED bristles, two-deck rectangular vehicle and broom handle together. Not retained as plausible match.",
+    "year_evidence": {
+      "flickr_datetaken": "2026-09-03 05:20:14",
+      "limitation": "Screenshot timestamp and uploader filename are not independent dating of underlying webcast."
+    },
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.flickr.com/photos/flight0001/55505731664/",
+    "flickr_id": "55505731664",
+    "index": 552,
+    "status": "screened_no_match",
+    "candidate_reason": "Warm lit rectangular forms and tall foreground poles warranted enlargement.",
+    "visual_assessment": "Enlarged webcast screenshot shows structures, railings and ornamental pole lights; does not resolve Glorb hanging LED bristles, two-deck rectangular vehicle and broom handle together. Not retained as plausible match.",
+    "year_evidence": {
+      "flickr_datetaken": "2026-09-03 05:20:59",
+      "limitation": "Screenshot timestamp and uploader filename are not independent dating of underlying webcast."
+    },
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.flickr.com/photos/flight0001/55505688058/",
+    "flickr_id": "55505688058",
+    "index": 579,
+    "status": "screened_no_match",
+    "candidate_reason": "Warm lit rectangular forms and tall foreground poles warranted enlargement.",
+    "visual_assessment": "Enlarged webcast screenshot shows structures, railings and ornamental pole lights; does not resolve Glorb hanging LED bristles, two-deck rectangular vehicle and broom handle together. Not retained as plausible match.",
+    "year_evidence": {
+      "flickr_datetaken": "2026-09-03 05:30:43",
+      "limitation": "Screenshot timestamp and uploader filename are not independent dating of underlying webcast."
+    },
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.sfgate.com/travel/burningman/article/photos-burning-man-2026-22414672.php",
+    "media_url": "https://s.hdnux.com/photos/01/67/22/04/31269120/3/1200x0.jpg",
+    "status": "excluded_lookalike",
+    "candidate_reason": "Large illuminated curtain-like cube resembles LEDs but not broom shape.",
+    "visual_assessment": "Caption identifies Apotheneum by Anthony Feldman and Mark Slee; no broom pole or reference vehicle shape.",
+    "confirmed_2026_glorb_media": false
+  }
+]

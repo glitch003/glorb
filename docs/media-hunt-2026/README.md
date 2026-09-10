@@ -6,6 +6,9 @@ and screening notebook, not proof of absence and not a gallery of sightings.
 The [owner-supplied photo collection](../gallery-2026/) is separate evidence;
 its collection label does not independently establish event attendance or capture date.
 
+Follow-up: [widened photographer, video and social search](widened/README.md).
+The original snapshot and totals below are preserved; the follow-up is not a cumulative replacement.
+
 ## Scope and audit
 
 The completed social and video research reports are consolidated here as a

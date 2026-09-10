@@ -26,6 +26,10 @@ The broom is no longer just a design render: the owner-supplied 2026 photo colle
 
 [Full 2026 photo gallery, captions and source notes](docs/gallery-2026/) · [2023 op-art era below](#2023-the-origin)
 
+Seen the broom in someone else's photos or video? The [public media search notebook](docs/media-hunt-2026/)
+tracks unconfirmed leads and screening limits; no public 2026 Glorb match has been visually confirmed.
+[Contribute a source link, timecode and capture-year evidence](docs/media-hunt-2026/README.md#contribute-a-sighting).
+
 **Running the car:** double-click [start.bat](start.bat), or
 `python -m glorbdash serve --host 0.0.0.0`, then open <http://localhost:8080/> (or `http://<car ip>:8080/` from a phone). One
 page with the LED controls and live state of charge for all three battery

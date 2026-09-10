@@ -1,0 +1,645 @@
+[
+  {
+    "url": "https://hyperlo.ca/data/events.json",
+    "status": "confirmed_named_mention",
+    "kind": "directory_metadata",
+    "title": "Glorb the beignet max pro 2 too",
+    "creator_credit": "The Glorb Crew",
+    "year_evidence": "Record last_checked 2026-09-01; app is BRC 2026 directory. Not image capture date.",
+    "evidence": "Direct JSON record mv-a6BVI000000MpWv2AK describes fully electric remote controlled Glorb. Tags Cube/Box/Square; description holographic rainbow cube. Source field api.burningman.org. Not evidence of 2026 broom media.",
+    "visual_confirmation": false,
+    "visual_assessment": "Image linked but not inspected",
+    "blockers": "Browser and native vision failed: no space left on device",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://burningman.widen.net/content/gh3flkc6ty/jpeg/a3OVI00000DBnqj2AD.jpeg?w=328&keep=c&crop=yes&color=cccccc&quality=100&u=r3rtjx",
+    "status": "candidate",
+    "kind": "image",
+    "title": "Glorb directory image",
+    "creator_credit": "The Glorb Crew (listing artist); photographer unknown",
+    "year_evidence": "Linked from 2026 directory; capture year unknown",
+    "evidence": "Exact image URL from retrieved directory JSON. May be previous cube design; do not label 2026 broom without inspection.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": "Native vision failed: no space left on device",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://flickr.com/photos/flight0001/sets/72177720335406158/",
+    "status": "candidate",
+    "kind": "gallery_lead",
+    "title": "Burning Man BMwebcast 2026",
+    "creator_credit": "goflight001; underlying BMwebcast attribution needs per-image check",
+    "year_evidence": "Extracted album title 2026; individual dates not checked",
+    "evidence": "Album extraction lists 974 photos and 1 video. No named Glorb match. Large possible source for manual visual screening.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": "Browser unavailable; album not visually screened",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.flickr.com/photos/jurvetson/55513405597/",
+    "status": "candidate",
+    "kind": "photo_lead",
+    "title": "Burning Man Sunrise",
+    "creator_credit": "Uploader jurvetson; caption credits UK friend Charlie (surname not stated)",
+    "year_evidence": "Extracted: taken September 4, 2026; uploaded September 7, 2026",
+    "evidence": "Public photo with strong event-date evidence, no Glorb mention. Image metadata retrieved.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": "Native vision failed: no space left on device",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.businessinsider.com/burning-man-photos-art-fashion-cars-2026-9",
+    "status": "candidate",
+    "kind": "gallery_lead",
+    "title": "19 surreal photos show the mud, chaos, and glamour of Burning Man",
+    "creator_credit": "Melia Robinson; photos include Andy Barron and Trevor Hughes / USA TODAY via Reuters",
+    "year_evidence": "Extracted publication September 7, 2026; article says photographs show 2026",
+    "evidence": "Text extracted; mutant-vehicle section but no Glorb mention. Gallery not visually screened.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.forbes.com/sites/jimdobson/2026/08/29/burning-man-2026-the-most-outrageous-mutant-vehicles-and-art-installations-in-the-black-rock-desert/",
+    "title": "Burning Man 2026: The Most Outrageous Mutant Vehicles And Art Installations In The Black Rock Desert",
+    "creator": "Jim Dobson; photos include Scott London",
+    "media_type": "roundup",
+    "status": "preview_not_sighting",
+    "year_evidence": {
+      "source": "Dated August 29, 2026; described by the research reports as a preview. Individual photograph capture years unverified."
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "social",
+      "video"
+    ],
+    "social_status": "candidate",
+    "status_note": "Shared source deduplicated; more specific video-lane preview_not_sighting classification retained.",
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://wire.extrachill.com/festival-wire/burning-man-2026-playa-photo-updates-spark-art-car-love-phone-hangout-debates-big-bunny-talk/",
+    "status": "candidate",
+    "kind": "secondary_gallery_pointer",
+    "title": "Pointer to Reddit This is Burning Man 2026",
+    "creator_credit": "Extra Chill News Wire; underlying Reddit author not retrieved",
+    "year_evidence": "Page says September 5, 2026; extraction Published September 6",
+    "evidence": "Extracted text discusses art cars in Reddit gallery. Underlying source URL not obtained; not a Glorb match.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.tiktok.com/%40therealtiktokdetective/video/7681366669922553119",
+    "status": "candidate",
+    "kind": "video_lead",
+    "title": "Burning Man 2026 Part 2",
+    "creator_credit": "@therealtiktokdetective",
+    "year_evidence": "Search snippet says 6 days ago and Burning Man 2026; not primary verified",
+    "evidence": "Broom word appears in comment about Bethany, possibly joke. Low-priority compilation lead only.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": "Extraction returned script/config shell, not viewable video",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.instagram.com/reel/Dc2MAphxE_K/",
+    "status": "candidate",
+    "kind": "video_lead",
+    "title": "Burning Man Art",
+    "creator_credit": "@techno (search attribution)",
+    "year_evidence": "Search snippet September 3, 2026, not primary verified",
+    "evidence": "Snippet references Malcolm in the Middle and Hal; probably entertainment clip rather than event media. Kept unresolved, not counted as likely Glorb.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": "Extraction CRAWL_LIVECRAWL_TIMEOUT; browser unavailable",
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.facebook.com/glorblight/posts/did-you-know-that-the-glorb-is-audio-reactive-at-this-local-burner-event-we-focu/149895584794219/",
+    "status": "excluded",
+    "kind": "name_collision",
+    "title": "GLORB audio-reactive lamp",
+    "creator_credit": "GLORB / glorblight",
+    "year_evidence": "No 2026 event evidence",
+    "evidence": "Direct extracted text links glorb.me and instagram.com/glorb_light/ with lamp/smartlighting hashtags. Different product, not Chris art car.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.instagram.com/p/DWfW-xBCW6X/",
+    "status": "excluded",
+    "kind": "name_collision",
+    "title": "Mark Mothersbaugh The General performance",
+    "creator_credit": "@brookeesling",
+    "year_evidence": "Extracted March 29, relative 23 weeks; not 2026 burn",
+    "evidence": "Direct caption places The General music machine performance at Pappy & Harriet’s. Search concatenated unrelated GLORB/Burning Man text.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.tiktok.com/@glorbworldwide",
+    "status": "excluded",
+    "kind": "name_collision",
+    "title": "GLORB musician",
+    "creator_credit": "@glorbworldwide",
+    "year_evidence": "Not relevant",
+    "evidence": "Search profile refers to music ATLANTIS and SpongeBob rap, unrelated artist.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.scottlondon.com/photo/burningman2010/088.html",
+    "status": "excluded",
+    "kind": "older_name_collision",
+    "title": "Glorb by Brant Moore, Burning Man 2010",
+    "creator_credit": "Scott London; artwork Brant Moore",
+    "year_evidence": "Explicit 2010 in search title and URL",
+    "evidence": "Search discovered older artwork also named Glorb. Different creator/year; do not conflate with Chris’s 2023-origin car.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.flickr.com/photos/paglover79/4624809103/",
+    "status": "excluded",
+    "kind": "older_name_collision",
+    "title": "Glorb light painting",
+    "creator_credit": "paglover79",
+    "year_evidence": "Search metadata taken/uploaded May 20, 2010",
+    "evidence": "Description concerns spinning a light source in kitchen, not Burning Man vehicle.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.flickr.com/photos/cmichel67/55498509612/",
+    "status": "excluded",
+    "kind": "retrospective",
+    "title": "Burning Man retrospective",
+    "creator_credit": "Christopher Michel",
+    "year_evidence": "Uploaded August 31, 2026, but caption says photos from my years on playa",
+    "evidence": "Upload year is not capture year. No evidence of Glorb or 2026 capture; linked retrospective could be separate future research.",
+    "visual_confirmation": false,
+    "visual_assessment": "not inspected",
+    "blockers": null,
+    "research_lanes": [
+      "social"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/videos/life/arts/burning-man/2026/08/31/burning-man-sights-sounds-video/91548936007/",
+    "title": "Nevada desert blooms with self expression at Burning Man 2026",
+    "creator": "Reno Gazette Journal",
+    "media_type": "video",
+    "status": "sampled_no_match",
+    "year_evidence": {
+      "upload_date": "2026-08-31T17:10:52Z",
+      "title_mentions_2026": true,
+      "source": "page JSON-LD; 2026 URL"
+    },
+    "visual_evidence": "No Glorb identified in contact-sheet sampling. Visible scenes include people, dust, effigy burning, static sculptures and other art cars. Does not prove absence between sampled frames or in tiny backgrounds.",
+    "glorb_timecode": null,
+    "sampled_frames": 24,
+    "sampling": "ffmpeg fps=1/2 (approximately two-second interval), full clip",
+    "duration": "PT47S",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/videos/life/arts/burning-man/2026/09/06/burning-man-2026-saturday-man-burns/91645829007/",
+    "title": "Another wild, weird, wonderful Burning Man comes to a close",
+    "creator": "Reno Gazette Journal",
+    "media_type": "video",
+    "status": "sampled_no_match",
+    "year_evidence": {
+      "upload_date": "2026-09-07T00:56:57Z",
+      "title_mentions_2026": false,
+      "source": "page JSON-LD; 2026 URL"
+    },
+    "visual_evidence": "No Glorb identified in contact-sheet sampling. Visible scenes include people, dust, effigy burning, static sculptures and other art cars. Does not prove absence between sampled frames or in tiny backgrounds.",
+    "glorb_timecode": null,
+    "sampled_frames": 34,
+    "sampling": "ffmpeg fps=1/2 (approximately two-second interval), full clip",
+    "duration": "PT1M8S",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/videos/life/arts/burning-man/2026/09/05/burning-man-dance-parties-after-rain/91632266007/",
+    "title": "Burning Man dance parties return after the playa dries out",
+    "creator": "Reno Gazette Journal",
+    "media_type": "video",
+    "status": "sampled_no_match",
+    "year_evidence": {
+      "upload_date": "2026-09-05T18:46:49Z",
+      "title_mentions_2026": false,
+      "source": "page JSON-LD; 2026 URL"
+    },
+    "visual_evidence": "No Glorb identified in contact-sheet sampling. Visible scenes include people, dust, effigy burning, static sculptures and other art cars. Does not prove absence between sampled frames or in tiny backgrounds.",
+    "glorb_timecode": null,
+    "sampled_frames": 20,
+    "sampling": "ffmpeg fps=1/2 (approximately two-second interval), full clip",
+    "duration": "PT40S",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/videos/life/arts/burning-man/2026/08/31/burning-man-dust-video-black-rock-city/91551357007/",
+    "title": "Burning Man transforms Nevada dust into a living city of art",
+    "creator": "Reno Gazette Journal",
+    "media_type": "video",
+    "status": "sampled_no_match",
+    "year_evidence": {
+      "upload_date": "2026-08-31T18:57:06Z",
+      "title_mentions_2026": false,
+      "source": "page JSON-LD; 2026 URL"
+    },
+    "visual_evidence": "No Glorb identified in contact-sheet sampling. Visible scenes include people, dust, effigy burning, static sculptures and other art cars. Does not prove absence between sampled frames or in tiny backgrounds.",
+    "glorb_timecode": null,
+    "sampled_frames": 30,
+    "sampling": "ffmpeg fps=1/2 (approximately two-second interval), full clip",
+    "duration": "PT59S",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/picture-gallery/life/arts/burning-man/2026/09/05/burning-man-photos-black-rock-city/91631885007/",
+    "title": "Burning Man photos show art and people across Black Rock City",
+    "creator": "Trevor Hughes / USA TODAY",
+    "media_type": "gallery",
+    "status": "thumbnails_no_match",
+    "year_evidence": {
+      "source": "2026 publication URL and individual 2026 event captions"
+    },
+    "visual_evidence": "All extracted gallery images inspected in contact sheets; no Glorb candidate recognized. Thumbnails cannot rule out tiny/background appearances.",
+    "glorb_timecode": null,
+    "image_count": 13,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.rgj.com/picture-gallery/life/arts/burning-man/2026/09/08/check-out-photos-from-burning-man-2026-people-art-cars-and-more/91661705007/",
+    "title": "Check out photos from Burning Man 2026 - people, art, cars and more",
+    "creator": "Trevor Hughes / USA TODAY; Andy Barron / Special to RGJ",
+    "media_type": "gallery",
+    "status": "thumbnails_no_match",
+    "year_evidence": {
+      "source": "2026 publication URL and individual 2026 event captions"
+    },
+    "visual_evidence": "All extracted gallery images inspected in contact sheets; no Glorb candidate recognized. Thumbnails cannot rule out tiny/background appearances.",
+    "glorb_timecode": null,
+    "image_count": 57,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.usatoday.com/picture-gallery/life/arts/burning-man/2026/09/04/60-of-our-favorite-images-from-a-very-gusty-dusty-burning-man/91617120007/",
+    "title": "60 of our favorite images from a very gusty, dusty Burning Man",
+    "creator": "USA TODAY / RGJ; check publisher captions for individual credits",
+    "media_type": "gallery",
+    "status": "thumbnails_no_match",
+    "year_evidence": {
+      "source": "2026 publication URL and individual 2026 event captions"
+    },
+    "visual_evidence": "All extracted gallery images inspected in contact sheets; no Glorb candidate recognized. Thumbnails cannot rule out tiny/background appearances.",
+    "glorb_timecode": null,
+    "image_count": 60,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://ma.tt/2026/09/bm-snaps/",
+    "title": "BM Snaps",
+    "creator": "Matt Mullenweg",
+    "media_type": "gallery",
+    "status": "thumbnails_no_match",
+    "year_evidence": {
+      "source": "September 2026 post, images under /files/2026/09/, text references current Zander Rose pavilion"
+    },
+    "visual_evidence": "Twelve images inspected. Temple, bridge-like car, illuminated building, elephants, arch, portraits and static art; no Glorb recognized.",
+    "glorb_timecode": null,
+    "image_count": 12,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=uMJzVmSMNCI",
+    "title": "BURNING MAN 2026 MIND BLOWING NIGHT LIFE 🤯 #burningmanfestival #burningman ",
+    "creator": "Breeze Offroad ",
+    "media_type": "video",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "YouTube oEmbed title",
+      "claims_2026": true
+    },
+    "visual_evidence": "Playback not inspected; title/thumbnail is not a sighting. yt-dlp on Truck House Life hit sign-in-to-confirm-not-bot; browser unavailable.",
+    "glorb_timecode": null,
+    "priority": "high",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=4geGfPlzOGY",
+    "title": "Burning Man 2026 • The Burn",
+    "creator": "moontaurus",
+    "media_type": "video",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "YouTube oEmbed title",
+      "claims_2026": true
+    },
+    "visual_evidence": "Playback not inspected; title/thumbnail is not a sighting. yt-dlp on Truck House Life hit sign-in-to-confirm-not-bot; browser unavailable.",
+    "glorb_timecode": null,
+    "priority": "medium",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=dXAk98eGwd4",
+    "title": "Burning Man at Night 4K",
+    "creator": "Todd Kortte Virtual Tours",
+    "media_type": "video",
+    "status": "year_unverified",
+    "year_evidence": {
+      "source": "YouTube oEmbed title",
+      "claims_2026": false
+    },
+    "visual_evidence": "Playback not inspected; title/thumbnail is not a sighting. yt-dlp on Truck House Life hit sign-in-to-confirm-not-bot; browser unavailable.",
+    "glorb_timecode": null,
+    "priority": "medium",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=IsIEDo2EibE",
+    "title": "Burning Man 2026",
+    "creator": "Truck House Life",
+    "media_type": "video",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "YouTube oEmbed title",
+      "claims_2026": true
+    },
+    "visual_evidence": "Playback not inspected; title/thumbnail is not a sighting. yt-dlp on Truck House Life hit sign-in-to-confirm-not-bot; browser unavailable.",
+    "glorb_timecode": null,
+    "priority": "medium",
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=MmC9r6anPIU",
+    "title": "Burning Man Is Getting Older, More Expensive… and Losing Money",
+    "creator": "unknown",
+    "media_type": "video",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "Search transcript says this year in 2026; no frames inspected"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=Rkhdal9g8Go",
+    "title": "What a Real Burning Man Camp Looks Like (First Timer Setup)",
+    "creator": "unknown",
+    "media_type": "video",
+    "status": "year_unverified",
+    "year_evidence": {
+      "source": "Search result only; copyright 2026 is not capture-year evidence"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=nII6m53S5HU",
+    "title": "What is Temple at Burning Man? Temple is Community. Temple of the Moon. Burning Man 2026",
+    "creator": "unknown",
+    "media_type": "video",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "2026 in indexed title only"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://m.youtube.com/watch?v=c-1rpc48DT8&pp=0gcJCRMMAYcqIYzv",
+    "title": "Burning Man 2026 AI Generated (Official Video) 4K",
+    "creator": "unknown",
+    "media_type": "video",
+    "status": "excluded_synthetic",
+    "year_evidence": {
+      "source": "Explicitly AI Generated in indexed title; not event documentation"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://vimeo.com/1079911650",
+    "title": "Burning Man - Unbound",
+    "creator": "Leoš Brabec",
+    "media_type": "video",
+    "status": "year_unverified",
+    "year_evidence": {
+      "source": "No 2026 capture evidence; Vimeo human-check interstitial"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://vimeo.com/106365480",
+    "title": "Burning Man",
+    "creator": "Jorrit Monné / UBERcut",
+    "media_type": "video",
+    "status": "year_unverified",
+    "year_evidence": {
+      "source": "Search names Embrace and Hybycozo; no 2026 year evidence; do not treat as current"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.sfgate.com/travel/burningman/article/photos-burning-man-2026-22414672.php",
+    "title": "The best photos of Burning Man 2026",
+    "creator": "Jane Hu (photos); Dan Gentile (article)",
+    "media_type": "gallery",
+    "status": "uninspected_lead",
+    "year_evidence": {
+      "source": "Extracted September 8 2026 publication and image captions; direct HTML challenge blocked photos"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://gallery.burningman.org/collections/everything",
+    "title": "Recently Uploaded",
+    "creator": "Various / Burning Man Project",
+    "media_type": "gallery",
+    "status": "year_unverified",
+    "year_evidence": {
+      "source": "Recently uploaded and footer 2026 do not date captures"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.wired.com/story/photo-gallery-a-decade-at-burning-man",
+    "title": "Stunning Images From a Decade at Burning Man",
+    "creator": "Philip Volkers (photos); Michael Hardy",
+    "media_type": "gallery",
+    "status": "excluded_wrong_year",
+    "year_evidence": {
+      "source": "2018 article with earlier event photos"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://spectrum.ieee.org/personal-drones-fly-above-burning-man",
+    "title": "Personal Drones Fly Above Burning Man",
+    "creator": "Susan Karlin",
+    "media_type": "video_article",
+    "status": "excluded_wrong_year",
+    "year_evidence": {
+      "source": "October 3 2013 article"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  },
+  {
+    "url": "https://www.nytimes.com/2026/07/09/arts/television/burning-man-documentary-hbo.html",
+    "title": "The Man Will Burn: On Filming the Sacred and Propane at Burning Man",
+    "creator": "New York Times",
+    "media_type": "video_article",
+    "status": "excluded_pre_event",
+    "year_evidence": {
+      "source": "July 2026 documentary publication precedes 2026 event; archival material is not current event evidence"
+    },
+    "visual_evidence": "No Glorb visual identification made; search/discovery evidence only unless noted.",
+    "glorb_timecode": null,
+    "research_lanes": [
+      "video"
+    ],
+    "confirmed_2026_glorb_media": false
+  }
+]

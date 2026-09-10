@@ -1,0 +1,28 @@
+{
+  "query_counts": {
+    "social": 44,
+    "video": 21
+  },
+  "unique_query_strings": 65,
+  "result_url_occurrences": 415,
+  "unique_result_urls_exact": 357,
+  "input_source_records": 39,
+  "deduplicated_source_records": 38,
+  "status_counts": {
+    "candidate": 7,
+    "confirmed_named_mention": 1,
+    "excluded": 6,
+    "excluded_pre_event": 1,
+    "excluded_synthetic": 1,
+    "excluded_wrong_year": 2,
+    "preview_not_sighting": 1,
+    "sampled_no_match": 4,
+    "thumbnails_no_match": 4,
+    "uninspected_lead": 6,
+    "year_unverified": 5
+  },
+  "confirmed_2026_glorb_media": 0,
+  "reported_video_frames_sampled": 108,
+  "reported_gallery_image_entries": 142,
+  "reported_unique_gallery_images": 116
+}

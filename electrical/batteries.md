@@ -21,7 +21,8 @@ controls. To run the monitor on its own instead, use
 | Module weight | ~60 lb each → **360 lb total** |
 | Pack capacity | ~30 kWh (rough — depends on exact Tesla module variant) |
 | Cost (May 2023) | $4 800 total — see [../logistics/expenses.md](../logistics/expenses.md) |
-| BMS | 2× Orion BMS 2, one per pack, each driving its own contactor; linked over CAN in parallel-string mode — see [orion/](orion/) |
+| BMS | 2× Orion BMS 2, one per pack, each driving its own contactor(s); linked over CAN in parallel-string mode — see [orion/](orion/) |
+| Pack ↔ BMS | switch position 1 = master's pack, position 2 = slave's pack (serial L59FA424) |
 | Pack selector | 1 / 2 / 1+2 / OFF switch between the two packs and the DC bus |
 | Charger | 2× Elcon UHF 6.6 kW CANbus (HK-LF-108-60), 90–265 VAC in, ~32 A each at 240 V — see [chargers.md](chargers.md) |
 | Bench measurement | 2023-05-02 with 3s Tesla modules — see [power-measurements.md](power-measurements.md) |
@@ -32,6 +33,12 @@ the single-pack limp mode in [orion/README.md](orion/README.md) (switch to the
 good pack only, set its Orion to Single Unit). Saved Orion profiles live in
 [orion/profiles/](orion/profiles/). First occurrence:
 [fault-log-2026-10-06.md](fault-log-2026-10-06.md).
+
+**Status 2026-10-06:** Glorb is in the garage, but both Orions are in a
+temporary limp configuration with cells unpopulated (the bad pack's
+out-of-line bricks on the master, cells 11/12 on the ex-slave to mask an
+open tap). **Do not charge either pack and do not use 1+2** until both
+population tables are back to 18 cells. Recovery plan in the fault log.
 
 The Tesla pack delivers far more current than the previous EG4 pack — the practical power bottleneck on the cart is now the [4 kW Giandel inverter](inverter.md) and the 72 V → 12 V converter for aux loads, not the cells.
 

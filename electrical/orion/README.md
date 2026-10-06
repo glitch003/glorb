@@ -6,6 +6,12 @@ The 72 V drive battery is **two Tesla-module packs**, each with its own
 profiles and the notes on how the two units are linked, what happens when one
 of them faults, and how to run on a single pack.
 
+> **Status 2026-10-06:** both Orions are in a temporary limp configuration
+> with cells unpopulated so the car could get off the trailer. **Do not
+> charge either pack and do not use the 1+2 switch position** until the
+> population tables are back to 18 cells. Details and the recovery plan:
+> [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md).
+
 Related: [../batteries.md](../batteries.md) (pack overview),
 [../glorbmon/README.md](../glorbmon/README.md) (what the Orions broadcast on
 CAN and how the dashboard decodes it),
@@ -86,6 +92,34 @@ Use this when one pack is out of service and the car has to move on the other.
 8. Drive. Keep it short and gentle: one pack has half the capacity and the
    DCL of a single string, and the dashboard will be partly blind (below).
 
+### Emergency only: masking an open tap by unpopulating cells
+
+Learned on 2026-10-06. If the unit refuses to close its relay because of a
+**P0A04 open-wire fault** and you cannot get at the harness, there is one
+software route: in the cell population table (Cell Settings tab) **uncheck
+the cell on each side of the open tap**, upload, clear codes. Ewert's P0A04
+document says an unpopulated cell listed under "open wire" does not set a
+code, and on our unit that was enough for the discharge relay to close.
+Clearing codes alone does nothing: the fault re-sets immediately. No profile
+setting disables the open-wire test, relay polarity cannot be inverted on the
+contactor-capable outputs, and the Voltage Failsafe overrides every relay and
+discharge setting.
+
+This is a bypass of the BMS for those bricks, not a fix:
+
+- The unit stops watching the unchecked bricks entirely: no over/under
+  voltage cutoff, no balancing, no weak-cell detection.
+- **Never charge a pack with cells unpopulated.** The master commands the
+  Elcon chargers, so keep them off.
+- Pack voltage, SOC and Ah readouts become wrong (fewer cells summed).
+- Save the modified profile so the record shows which cells were unchecked,
+  and re-populate them as soon as the tap is fixed.
+
+Unpopulating cells that are genuinely bad (as was done on the master to get
+off the trailer) is the same mechanism with higher stakes: the invisible
+bricks are the ones most likely to go out of range. Creep speed, shortest
+possible distance, no charging.
+
 ### Dashboard side effect
 
 Once the good unit is standalone it stops sending the parallel-string
@@ -95,6 +129,43 @@ temperatures but loses voltage/SOC. The proper fix is the one the glorbmon
 README already recommends: enable the `0x6B0` broadcast in the profile so
 each unit reports its own voltage, current and SOC. Until then, read the pack
 from the utility's Live Text Data.
+
+## Relay outputs and contactors
+
+What is known from the manuals and the profiles; the physical count on the
+car is still to be confirmed.
+
+- Each Orion BMS 2 has **four contactor-capable outputs**: Charge Enable
+  (Main I/O pin 8), Discharge Enable (pin 7), Charger Safety (pin 6) and
+  Multi-Purpose Enable (pin 26). All eight on/off outputs are **open-drain
+  low-side drivers**: they pull the coil's return to ground when on and float
+  when off. The four above are rated 500 mA and may drive approved
+  economiser contactors directly, **at most two contactors per BMS**; more
+  need a relay in between (wiring manual pp. 26–31). MPO1–4 are 175 mA
+  signal-level outputs.
+- Polarity: MPO1–4 can be inverted in software, but still turn off on a
+  critical fault. The Multi-Purpose Enable pin "cannot be inverted" by design.
+  The Voltage Failsafe switches all primary enable outputs off regardless of
+  relay settings.
+- In both saved profiles `relaysPopulated` = 102 (four bits set; Ewert does
+  not publish the mapping) and `mpoFunction` = 10, which in the utility
+  manual's Multi-Purpose Output list is **Contactor Enable Output** ("active
+  as long as there are no critical fault codes present"), the function Ewert
+  suggests for a system-level contactor. So **three contactors per pack**
+  (discharge, charge/charger, system) is plausible; one of them would have to
+  be relay-driven.
+- The drive chassis wiring diagram
+  ([../drive/manual-en.md](../drive/manual-en.md), "Wiring and pairing")
+  shows both drive controllers wired straight to the traction battery with
+  **no contactors and no precharge resistor**. Every contactor on the car came
+  with the Orion install, and no drawing of that install exists yet. The
+  controllers report a "capacitor-board low voltage" fault code, so they do
+  have DC-link capacitors; unless there is a precharge resistor in the
+  contactor box, each close is a hard close.
+- **To count them without opening the car:** with a relay closed, read the
+  output statuses on Live Text Data (Discharge-Enable, Charge-Enable,
+  Charger-Safety, Multi-Purpose Enable); each active one drives something.
+  Power-cycle once and count the clunks.
 
 ## Re-linking the packs
 
@@ -116,28 +187,27 @@ them. The upside of the link is coordinated limits and a shared SOC.
 
 ## Things still to confirm on the car
 
-- **Which physical pack is the master.** The profiles saved on 2026-10-05
-  were named `master-01` and `slave-2`, which suggests master = switch
-  position 1 and slave = position 2. Confirm on the car and label both
-  Orions. The ex-slave is serial **L59FA424** (firmware 3.6.3).
+- **Master ↔ switch mapping: position 1 = master (the bad pack), position 2
+  = ex-slave, serial L59FA424** (Chris, 2026-10-06; matches the saved file
+  names). Label both Orions.
+- **Current state of both units.** Which cells are unpopulated on the master,
+  what its multi-unit role is now, and which selector position was used to
+  drive off the trailer. Save both current profiles before changing anything
+  (see the un-messing plan in
+  [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md)).
 - **Exact label of the role setting.** Confirmed so far: the option chosen
   on the Addon Settings tab is called **Single Unit**. Record the label of
   the selector itself and the other option names when next in the utility.
   In the saved profiles the role appears to live in `parallelStringSettings`
-  (4 on the master, 8 on the slave); the Single Unit value is unknown
-  because the modified profile was not saved — save it as
-  `slave-single-<date>.o2bms` next time (see [profiles/README.md](profiles/README.md)).
-- **The "good" pack has its own fault.** On the first limp-mode attempt the
-  ex-slave raised **P0A04 Open Wiring Fault on tap 11** (cells 11/12 reading
-  3.91 / 3.41 V, the classic open-tap pair). Analysis and verdict in
-  [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md). Check the DTC
-  history to see whether it predates the role change.
-- Whether the faulted (bad) pack's fault was a cell-voltage fault, a
-  weak-cell fault, or something else. Export the freeze frame from the DTC
-  tab before clearing it.
-- **How the DC link is precharged.** The Orion profiles contain no precharge
-  settings and the freeze frame shows *Precharge State 0*, so precharge (if
-  any) is outside the BMS. Find it before anyone jumpers a contactor coil.
+  (4 on the master, 8 on the slave); the Single Unit value will be visible
+  once the ex-slave's current profile is saved.
+- **Tap 11 on pack 2.** P0A04 open tap between cells 11 and 12 (the classic
+  high/low pair); currently masked by unpopulating those cells. Fix the tap,
+  re-populate, confirm the code stays clear.
+- Whether the master's own fault was a cell-voltage fault, a weak-cell fault,
+  or something else. Export its freeze frame before clearing codes.
+- **How many contactors there are and how the DC link is precharged.** See
+  "Relay outputs and contactors" above.
 
 ## Sources
 
@@ -147,6 +217,16 @@ them. The upside of the link is coordinated limits and a shared SOC.
   — the Addon Settings role selector.
 - [Orion: Strings, Parallel Cells, and Parallel Strings](https://www.orionbms.com/manuals/pdf/parallel_strings.pdf)
   — Ewert's topology guidance and the cascading-shutdown warning.
+- [Orion P0A04 Open Wiring Fault](https://www.orionbms.com/faultcodes/DTC%20P0A04%20-%20Open%20Wiring%20Fault.pdf)
+  — detection method, the high/low adjacent-cell signature, the note that
+  unpopulated cells in the open-wire list set no code, diagnostic steps.
+- [Orion Failsafe Mode Descriptions](https://www.orionbms.com/faultcodes/Failsafe%20Chart.pdf)
+  — Voltage Failsafe behaviour and which DTCs trigger it.
+- Orion utility manual pages:
+  [Cell Population Settings](https://www.orionbms.com/manuals/utility/param_cell_population_settings.html),
+  [Discharge Enable Relay](https://www.orionbms.com/manuals/utility/profile_discharge_enable_relay.html),
+  [Multi-Purpose Output Function](https://www.orionbms.com/manuals/utility/param_multipurpose_output_function.html),
+  [Invert Multi-Purpose Output Polarity](https://www.orionbms.com/manuals/utility/param_invert_mpo_polarity.html).
 - [Orion BMS 2 Operation Manual](https://www.orionbms.com/manuals/pdf/orionbms2_operational_manual.pdf),
   [Wiring & Installation Manual](https://www.orionbms.com/manuals/pdf/orionbms2_wiring_manual.pdf),
   [Using the Orion BMS with Tesla Battery Modules](https://www.orionbms.com/manuals/pdf/tesla_modules.pdf).

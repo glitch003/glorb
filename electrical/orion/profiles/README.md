@@ -35,9 +35,38 @@ The profile that glorbmon's README refers to as `master-1.o2bms` is the
 original linked master. Its `customMessage[1]` entry is how the `0x6B1` byte
 layout was pinned down, so keep it even after the units are re-profiled.
 
+## Saved profiles
+
+| File | Unit | Role | Downloaded | Notes |
+| --- | --- | --- | --- | --- |
+| `master-master-2026-10-06.o2bms` | master (provisionally switch position 1) | master | 2026-10-05 22:55 MDT | Original linked master. Carries the Elcon charger frames (`customMessages[11..14]`) and `customFlags`. OBD-II ECU ID 0x7E3. |
+| `slave-slave-2026-10-06.o2bms` | slave, serial L59FA424 (provisionally position 2) | slave | 2026-10-05 22:54 MDT | Original linked slave. OBD-II ECU ID 0x7E4. Byte-identical to the utility's autosave from that session. |
+| `slave-single-<date>.o2bms` | slave | single | _not yet saved_ | Uploaded to the unit on 2026-10-05 but not saved to disk. Save it next time. |
+
+The files are dated 2026-10-06 to match the fault log and the incident; the
+downloads themselves happened late on 2026-10-05 local time.
+
 ## Reading one without the utility
 
 The utility stores the custom CAN message table (`customMessage[n]`,
 `typeMatrix`) and the CAN baud index (`DefaultBaudrate`, 0/1/2 = 125/250/500
 kbit) in the profile. If you need to compare two profiles, a text diff is the
 quickest way to see what changed.
+
+Fields identified so far by diffing the two originals (see
+[../../fault-log-2026-10-06.md](../../fault-log-2026-10-06.md) for the full
+table):
+
+- `parallelStringSettings` — 4 on the master, 8 on the slave; looks like the
+  multi-unit role. `parallelStrings` is 1 on both.
+- `obd2EcuId` — 2019 (0x7E3) master, 2020 (0x7E4) slave.
+- `populationTable` (18 × `populated` = true) and `totalCells` (18) — the
+  cell population; identical on both units.
+- `totalAmphours` 23000 = 230 Ah; `relaysPopulated` 102.
+- The master alone has `customFlags` and `customMessages[11..14]`
+  (0x1806E7F4 / E5F4 / E9F4 Elcon command frames, 0x18FF50E5 Elcon status).
+- `profileStr` is a hex blob that mirrors the settings above; ignore it when
+  diffing (`diff a b | grep -v '<string>0'`).
+
+The profiles do not contain the unit's serial number or the firmware
+password.

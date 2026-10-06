@@ -93,7 +93,7 @@ Details: [dimensions.md](dimensions.md)
 | [broom/](broom/) | 2026 broom design doc and concept renders |
 | [lights/](lights/) | LED tube specs, K128 controller bring-up, tube/port map, power measurements, pattern software |
 | [glorbdash/](glorbdash/) | **The dashboard you actually run** — LED control and live battery meters on one page |
-| [electrical/](electrical/) | Tesla packs, BMS, chargers, inverter, power budget, drive-by-wire chassis manual, [battery protocol drivers](electrical/glorbmon/) |
+| [electrical/](electrical/) | Tesla packs, [Orion BMS notes + profiles](electrical/orion/), chargers, inverter, power budget, drive-by-wire chassis manual, [battery protocol drivers](electrical/glorbmon/) |
 | [sound/](sound/) | DJ signal chain and PA gear |
 | [meshspeak/](meshspeak/) | Offline Meshtastic → text-to-speech so the mesh can talk through the car |
 | [generators/](generators/) | The generator fleet and its ongoing state of repair |

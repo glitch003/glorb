@@ -186,12 +186,17 @@ Two message layouts are decoded, both confirmed against the live bus on
 | 7 | checksum | `(sum(b0..b6) + can_id + dlc) & 0xFF` |
 
 The byte→parameter mapping comes from the utility's saved profile
-(`master-1.o2bms`, `customMessage[1]`'s `typeMatrix`) resolved through the
+(`master-1.o2bms`, archived in [../orion/profiles/](../orion/profiles/),
+`customMessage[1]`'s `typeMatrix`) resolved through the
 parameter table in the utility's own `canbusParameters.xml`. The checksum
 passed on 578 of 578 captured frames, which is what pins the layout down.
 
 **`0x1850F3F3`** — the inter-unit parallel-string message, multiplexed on byte
-0. Only fields cross-checked against a second source are decoded:
+0. The two Orions run in Ewert's parallel-string master/slave mode (see
+[../orion/README.md](../orion/README.md)); this message only exists while
+they are linked, so a unit set to Single Unit stops sending it and the tab
+loses voltage/SOC. Only fields cross-checked against a second source are
+decoded:
 
 | Mux | Bytes | Field | Confirmed by |
 | --- | --- | --- | --- |

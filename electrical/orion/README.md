@@ -73,9 +73,16 @@ Use this when one pack is out of service and the car has to move on the other.
 6. **Verify before moving.** On the Live Text Data tab check *Relay Status*
    shows the discharge relay on, and *Current Limit Status* is not reporting
    a limit reason. Check the pack's cell spread while you are there.
+   Re-read the DTC tab too: the first attempt stalled on a **P0A04 open
+   tap** on the good pack that had been masked by the U0100 (see
+   [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md)). P0A04 is a
+   Voltage Failsafe fault in its own right, so the relay stays off until the
+   tap is fixed and the code stays clear.
 7. **Save the modified profile** too, with a name that says what it is (see
    the naming convention in [profiles/README.md](profiles/README.md)), so
    there is a record of exactly what the unit is running.
+   (On 2026-10-05 this step was skipped and the single-unit profile is not
+   on record; do it before closing the utility.)
 8. Drive. Keep it short and gentle: one pack has half the capacity and the
    DCL of a single string, and the dashboard will be partly blind (below).
 
@@ -109,13 +116,28 @@ them. The upside of the link is coordinated limits and a shared SOC.
 
 ## Things still to confirm on the car
 
-- **Which physical pack is the master.** The profiles say which *unit* is
-  master; map that to pack 1 / pack 2 on the switch and label both Orions.
-- **Exact label** of the role setting on our (custom) firmware. Record it
-  here once seen.
-- Whether the faulted pack's fault was a cell-voltage fault, a weak-cell
-  fault, or something else. Export the freeze frame from the DTC tab before
-  clearing it.
+- **Which physical pack is the master.** The profiles saved on 2026-10-05
+  were named `master-01` and `slave-2`, which suggests master = switch
+  position 1 and slave = position 2. Confirm on the car and label both
+  Orions. The ex-slave is serial **L59FA424** (firmware 3.6.3).
+- **Exact label of the role setting.** Confirmed so far: the option chosen
+  on the Addon Settings tab is called **Single Unit**. Record the label of
+  the selector itself and the other option names when next in the utility.
+  In the saved profiles the role appears to live in `parallelStringSettings`
+  (4 on the master, 8 on the slave); the Single Unit value is unknown
+  because the modified profile was not saved — save it as
+  `slave-single-<date>.o2bms` next time (see [profiles/README.md](profiles/README.md)).
+- **The "good" pack has its own fault.** On the first limp-mode attempt the
+  ex-slave raised **P0A04 Open Wiring Fault on tap 11** (cells 11/12 reading
+  3.91 / 3.41 V, the classic open-tap pair). Analysis and verdict in
+  [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md). Check the DTC
+  history to see whether it predates the role change.
+- Whether the faulted (bad) pack's fault was a cell-voltage fault, a
+  weak-cell fault, or something else. Export the freeze frame from the DTC
+  tab before clearing it.
+- **How the DC link is precharged.** The Orion profiles contain no precharge
+  settings and the freeze frame shows *Precharge State 0*, so precharge (if
+  any) is outside the BMS. Find it before anyone jumpers a contactor coil.
 
 ## Sources
 

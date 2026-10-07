@@ -11,8 +11,10 @@ Received frames are CR-terminated ASCII:
     x<8-hex id><dlc><data hex>          29-bit  (this firmware answers with
                                         lowercase 'x' where the spec says 'T')
 
-This module only ever opens the channel and reads. It never transmits a CAN
-frame, so it cannot disturb the bus the two Orions and the chargers share.
+The monitor only ever opens the channel and reads; nothing in the polling
+path transmits, so it cannot disturb the bus the two Orions and the chargers
+share. `send()` exists for `glorbmon.obd2`, which asks the Orions questions
+over OBD2 on demand (short 11-bit request frames to the units' ECU IDs).
 
 Two firmware quirks worth not rediscovering, both checked against the adapter
 on 2026-09-02 (version V010403, serial NC3948B2D):
@@ -130,6 +132,18 @@ class SlcanPort:
             self.close()
             raise
         self._buf = ""
+
+    def send(self, can_id, data, extended=False):
+        """Transmit one frame. Only `glorbmon.obd2` uses this."""
+        if self.ser is None:
+            raise SlcanError("port is not open")
+        data = bytes(data)
+        if len(data) > 8:
+            raise ValueError("CAN data is at most 8 bytes")
+        kind, width = ("T", 8) if extended else ("t", 3)
+        line = "%s%0*X%X%s" % (kind, width, can_id, len(data), data.hex().upper()) + "\r"
+        self.ser.write(line.encode("ascii"))
+        self.ser.flush()
 
     def drain(self):
         """Every complete frame that arrived since the last call."""

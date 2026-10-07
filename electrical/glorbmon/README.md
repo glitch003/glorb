@@ -223,6 +223,25 @@ two byte 5 carries has not been confirmed, so it is kept as a secondary figure.
 The remaining bytes have no confirmed meaning and are surfaced as raw hex
 rather than guessed at.
 
+## Asking the Orions questions: `glorbmon.obd2`
+
+The monitor only listens, but the Orions also answer **OBD2 over CAN**
+(ISO 15765) on their ECU IDs, 0x7E3 (master) and 0x7E4 (slave), replying on
+ID + 8. `python -m glorbmon.obd2 --out <dir>` uses that to dump each unit's
+trouble codes (modes 03/07/0A), every mode-22 parameter `F0xx` (xx is the
+parameter ID from the utility's `canbusParameters.xml`, so `F00D` is pack
+voltage) and all cell voltages / open-cell voltages / resistances (`F1nn`,
+`F3nn`, `F2nn`, twelve cells per block) to CSV, then records a few seconds
+of raw bus traffic. Replies longer than seven bytes are ISO-TP multi-frame
+and need a flow-control frame within about a second, which the client sends
+as soon as it sees the first frame. The decoders are tested against replies
+captured from both units on 2026-10-06 (`tests/test_obd2.py`); the first
+real dump is in `../orion/obd2-snapshot-2026-10-06/`.
+
+This is the one path in glorbmon that transmits on the bus
+(`SlcanPort.send`). It sends short 11-bit request frames only; the polling
+monitor never calls it.
+
 ## Two things worth fixing on the Orions
 
 Both surface as notes in the 72 V tab:
@@ -249,7 +268,8 @@ glorbmon/
   ports.py      adapter discovery by USB VID:PID
   eg4.py        12 V EG4 LifePower4 RS485 driver
   teslabms.py   24 V Arduino Due console driver
-  slcan.py      CANdapter transport (open + read only)
+  slcan.py      CANdapter transport (open + read; send() for obd2 only)
+  obd2.py       OBD2 client: DTCs, parameters, cell voltages from the Orions
   orion.py      72 V Orion CAN frame decoding
   hub.py        one thread per system, reconnect, shared snapshot, CSV log
   server.py     HTTP: dashboard, /api/status, /api/stream (SSE), /api/raw

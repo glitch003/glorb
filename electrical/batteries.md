@@ -34,11 +34,12 @@ good pack only, set its Orion to Single Unit). Saved Orion profiles live in
 [orion/profiles/](orion/profiles/). First occurrence:
 [fault-log-2026-10-06.md](fault-log-2026-10-06.md).
 
-**Status 2026-10-06:** Glorb is in the garage, but both Orions are in a
-temporary limp configuration with cells unpopulated (the bad pack's
-out-of-line bricks on the master, cells 11/12 on the ex-slave to mask an
-open tap). **Do not charge either pack and do not use 1+2** until both
-population tables are back to 18 cells. Recovery plan in the fault log.
+**Status 2026-10-06 (late):** Glorb is in the garage. Both Orions are back
+on their original profiles and linked, and both are faulted on **open cell
+taps** (3, 5, 7 on pack 1; 11 on pack 2), not bad modules as first thought:
+every out-of-line cell reading is half of a high/low pair that sums to
+normal. **Do not charge** until the taps are fixed and both units read 18
+clean cells. Data, verdict and the multimeter plan are in the fault log.
 
 The Tesla pack delivers far more current than the previous EG4 pack — the practical power bottleneck on the cart is now the [4 kW Giandel inverter](inverter.md) and the 72 V → 12 V converter for aux loads, not the cells.
 

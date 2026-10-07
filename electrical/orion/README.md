@@ -6,10 +6,12 @@ The 72 V drive battery is **two Tesla-module packs**, each with its own
 profiles and the notes on how the two units are linked, what happens when one
 of them faults, and how to run on a single pack.
 
-> **Status 2026-10-06:** both Orions are in a temporary limp configuration
-> with cells unpopulated so the car could get off the trailer. **Do not
-> charge either pack and do not use the 1+2 switch position** until the
-> population tables are back to 18 cells. Details and the recovery plan:
+> **Status 2026-10-06 (late):** both units are back on their original
+> profiles and linked, and both are faulted with open cell taps: taps 3, 5
+> and 7 on the master's pack (switch position 1), tap 11 on the slave's
+> (position 2). The "bad pack" looks like a wiring problem, not bad modules.
+> **Do not charge** until the taps are fixed and both units read 18 clean
+> cells. Data and the multimeter plan:
 > [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md).
 
 Related: [../batteries.md](../batteries.md) (pack overview),
@@ -130,6 +132,36 @@ README already recommends: enable the `0x6B0` broadcast in the profile so
 each unit reports its own voltage, current and SOC. Until then, read the pack
 from the utility's Live Text Data.
 
+## Reading the units over OBD2 (no utility needed)
+
+Each Orion answers OBD2-over-CAN requests on its ECU ID (profile
+`obd2EcuId`: **0x7E3 master, 0x7E4 slave**; replies on ID + 8). That gives
+trouble codes and every live parameter, including all cell voltages, through
+the CANdapter without the utility and without changing anything on the units:
+
+```bash
+cd electrical
+python -m glorbmon.obd2 --out orion/obd2-snapshot-<date>
+```
+
+(Close the Orion utility and glorbmon first; they hold the COM port.) It
+writes `obd2-<unit>.csv` (DTCs via modes 03/07/0A, every mode-22 parameter
+`F000–F0FF`, decoded), `cells-<unit>.csv` (18 cell voltages, open-cell
+voltages and resistances via PIDs `F100/F101`, `F300/F301`, `F200/F201`) and
+a short raw bus capture. Details in
+[../glorbmon/README.md](../glorbmon/README.md). What it does not give you is
+freeze frames or when a code first set; those are only on the utility's DTC
+tab, so export them there before clearing codes.
+
+Useful facts learned from the replies:
+
+- `Parallel Unit Type` (PID F065) is **1 = master, 2 = slave, 0 = Single
+  Unit**: the multi-unit role, readable live.
+- `DTC Flags #2` (PID F022) bit 0x10 is P0A04, 0x04 P0A80, 0x40 P0A0D,
+  0x800 U0100 (bit map in the utility help, `bms_param_dtc_status_2`).
+- Open-wire sub-codes are not in the OBD2 DTC list, but the high/low cell
+  IDs (PIDs F03D/F03E) and the per-cell table show the open tap directly.
+
 ## Relay outputs and contactors
 
 What is known from the manuals and the profiles; the physical count on the
@@ -187,27 +219,20 @@ them. The upside of the link is coordinated limits and a shared SOC.
 
 ## Things still to confirm on the car
 
-- **Master ↔ switch mapping: position 1 = master (the bad pack), position 2
-  = ex-slave, serial L59FA424** (Chris, 2026-10-06; matches the saved file
-  names). Label both Orions.
-- **Current state of both units.** Which cells are unpopulated on the master,
-  what its multi-unit role is now, and which selector position was used to
-  drive off the trailer. Save both current profiles before changing anything
-  (see the un-messing plan in
-  [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md)).
-- **Exact label of the role setting.** Confirmed so far: the option chosen
-  on the Addon Settings tab is called **Single Unit**. Record the label of
-  the selector itself and the other option names when next in the utility.
-  In the saved profiles the role appears to live in `parallelStringSettings`
-  (4 on the master, 8 on the slave); the Single Unit value will be visible
-  once the ex-slave's current profile is saved.
-- **Tap 11 on pack 2.** P0A04 open tap between cells 11 and 12 (the classic
-  high/low pair); currently masked by unpopulating those cells. Fix the tap,
-  re-populate, confirm the code stays clear.
-- Whether the master's own fault was a cell-voltage fault, a weak-cell fault,
-  or something else. Export its freeze frame before clearing codes.
+- **Master ↔ switch mapping: position 1 = master, position 2 = slave, serial
+  L59FA424** (Chris, 2026-10-06; also the saved file names). Label both
+  Orions.
+- **Why four odd-numbered taps (3, 5, 7 on pack 1; 11 on pack 2) read open
+  at once.** Meter plan in
+  [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md). Record what the
+  bricks measure directly and where the breaks are.
+- **Exact label of the role setting** on the Addon Settings tab (the option
+  chosen was **Single Unit**). In the profile the role is
+  `parallelStringSettings` (4 master, 8 slave); live it is PID F065.
+- Freeze frames for the master's three codes and the slave's P0A04: export
+  from the DTC tab before clearing.
 - **How many contactors there are and how the DC link is precharged.** See
-  "Relay outputs and contactors" above.
+  "Relay outputs and contactors".
 
 ## Sources
 
@@ -222,6 +247,8 @@ them. The upside of the link is coordinated limits and a shared SOC.
   unpopulated cells in the open-wire list set no code, diagnostic steps.
 - [Orion Failsafe Mode Descriptions](https://www.orionbms.com/faultcodes/Failsafe%20Chart.pdf)
   — Voltage Failsafe behaviour and which DTCs trigger it.
+- [Orion BMS OBD2 PID list](https://www.orionbms.com/downloads/misc/orionbms_obd2_pids.pdf)
+  (2018-08-27) — mode 22 PIDs including per-cell voltage blocks.
 - Orion utility manual pages:
   [Cell Population Settings](https://www.orionbms.com/manuals/utility/param_cell_population_settings.html),
   [Discharge Enable Relay](https://www.orionbms.com/manuals/utility/profile_discharge_enable_relay.html),

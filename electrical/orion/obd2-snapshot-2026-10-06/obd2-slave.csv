@@ -1,0 +1,119 @@
+"# Orion BMS 2 OBD2 snapshot, unit=slave, ecu=0x7E4, captured 2026-10-06T22:42:02"
+pid,name,raw_hex,value
+mode 03,stored DTCs,43010a04,P0A04
+mode 07,pending DTCs,47010a04,P0A04
+mode 0A,permanent DTCs,4a00,
+F004,Relay State,0048,72
+F005,parameter 5,00,0
+F006,Max Cell Number,00,0
+F007,Populated Cells,12,18
+F008,parameter 8,5c,92
+F009,Failsafe Statuses,0001,1
+F00A,Pack CCL (A),0000,0
+F00B,Pack DCL (A),0000,0
+F00C,Pack Current (A),0000,0.0
+F00D,Pack Inst. Voltage (V),0297,66.3
+F00E,Pack Open Voltage (V),0297,66.3
+F00F,Pack SOC (%),63,49.5
+F010,Pack Amphours (Ah),047d,114.9
+F011,Pack Resistance (mOhm),000d,0.13
+F012,Pack DOD (%),64,50.0
+F013,Pack Health (%),64,100
+F014,Pack Summed Voltage (V),19e7,66.31
+F015,Pack Abs. Current (A),7fff,3276.7
+F016,Maximum Pack Voltage (V),02eb,74.7
+F017,Minimum Pack Voltage (V),0264,61.2
+F018,Total Pack Cycles,0004,4
+F019,Current Limits Status,0042,66
+F01A,Pack CCL (kW),0000,0.0
+F01B,Pack DCL (kW),0000,0.0
+F01C,Maximum Pack DCL (A),00c8,200
+F01D,Maximum Pack CCL (A),0064,100
+F01E,Simulated SOC,00,0.0
+F01F,Simulated Mode,95,149
+F020,Simulated Req. Mode,08,8
+F021,DTC Flags #1,0000,0
+F021.bits,DTC Flags #1 decoded,,
+F022,DTC Flags #2,0010,16
+F022.bits,DTC Flags #2 decoded,,P0A04
+F023,parameter 35,0297,663
+F024,parameter 36,df,223
+F025,parameter 37,0018,24
+F026,parameter 38,b185,45445
+F027,Average Current (A),0000,0.0
+F028,High Temperature (C),17,23
+F02A,Average Temperature (C),16,22
+F02B,Fan Speed,00,0
+F02C,Req. Fan Speed,00,0
+F02D,Internal Temperature (C),18,24
+F02E,High Thermistor ID,0002,2
+F02F,Low Thermistor ID,0001,1
+F030,J1772 Plug State,01,1
+F031,J1772 AC Current Limit (A),00,0
+F032,Low Cell Voltage (V),8513,3.4067
+F033,High Cell Voltage (V),98cd,3.9117
+F034,Avg. Cell Voltage (V),8fe9,3.6841
+F035,Low Opencell Voltage (V),852f,3.4095
+F036,High Opencell Voltage (V),98b1,3.9089
+F037,Avg. Opencell Voltage (V),8fe9,3.6841
+F038,Low Cell Resistance (mOhm),004c,0.76
+F039,High Cell Resistance (mOhm),004c,0.76
+F03A,Avg. Cell Resistance (mOhm),004c,0.76
+F03B,Maximum Cell Voltage (V),a21c,4.15
+F03C,Minimum Cell Voltage (V),84d0,3.4
+F03D,High Cell Voltage ID,000b,11
+F03E,Low Cell Voltage ID,000c,12
+F03F,High Opencell ID,000b,11
+F040,Low Opencell ID,000c,12
+F041,High Intres ID,0001,1
+F042,Low Intres ID,0001,1
+F043,Adaptive Amphours (Ah),04b4,120.4
+F044,Adaptive Total Capacity (Ah),08fc,230.0
+F045,Adaptive SOC (%),68,52.0
+F046,Input Supply Voltage (V),007a,12.2
+F047,Current ADC1,0800,2048
+F048,Current ADC2,0800,2048
+F049,Fan Voltage (V),0000,0.0
+F04A,Isolation ADC,0000,0
+F04B,Shortest Wave (V),1388,5.0
+F04C,Isolation Clipping (V),0000,0.0
+F04D,Isolation Threshold (V),0000,0.0
+F04E,parameter 78,0001,1
+F04F,parameter 79,0001,1
+F050,parameter 80,4f32,20274
+F051,parameter 81,2132,8498
+F052,J1772 AC Power Limit (W),0000,0
+F053,J1772 AC Voltage (V),0000,0.0
+F054,parameter 84,08fc,2300
+F055,parameter 85,0000,0
+F056,parameter 86,0000,0
+F057,parameter 87,0000,0
+F058,Intake Temperature (C),d8,216
+F059,Vehicle Speed (KPH),0000,0
+F05A,Parallel Relay States,00,0
+F05B,Parallel SOC (%),00,0.0
+F05C,Parallel DCL (A),0000,0
+F05D,Parallel CCL (A),0000,0
+F05E,Parallel Avg Current (A),0000,0.0
+F05F,Parallel DC Bus Voltage (V),0000,0.0
+F060,Parallel Target Max DC PackV (V),0000,0.0
+F061,Parallel Target Min DC PackV (V),0000,0.0
+F062,Parallel Low Temperature (C),00,0
+F063,Parallel High Temperature (C),00,0
+F064,Parallel Active Strings,00,0
+F065,Parallel Unit Type,02,2
+F065.name,Parallel Unit Type decoded,,slave
+F066,parameter 102,0000,0
+F067,parameter 103,ffff,65535
+F06E,parameter 110,0040,64
+F073,parameter 115,0800,2048
+F074,parameter 116,0800,2048
+F075,parameter 117,0000,0
+F076,Float Charge Voltage (V),0000,0.0
+F077,Precharge Circuit State,00,0
+F07E,parameter 126,0000,0
+F080,Application DC Bus Voltage,0000,0.0
+F0FC,parameter 252,00000000000000000000000000000000000000000000,00000000000000000000000000000000000000000000
+F0FD,parameter 253,0b1b0a1f0a1c0a1c01180118,0b1b0a1f0a1c0a1c01180118
+F0FE,parameter 254,0019191900000000191919000000001919190000000019191900000000191919000000001919190000000019191900000000191919000000001919190000000019191900000000,0019191900000000191919000000001919190000000019191900000000191919000000001919190000000019191900000000191919000000001919190000000019191900000000
+F0FF,parameter 255,16171616171717171919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919,16171616171717171919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919

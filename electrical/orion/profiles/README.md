@@ -44,8 +44,7 @@ layout was pinned down, so keep it even after the units are re-profiled.
 | --- | --- | --- | --- | --- |
 | `master-master-2026-10-06.o2bms` | master (provisionally switch position 1) | master | 2026-10-05 22:55 MDT | Original linked master. Carries the Elcon charger frames (`customMessages[11..14]`) and `customFlags`. OBD-II ECU ID 0x7E3. |
 | `slave-slave-2026-10-06.o2bms` | slave, serial L59FA424 (provisionally position 2) | slave | 2026-10-05 22:54 MDT | Original linked slave. OBD-II ECU ID 0x7E4. Byte-identical to the utility's autosave from that session. |
-| `slave-single-2026-10-06-cells11-12-unpopulated.o2bms` | slave | single | _not yet saved_ | **What the ex-slave is running now**: Single Unit, cells 11 and 12 unpopulated to mask the tap-11 P0A04. Save it before changing anything. |
-| `master-<role>-2026-10-06-badcells-unpopulated.o2bms` | master | master or single, unknown | _not yet saved_ | **What the master is running now**: out-of-line cells unpopulated to drive off the trailer. Save it before changing anything; it is the only record of which cells were unchecked. |
+| _(not saved)_ | both | temporary | — | The cells-unpopulated profiles used to get off the trailer on 2026-10-06 were never saved; both units were put back on the originals above the same evening (confirmed live: PID F065 reads master / slave, 18 populated cells on each). |
 
 The files are dated 2026-10-06 to match the fault log and the incident; the
 downloads themselves happened late on 2026-10-05 local time.

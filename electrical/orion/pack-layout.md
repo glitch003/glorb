@@ -61,6 +61,12 @@ Tesla BMB connector); pinouts are in
 | 1 (top) | 7 | between cells 7 and 8 | module 2, between its 1st and 2nd brick | cell 7 reads 5.16 V, cell 8 reads 2.24 V |
 | 2 (bottom) | 11 | between cells 11 and 12 | module 2, between its 5th and 6th brick | cell 11 reads 3.91 V, cell 12 reads 3.41 V |
 
+In module terms these are junctions 3|4, 5|6, 1|2 and 5|6: all the odd
+junctions, which on a Tesla 6S module are the ones on one face. On
+2026-10-08 the first module pulled (middle of the top stack) had a badly
+corroded underside, so the working theory is corroded sense leads on that
+face (see the fault log's "Teardown").
+
 Each pair sums to a normal 7.3–7.4 V, which is how we know these are
 measurement wires and not bricks
 ([../fault-log-2026-10-06.md](../fault-log-2026-10-06.md)). All four are

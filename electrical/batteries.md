@@ -22,7 +22,7 @@ controls. To run the monitor on its own instead, use
 | Pack capacity | ~30 kWh (rough — depends on exact Tesla module variant) |
 | Cost (May 2023) | $4 800 total — see [../logistics/expenses.md](../logistics/expenses.md) |
 | BMS | 2× Orion BMS 2, one per pack, each driving its own contactor(s); linked over CAN in parallel-string mode — see [orion/](orion/) |
-| Pack ↔ BMS | switch position 1 = master's pack, position 2 = slave's pack (serial L59FA424) |
+| Pack ↔ BMS | switch position **1** = **top** stack = BMS 1 (master); position **2** = **bottom** stack = BMS 2 (slave, serial L59FA424) — see [orion/pack-layout.md](orion/pack-layout.md) |
 | Pack selector | 1 / 2 / 1+2 / OFF switch between the two packs and the DC bus |
 | Charger | 2× Elcon UHF 6.6 kW CANbus (HK-LF-108-60), 90–265 VAC in, ~32 A each at 240 V — see [chargers.md](chargers.md) |
 | Bench measurement | 2023-05-02 with 3s Tesla modules — see [power-measurements.md](power-measurements.md) |

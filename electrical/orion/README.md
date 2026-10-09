@@ -14,7 +14,9 @@ of them faults, and how to run on a single pack.
 > cells. Data and the multimeter plan:
 > [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md).
 
-Related: [../batteries.md](../batteries.md) (pack overview),
+Related: [pack-layout.md](pack-layout.md) (which BMS / switch position /
+stack / module / tap is which),
+[../batteries.md](../batteries.md) (pack overview),
 [../glorbmon/README.md](../glorbmon/README.md) (what the Orions broadcast on
 CAN and how the dashboard decodes it),
 [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md) (the trailer
@@ -219,9 +221,10 @@ them. The upside of the link is coordinated limits and a shared SOC.
 
 ## Things still to confirm on the car
 
-- **Master ↔ switch mapping: position 1 = master, position 2 = slave, serial
-  L59FA424** (Chris, 2026-10-06; also the saved file names). Label both
-  Orions.
+- ~~Master ↔ switch mapping~~ **Confirmed:** position 1 = top stack = BMS 1
+  = master; position 2 = bottom stack = BMS 2 = slave (L59FA424). See
+  [pack-layout.md](pack-layout.md). Still to do: label both Orions and both
+  stacks, and fill in which `B1`–`B6` module sits where.
 - **Why four odd-numbered taps (3, 5, 7 on pack 1; 11 on pack 2) read open
   at once.** Meter plan in
   [../fault-log-2026-10-06.md](../fault-log-2026-10-06.md). Record what the
